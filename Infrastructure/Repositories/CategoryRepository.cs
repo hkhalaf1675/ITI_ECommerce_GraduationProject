@@ -33,6 +33,7 @@ namespace Infrastructure.Repositories
             try
             {
                 context.Categories.Add(category);
+                context.SaveChanges();
                 return true;
             }
             catch(Exception ex)
@@ -45,6 +46,7 @@ namespace Infrastructure.Repositories
             try
             {
                 context.Categories.Update(category);
+                context.SaveChanges();
                 return true;
             }
             catch(Exception ex)
@@ -57,6 +59,7 @@ namespace Infrastructure.Repositories
             try
             {
                 context.Categories.Remove(GetById(id));
+                context.SaveChanges();
                 return true;
             }
             catch(Exception ex)
