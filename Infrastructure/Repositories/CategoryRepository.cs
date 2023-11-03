@@ -3,6 +3,7 @@ using Core.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -23,7 +24,16 @@ namespace Infrastructure.Repositories
         {
             return context.Categories.Find(id);
         }
-
+        // to make function async ---->
+        public async Task<Category> GetByIdAsync(int id)
+        {
+            return await context.Categories.FindAsync(id);
+        }
+        // function that take delegate (expression)
+        public Category Find(Expression<Func<Category, bool>> predicate)
+        {
+            return context.Categories.SingleOrDefault(predicate);
+        } 
         public ICollection<Category> GetByName(string categoryName)
         {
             return context.Categories.Where(C => C.Name == categoryName).ToList();
