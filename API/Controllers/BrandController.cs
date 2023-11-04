@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Core.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
@@ -7,5 +8,6 @@ namespace API.Controllers
     [ApiController]
     public class BrandController : ControllerBase
     {
+        
     }
 }
