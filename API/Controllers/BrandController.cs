@@ -8,6 +8,6 @@ namespace API.Controllers
     [ApiController]
     public class BrandController : ControllerBase
     {
-        
+        //Brand Controller
     }
 }
