@@ -54,13 +54,13 @@ namespace Infrastructure
                 .HasMany(U => U.Orders)
                 .WithOne(O => O.User)
                 .HasForeignKey(O => O.UserId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.SetNull); // to make it do not delete the row from database
 
             modelBuilder.Entity<User>()
                 .HasMany(U => U.Reviews)
                 .WithOne(RV => RV.User)
                 .HasForeignKey(RV => RV.UserID)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.SetNull); // to make it do not delete the row from database
 
             modelBuilder.Entity<User>()
                 .HasMany(U => U.Addresses)
@@ -72,8 +72,9 @@ namespace Infrastructure
                 .HasMany(U => U.Phones)
                 .WithOne(Ph => Ph.User)
                 .HasForeignKey(Ph => Ph.UserID)
-                .OnDelete(DeleteBehavior.Cascade); 
+                .OnDelete(DeleteBehavior.Cascade);
             #endregion
+
 
             base.OnModelCreating(modelBuilder);
         }
