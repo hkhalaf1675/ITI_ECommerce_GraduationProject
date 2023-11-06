@@ -48,7 +48,7 @@ namespace Infrastructure.Migrations
                     b.Property<string>("Street")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("UserID")
+                    b.Property<int?>("UserID")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -100,10 +100,10 @@ namespace Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("ProductID")
+                    b.Property<int?>("ProductID")
                         .HasColumnType("int");
 
-                    b.Property<int>("UserID")
+                    b.Property<int?>("UserID")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -127,7 +127,7 @@ namespace Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("ProductID")
+                    b.Property<int?>("ProductID")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -157,14 +157,14 @@ namespace Infrastructure.Migrations
                     b.Property<decimal>("TotalPrice")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<int>("UserId")
+                    b.Property<int?>("UserId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Order");
+                    b.ToTable("Orders");
                 });
 
             modelBuilder.Entity("Core.Models.OrderDetails", b =>
@@ -175,10 +175,10 @@ namespace Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("OrderID")
+                    b.Property<int?>("OrderID")
                         .HasColumnType("int");
 
-                    b.Property<int>("ProductID")
+                    b.Property<int?>("ProductID")
                         .HasColumnType("int");
 
                     b.Property<int>("Quantity")
@@ -193,7 +193,7 @@ namespace Infrastructure.Migrations
 
                     b.HasIndex("ProductID");
 
-                    b.ToTable("OrderDetails");
+                    b.ToTable("OrdersDetails");
                 });
 
             modelBuilder.Entity("Core.Models.PaymentMethod", b =>
@@ -210,14 +210,14 @@ namespace Infrastructure.Migrations
                     b.Property<string>("Method")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("OrderID")
+                    b.Property<int?>("OrderID")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("OrderID");
 
-                    b.ToTable("PaymentMethod");
+                    b.ToTable("PaymentMethods");
                 });
 
             modelBuilder.Entity("Core.Models.Phone", b =>
@@ -225,14 +225,14 @@ namespace Infrastructure.Migrations
                     b.Property<string>("PhoneNumber")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<int>("UserID")
+                    b.Property<int?>("UserID")
                         .HasColumnType("int");
 
                     b.HasKey("PhoneNumber", "UserID");
 
                     b.HasIndex("UserID");
 
-                    b.ToTable("Phone");
+                    b.ToTable("Phones");
                 });
 
             modelBuilder.Entity("Core.Models.Product", b =>
@@ -243,10 +243,10 @@ namespace Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("BatteryCapacity")
+                    b.Property<int?>("BatteryCapacity")
                         .HasColumnType("int");
 
-                    b.Property<int>("BrandID")
+                    b.Property<int?>("BrandID")
                         .HasColumnType("int");
 
                     b.Property<string>("CPU")
@@ -255,7 +255,7 @@ namespace Infrastructure.Migrations
                     b.Property<string>("Carmera")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("CategoryID")
+                    b.Property<int?>("CategoryID")
                         .HasColumnType("int");
 
                     b.Property<string>("Color")
@@ -267,7 +267,7 @@ namespace Infrastructure.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Discount")
+                    b.Property<int?>("Discount")
                         .HasColumnType("int");
 
                     b.Property<string>("Model")
@@ -283,16 +283,16 @@ namespace Infrastructure.Migrations
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<int>("Ram")
+                    b.Property<int?>("Ram")
                         .HasColumnType("int");
 
-                    b.Property<float>("ScreenSize")
+                    b.Property<float?>("ScreenSize")
                         .HasColumnType("real");
 
                     b.Property<int>("StockQuantity")
                         .HasColumnType("int");
 
-                    b.Property<int>("Storage")
+                    b.Property<int?>("Storage")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -301,7 +301,7 @@ namespace Infrastructure.Migrations
 
                     b.HasIndex("CategoryID");
 
-                    b.ToTable("Product");
+                    b.ToTable("Products");
                 });
 
             modelBuilder.Entity("Core.Models.ProductIdentity", b =>
@@ -309,14 +309,33 @@ namespace Infrastructure.Migrations
                     b.Property<string>("SerialNumber")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<int>("ProductID")
+                    b.Property<int?>("ProductID")
                         .HasColumnType("int");
 
                     b.HasKey("SerialNumber", "ProductID");
 
                     b.HasIndex("ProductID");
 
-                    b.ToTable("ProductIdentity");
+                    b.ToTable("ProductIdentities");
+                });
+
+            modelBuilder.Entity("Core.Models.Promotion", b =>
+                {
+                    b.Property<string>("Code")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("DiscountPercentage")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("EndDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Code");
+
+                    b.ToTable("Promotions");
                 });
 
             modelBuilder.Entity("Core.Models.Review", b =>
@@ -330,7 +349,7 @@ namespace Infrastructure.Migrations
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("ProductID")
+                    b.Property<int?>("ProductID")
                         .HasColumnType("int");
 
                     b.Property<float>("Rating")
@@ -339,7 +358,7 @@ namespace Infrastructure.Migrations
                     b.Property<string>("Text")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("UserID")
+                    b.Property<int?>("UserID")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -348,7 +367,7 @@ namespace Infrastructure.Migrations
 
                     b.HasIndex("UserID");
 
-                    b.ToTable("Review");
+                    b.ToTable("Reviews");
                 });
 
             modelBuilder.Entity("Core.Models.Shipment", b =>
@@ -368,7 +387,7 @@ namespace Infrastructure.Migrations
                     b.Property<string>("EstimatedDeliveryTime")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("OrderId")
+                    b.Property<int?>("OrderId")
                         .HasColumnType("int");
 
                     b.Property<string>("Status")
@@ -395,13 +414,13 @@ namespace Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("ProductID")
+                    b.Property<int?>("ProductID")
                         .HasColumnType("int");
 
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
-                    b.Property<int>("UserID")
+                    b.Property<int?>("UserID")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -410,7 +429,7 @@ namespace Infrastructure.Migrations
 
                     b.HasIndex("UserID");
 
-                    b.ToTable("ShopingCart");
+                    b.ToTable("ShoppingCarts");
                 });
 
             modelBuilder.Entity("Core.Models.User", b =>
@@ -434,6 +453,9 @@ namespace Infrastructure.Migrations
 
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
+
+                    b.Property<string>("FullName")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ImageUrl")
                         .HasColumnType("nvarchar(max)");
@@ -498,14 +520,14 @@ namespace Infrastructure.Migrations
                     b.Property<string>("PartName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("ProductID")
+                    b.Property<int?>("ProductID")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("ProductID");
 
-                    b.ToTable("Warranty");
+                    b.ToTable("Warrantys");
                 });
 
             modelBuilder.Entity("Core.Models.Wishlist", b =>
@@ -516,10 +538,10 @@ namespace Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("ProductID")
+                    b.Property<int?>("ProductID")
                         .HasColumnType("int");
 
-                    b.Property<int>("UserID")
+                    b.Property<int?>("UserID")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -528,7 +550,7 @@ namespace Infrastructure.Migrations
 
                     b.HasIndex("UserID");
 
-                    b.ToTable("Wishlist");
+                    b.ToTable("Wishlists");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole<int>", b =>
@@ -669,8 +691,7 @@ namespace Infrastructure.Migrations
                     b.HasOne("Core.Models.User", "User")
                         .WithMany("Addresses")
                         .HasForeignKey("UserID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("User");
                 });
@@ -679,15 +700,12 @@ namespace Infrastructure.Migrations
                 {
                     b.HasOne("Core.Models.Product", "Product")
                         .WithMany("Favourites")
-                        .HasForeignKey("ProductID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ProductID");
 
                     b.HasOne("Core.Models.User", "User")
                         .WithMany("Favourites")
                         .HasForeignKey("UserID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("Product");
 
@@ -698,9 +716,7 @@ namespace Infrastructure.Migrations
                 {
                     b.HasOne("Core.Models.Product", "Product")
                         .WithMany("Images")
-                        .HasForeignKey("ProductID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ProductID");
 
                     b.Navigation("Product");
                 });
@@ -710,8 +726,7 @@ namespace Infrastructure.Migrations
                     b.HasOne("Core.Models.User", "User")
                         .WithMany("Orders")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.Navigation("User");
                 });
@@ -720,15 +735,11 @@ namespace Infrastructure.Migrations
                 {
                     b.HasOne("Core.Models.Order", "Order")
                         .WithMany("OrderDetails")
-                        .HasForeignKey("OrderID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("OrderID");
 
                     b.HasOne("Core.Models.Product", "Product")
                         .WithMany("OrderDetails")
-                        .HasForeignKey("ProductID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ProductID");
 
                     b.Navigation("Order");
 
@@ -739,9 +750,7 @@ namespace Infrastructure.Migrations
                 {
                     b.HasOne("Core.Models.Order", "Order")
                         .WithMany("Methods")
-                        .HasForeignKey("OrderID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("OrderID");
 
                     b.Navigation("Order");
                 });
@@ -761,15 +770,11 @@ namespace Infrastructure.Migrations
                 {
                     b.HasOne("Core.Models.Brand", "Brand")
                         .WithMany("Products")
-                        .HasForeignKey("BrandID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("BrandID");
 
                     b.HasOne("Core.Models.Category", "Category")
                         .WithMany("Products")
-                        .HasForeignKey("CategoryID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("CategoryID");
 
                     b.Navigation("Brand");
 
@@ -791,15 +796,12 @@ namespace Infrastructure.Migrations
                 {
                     b.HasOne("Core.Models.Product", "Product")
                         .WithMany("Reviews")
-                        .HasForeignKey("ProductID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ProductID");
 
                     b.HasOne("Core.Models.User", "User")
                         .WithMany("Reviews")
                         .HasForeignKey("UserID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.Navigation("Product");
 
@@ -810,9 +812,7 @@ namespace Infrastructure.Migrations
                 {
                     b.HasOne("Core.Models.Order", "Order")
                         .WithMany("Shipments")
-                        .HasForeignKey("OrderId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("OrderId");
 
                     b.Navigation("Order");
                 });
@@ -821,15 +821,12 @@ namespace Infrastructure.Migrations
                 {
                     b.HasOne("Core.Models.Product", "Product")
                         .WithMany("Carts")
-                        .HasForeignKey("ProductID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ProductID");
 
                     b.HasOne("Core.Models.User", "User")
                         .WithMany("Carts")
                         .HasForeignKey("UserID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("Product");
 
@@ -840,9 +837,7 @@ namespace Infrastructure.Migrations
                 {
                     b.HasOne("Core.Models.Product", "Product")
                         .WithMany("Warranties")
-                        .HasForeignKey("ProductID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ProductID");
 
                     b.Navigation("Product");
                 });
@@ -851,15 +846,12 @@ namespace Infrastructure.Migrations
                 {
                     b.HasOne("Core.Models.Product", "Product")
                         .WithMany("Wishlists")
-                        .HasForeignKey("ProductID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ProductID");
 
                     b.HasOne("Core.Models.User", "User")
                         .WithMany("Wishlists")
                         .HasForeignKey("UserID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("Product");
 

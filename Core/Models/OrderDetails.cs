@@ -13,10 +13,10 @@ namespace Core.Models
         public int Quantity { get; set; }
         public decimal TotalPrice { get; set; }
         [ForeignKey("Order")]
-        public int OrderID { get; set; }
-        public Order? Order { get; set; }
+        public int? OrderID { get; set; }
+        public virtual Order? Order { get; set; }
         [ForeignKey("Product")]
-        public int ProductID { get; set; }
-        public Product? Product { get; set; }
+        public int? ProductID { get; set; }
+        public virtual Product? Product { get; set; }
     }
 }

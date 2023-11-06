@@ -10,14 +10,15 @@ namespace Core.Models
 {
     public class User:IdentityUser<int>
     {
+        public string? FullName { get; set; }
         public string? ImageUrl { get; set; }
-        public ICollection<Phone> Phones { get; set; } = new HashSet<Phone>();
-        public ICollection<Address> Addresses { get; set; } = new HashSet<Address>();
-        public ICollection<Review> Reviews { get; set; } = new HashSet<Review>();
-        public ICollection<ShopingCart> Carts { get; set; } = new HashSet<ShopingCart>();
-        public ICollection<Wishlist> Wishlists { get; set; } = new HashSet<Wishlist>();
-        public ICollection<Favourite> Favourites { get; set; } = new HashSet<Favourite>();
-        public ICollection<Order> Orders { get; set; } = new HashSet<Order>();
+        public virtual ICollection<Phone> Phones { get; set; } = new HashSet<Phone>();
+        public virtual ICollection<Address> Addresses { get; set; } = new HashSet<Address>();
+        public virtual ICollection<Review> Reviews { get; set; } = new HashSet<Review>();
+        public virtual ICollection<ShopingCart> Carts { get; set; } = new HashSet<ShopingCart>();
+        public virtual ICollection<Wishlist> Wishlists { get; set; } = new HashSet<Wishlist>();
+        public virtual ICollection<Favourite> Favourites { get; set; } = new HashSet<Favourite>();
+        public virtual ICollection<Order> Orders { get; set; } = new HashSet<Order>();
 
     }
 }

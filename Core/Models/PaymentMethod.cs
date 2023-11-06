@@ -13,7 +13,7 @@ namespace Core.Models
         public DateTime Date { get; set; }
         public string? Method { get; set; }
         [ForeignKey("Order")]
-        public int OrderID { get; set; }
-        public Order? Order { get; set; }
+        public int? OrderID { get; set; }
+        public virtual Order? Order { get; set; }
     }
 }

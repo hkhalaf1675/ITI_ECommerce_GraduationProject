@@ -11,7 +11,7 @@ namespace Core.Models
     {
         public string? PhoneNumber { get; set; }
         [ForeignKey("User")]
-        public int UserID { get; set; }
-        public User? User { get; set; }
+        public int? UserID { get; set; }
+        public virtual User? User { get; set; }
     }
 }

@@ -17,7 +17,7 @@ namespace Core.Models
         public int PostalCode { get; set; }
         public string? SpecialInstructions { get; set; }
         [ForeignKey("User")]
-        public int UserID { get; set; }
-        public User? User { get; set; }
+        public int? UserID { get; set; }
+        public virtual User? User { get; set; }
     }
 }
