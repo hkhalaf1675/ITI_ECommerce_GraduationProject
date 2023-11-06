@@ -17,10 +17,10 @@ namespace Core.Models
         [Range(0.0,5.0)]
         public float Rating { get; set; }
         [ForeignKey("Product")]
-        public int ProductID { get; set; }
-        public Product? Product { get; set; }
+        public int? ProductID { get; set; }
+        public virtual Product? Product { get; set; }
         [ForeignKey("User")]
-        public int UserID { get; set; }
-        public User? User { get; set; }
+        public int? UserID { get; set; }
+        public virtual User? User { get; set; }
     }
 }

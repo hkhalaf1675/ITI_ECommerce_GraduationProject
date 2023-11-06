@@ -12,10 +12,8 @@ namespace Infrastructure
 {
     public class ECommerceDBContext:IdentityDbContext<User,IdentityRole<int>,int>
     {
-        public ECommerceDBContext(DbContextOptions<ECommerceDBContext> options):base(options) { }
-       
-        public DbSet<Category> Categories { get; set; }
-        public DbSet<Brand> Brands { get; set; }
+        public ECommerceDBContext(DbContextOptions<ECommerceDBContext> options) : base(options) 
+        { }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -77,5 +75,21 @@ namespace Infrastructure
 
             base.OnModelCreating(modelBuilder);
         }
+
+        public DbSet<Category> Categories { get; set; }
+        public DbSet<Brand> Brands { get; set; }
+        public DbSet<Order> Orders { get; set; }
+        public DbSet<OrderDetails> OrdersDetails { get; set; }
+        public DbSet<PaymentMethod> PaymentMethods { get; set; }
+        public DbSet<Product> Products { get; set; }
+        public DbSet<ProductIdentity> ProductIdentities { get; set; }
+        public DbSet<Promotion> Promotions { get; set; }
+        public DbSet<Review> Reviews { get; set; }
+        public DbSet<Shipment> Shipment { get; set; }
+        public DbSet<ShopingCart> ShoppingCarts { get; set; }
+        public DbSet<Warranty> Warrantys { get; set; }
+        public DbSet<Wishlist> Wishlists { get; set; }
+        public DbSet<Address> Address { get; set; }
+        public DbSet<Phone> Phones { get; set; }
     }
 }

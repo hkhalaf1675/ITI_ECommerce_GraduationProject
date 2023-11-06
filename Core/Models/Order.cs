@@ -15,11 +15,11 @@ namespace Core.Models
         public PayMethods? Method { get; set; }
         public decimal TotalPrice { get; set; }
         [ForeignKey("User")]
-        public int UserId { get; set; }
-        public User? User { get; set; }
-        public ICollection<OrderDetails> OrderDetails { get; set; } = new HashSet<OrderDetails>();
-        public ICollection<PaymentMethod> Methods { get; set; } = new HashSet<PaymentMethod>();
-        public ICollection<Shipment> Shipments { get; set; } = new HashSet<Shipment>();
+        public int? UserId { get; set; }
+        public virtual User? User { get; set; }
+        public virtual ICollection<OrderDetails> OrderDetails { get; set; } = new HashSet<OrderDetails>();
+        public virtual ICollection<PaymentMethod> Methods { get; set; } = new HashSet<PaymentMethod>();
+        public virtual ICollection<Shipment> Shipments { get; set; } = new HashSet<Shipment>();
     }
 
     public enum OrderStatus

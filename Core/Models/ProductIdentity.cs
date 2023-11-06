@@ -13,7 +13,7 @@ namespace Core.Models
         [Required]
         public string? SerialNumber { get; set; }
         [ForeignKey("Product")]
-        public int ProductID { get; set; }
-        public Product? Product { get; set; }
+        public int? ProductID { get; set; }
+        public virtual Product? Product { get; set; }
     }
 }
