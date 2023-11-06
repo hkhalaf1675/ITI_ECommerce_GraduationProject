@@ -11,6 +11,7 @@ namespace Core.Models
     public class Product
     {
         public int Id { get; set; }
+
         [Required]
         [MinLength(3)]
         public string? Name { get; set; }
@@ -53,7 +54,7 @@ namespace Core.Models
     }
     public enum ProductCondition
     {
-        New,
-        Used
+        New, //0
+        Used //1
     }
 }

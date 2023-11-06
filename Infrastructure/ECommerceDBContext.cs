@@ -16,6 +16,7 @@ namespace Infrastructure
        
         public DbSet<Category> Categories { get; set; }
         public DbSet<Brand> Brands { get; set; }
+        public DbSet<Product> Product { get; set; } // get error when name it products
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
