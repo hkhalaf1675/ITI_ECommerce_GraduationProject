@@ -53,7 +53,7 @@ namespace Core.Models
     }
     public enum ProductCondition
     {
-        New,
-        Used
+        New, //0
+        Used //1
     }
 }

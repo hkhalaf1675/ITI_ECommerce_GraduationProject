@@ -12,6 +12,7 @@ namespace Core.Models
         public int? categoryid { get; set; }
         public int? brandId { get; set; }
 
+        public string? condition {  get; set; }
         public decimal? MinPrice { get; set; }
         public decimal? MaxPrice { get; set; }
         public double? Rating { get; set; }
