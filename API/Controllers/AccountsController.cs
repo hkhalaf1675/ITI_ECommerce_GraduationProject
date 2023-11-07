@@ -64,11 +64,13 @@ namespace API.Controllers
         public async Task<ActionResult<TokenDTO>> Login(LoginCredentialsDTO loginInput)
         {
             var user = await userManager.FindByNameAsync(loginInput.username);
+
             if (user == null)
             {
                 return BadRequest(new { message = "user not found" });
 
             }
+
             var Islocked = await userManager.IsLockedOutAsync(user);
             if (Islocked)
             {
@@ -80,6 +82,8 @@ namespace API.Controllers
                 await userManager.AccessFailedAsync(user);
                 return Unauthorized();
             }
+
+            // get the claims of the user where the input value (user) contain all the values of the logged in user
             var userclaims = await userManager.GetClaimsAsync(user);
 
             var KeyString = configuration.GetValue<string>("SecretKey");
@@ -88,8 +92,24 @@ namespace API.Controllers
 
             var signingCredentials = new SigningCredentials(Key, SecurityAlgorithms.HmacSha256Signature);
 
+
+            // we are going to insert extra claims here with the older one
+            // Adulrahman 
+            var nameClaim = new Claim("fullname", user.FullName??"N/A");
+            var phoneClaim = new Claim("phone", user.PhoneNumber??"N/A");
+            var emailClaim = new Claim("phone", user.Email ?? "N/A");
+            var addressClaim = new Claim("adress", user.Address ?? "N/A");
+
+            List<Claim> claims = new List<Claim>()
+            {
+                nameClaim,
+                phoneClaim,
+                emailClaim,
+                addressClaim
+            };
+
             var jwt = new JwtSecurityToken(
-                claims: userclaims,
+                claims: claims,
                 signingCredentials: signingCredentials,
                 expires: DateTime.Now.AddMinutes(30),
                 notBefore: DateTime.Now
@@ -103,6 +123,7 @@ namespace API.Controllers
                 Token = tokenString
             });
         }
+        
         [HttpGet]
         [Authorize]
         [Route("CurrentUser")]
