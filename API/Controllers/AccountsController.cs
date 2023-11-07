@@ -93,6 +93,16 @@ namespace API.Controllers
             var signingCredentials = new SigningCredentials(Key, SecurityAlgorithms.HmacSha256Signature);
 
 
+            // we are going to insert extra claims here with the older one
+            // Adulrahman 
+
+            List<Claim> claims = new List<Claim>()
+            {
+                new Claim("fullname", user.FullName??"N/A"),
+                new Claim("phone", user.PhoneNumber??"N/A"),
+                new Claim("phone", user.Email ?? "N/A"),
+                new Claim("adress", user.Address ?? "N/A")
+            };
 
             var jwt = new JwtSecurityToken(
                 claims: userclaims,
