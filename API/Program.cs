@@ -26,8 +26,12 @@ builder.Services.AddDbContext<ECommerceDBContext>(Options =>
             b => b.MigrationsAssembly(typeof(ECommerceDBContext).Assembly.FullName))
 );
 
-// inject the category repository
+
+#region inject the repository
 builder.Services.AddScoped(typeof(ICategoryRepository), typeof(CategoryRepository));
+builder.Services.AddScoped(typeof(IProductRepository), typeof(ProductRepository));
+
+#endregion
 
 #region Identity
 //adding dbcontext for identity
@@ -91,7 +95,8 @@ app.UseCors(c => c
 
 app.UseAuthentication();
 app.UseAuthorization();
-
+// for images
+app.UseStaticFiles();
 app.MapControllers();
 
 app.Run();
