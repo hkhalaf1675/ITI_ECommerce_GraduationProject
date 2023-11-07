@@ -11,6 +11,7 @@ namespace Core.Models
     public class User:IdentityUser<int>
     {
         public string? FullName { get; set; }
+        public string? Address { get; set; }
         public string? ImageUrl { get; set; }
         public virtual ICollection<Phone> Phones { get; set; } = new HashSet<Phone>();
         public virtual ICollection<Address> Addresses { get; set; } = new HashSet<Address>();
