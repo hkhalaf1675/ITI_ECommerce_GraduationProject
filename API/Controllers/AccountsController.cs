@@ -80,12 +80,21 @@ namespace API.Controllers
                 await userManager.AccessFailedAsync(user);
                 return Unauthorized();
             }
-            var userclaims = new List<Claim>();
-            userclaims.Add(new Claim(ClaimTypes.Name, user.UserName));
-            userclaims.Add(new Claim(ClaimTypes.MobilePhone, user.PhoneNumber));
-            userclaims.Add(new Claim(ClaimTypes.Email, user.Email));
-            userclaims.Add(new Claim(ClaimTypes.StreetAddress, user.Address));
-            userclaims.Add(new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()));
+
+
+
+
+            // get the claims of the user where the input value (user) contain all the values of the logged in user
+            var userclaims = await userManager.GetClaimsAsync(user);
+
+            //var userclaims = new List<Claim>();
+            //userclaims.Add(new Claim(ClaimTypes.Name, user.UserName));
+            //userclaims.Add(new Claim(ClaimTypes.MobilePhone, user.PhoneNumber));
+            //userclaims.Add(new Claim(ClaimTypes.Email, user.Email));
+            //userclaims.Add(new Claim(ClaimTypes.StreetAddress, user.Address));
+            //userclaims.Add(new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()));
+
+
 
             var KeyString = configuration.GetValue<string>("SecretKey");
             var KeyInBytes = Encoding.ASCII.GetBytes(KeyString);
