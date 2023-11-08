@@ -81,7 +81,7 @@ namespace API.Controllers
                 return Unauthorized();
             }
             var userclaims = new List<Claim>();
-            userclaims.Add(new Claim(ClaimTypes.Name, user.UserName));
+            userclaims.Add(new Claim("Name", user.UserName));
             userclaims.Add(new Claim(ClaimTypes.MobilePhone, user.PhoneNumber));
             userclaims.Add(new Claim(ClaimTypes.Email, user.Email));
             userclaims.Add(new Claim(ClaimTypes.StreetAddress, user.Address));
