@@ -9,6 +9,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using Infrastructure.Repositories;
 
 namespace API.Controllers
 {
@@ -18,10 +19,15 @@ namespace API.Controllers
     {
         private readonly UserManager<User> userManager;
         private readonly IConfiguration configuration;
-        public AccountsController(UserManager<User> _userManager,IConfiguration _configuration)
+        private readonly IWishlistRepository wishlistRepository;
+        private readonly IFavouriteRepository favouriteRepository;
+
+        public AccountsController(UserManager<User> _userManager,IConfiguration _configuration,IWishlistRepository _wishlistRepository,IFavouriteRepository _favouriteRepository)
         {
             this.userManager = _userManager;
             this.configuration = _configuration;
+            wishlistRepository = _wishlistRepository;
+            favouriteRepository = _favouriteRepository;
         }
 
         [HttpPost]
@@ -104,13 +110,13 @@ namespace API.Controllers
 
             // we are going to insert extra claims here with the older one
             // Adulrahman 
-            List<Claim> claims = new List<Claim>()
-            {
-                new Claim("fullname", user.FullName??"N/A"),
-                new Claim("phone", user.PhoneNumber??"N/A"),
-                new Claim("phone", user.Email ?? "N/A"),
-                new Claim("adress", user.Address ?? "N/A")
-            };
+            //List<Claim> claims = new List<Claim>()
+            //{
+            //    new Claim("fullname", user.FullName??"N/A"),
+            //    new Claim("phone", user.PhoneNumber??"N/A"),
+            //    new Claim("phone", user.Email ?? "N/A"),
+            //    new Claim("adress", user.Address ?? "N/A")
+            //};
 
             var jwt = new JwtSecurityToken(
                 claims: userclaims,
@@ -127,20 +133,95 @@ namespace API.Controllers
                 Token = tokenString
             });
         }
-        
-        [HttpGet]
-        [Authorize]
-        [Route("CurrentUser")]
-        public async Task<ActionResult> GetCurrentUser()
+        //[HttpGet]
+        //[Authorize]
+        //[Route("CurrentUser")]
+        //public async Task<ActionResult> GetCurrentUser()
+        //{
+        //    var CurrentUser = await userManager.GetUserAsync(User);
+        //    return Ok(
+        //        new
+        //        {
+        //            Id = CurrentUser.Id,
+        //            UserName = CurrentUser.UserName
+        //        }
+        //        );
+        //}
+
+        #region WishList Of User
+        // get the wishlist product of the user
+        [HttpGet("wishlist")]
+        public async Task<IActionResult> GetWishlist()
         {
-            var CurrentUser = await userManager.GetUserAsync(User);
-            return Ok(
-                new
-                {
-                    Id = CurrentUser.Id,
-                    UserName = CurrentUser.UserName
-                }
-                );
+            if(int.TryParse(User.Claims.FirstOrDefault(C => C.Type == ClaimTypes.NameIdentifier)?.Value,out int userId))
+            {
+                var productList = wishlistRepository.UserProducts(userId);
+                if (productList?.Count == 0)
+                    return NotFound();
+                return Ok(productList);
+            }
+            return BadRequest();
         }
+        [HttpPost("wishlist/{productId:int}")]
+        public async Task<IActionResult> AddToWishlist(int productId)
+        {
+            if (int.TryParse(User.Claims.FirstOrDefault(C => C.Type == ClaimTypes.NameIdentifier)?.Value, out int userId))
+            {
+                bool check = wishlistRepository.AddNew(userId, productId);
+                if (check)
+                    return Ok();
+            }
+            return BadRequest();
+        }
+        [HttpDelete("wishlist/{productId:int}")]
+        public async Task<IActionResult> DeleteFromWishlist(int productId)
+        {
+            if (int.TryParse(User.Claims.FirstOrDefault(C => C.Type == ClaimTypes.NameIdentifier)?.Value, out int userId))
+            {
+                bool check = wishlistRepository.Delete(userId, productId);
+                if (check)
+                    return Ok();
+            }
+            return BadRequest();
+        }
+        #endregion
+
+        #region Favourite Of User
+        // get the wishlist product of the user
+        [HttpGet("favourite")]
+        public async Task<IActionResult> GetFavourite()
+        {
+            if (int.TryParse(User.Claims.FirstOrDefault(C => C.Type == ClaimTypes.NameIdentifier)?.Value, out int userId))
+            {
+                var productList = favouriteRepository.UserProducts(userId);
+                if (productList?.Count == 0)
+                    return NotFound();
+                return Ok(productList);
+            }
+            return BadRequest();
+        }
+        [HttpPost("favourite/{productId:int}")]
+        public async Task<IActionResult> AddToFavourite(int productId)
+        {
+            if (int.TryParse(User.Claims.FirstOrDefault(C => C.Type == ClaimTypes.NameIdentifier)?.Value, out int userId))
+            {
+                bool check = favouriteRepository.AddNew(userId, productId);
+                if (check)
+                    return Ok();
+            }
+            return BadRequest();
+        }
+        [HttpDelete("favourite/{productId:int}")]
+        public async Task<IActionResult> DeleteFromFavourite(int productId)
+        {
+            if (int.TryParse(User.Claims.FirstOrDefault(C => C.Type == ClaimTypes.NameIdentifier)?.Value, out int userId))
+            {
+                bool check = favouriteRepository.Delete(userId, productId);
+                if (check)
+                    return Ok();
+            }
+            return BadRequest();
+        }
+        #endregion
     }
 }

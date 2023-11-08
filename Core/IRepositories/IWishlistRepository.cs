@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Infrastructure.Repositories
 {
-    public interface IWishlistRepository
+    public interface IWishlistRepository:IWishlistFavouriteRepository
     {
         Wishlist? GetByUserIdAndProductId(int userId, int productId);
     }
