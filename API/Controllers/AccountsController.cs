@@ -141,28 +141,35 @@ namespace API.Controllers
         [HttpGet("wishlist")]
         public async Task<IActionResult> GetWishlist()
         {
-            int userId = 1; //---- 
-            var productList = wishlistRepository.UserProducts(userId);
-            if (productList?.Count == 0)
-                return NotFound();
-            return Ok(productList);
+            if(int.TryParse(User.Claims.FirstOrDefault(C => C.Type == ClaimTypes.NameIdentifier)?.Value,out int userId))
+            {
+                var productList = wishlistRepository.UserProducts(userId);
+                if (productList?.Count == 0)
+                    return NotFound();
+                return Ok(productList);
+            }
+            return BadRequest();
         }
         [HttpPost("wishlist/{productId:int}")]
         public async Task<IActionResult> AddToWishlist(int productId)
         {
-            int userId = 1; //-----
-            bool check = wishlistRepository.AddNew(userId, productId);
-            if (check)
-                return Ok();
+            if (int.TryParse(User.Claims.FirstOrDefault(C => C.Type == ClaimTypes.NameIdentifier)?.Value, out int userId))
+            {
+                bool check = wishlistRepository.AddNew(userId, productId);
+                if (check)
+                    return Ok();
+            }
             return BadRequest();
         }
         [HttpDelete("wishlist/{productId:int}")]
         public async Task<IActionResult> DeleteFromWishlist(int productId)
         {
-            int userId = 1; //-----
-            bool check = wishlistRepository.Delete(userId, productId);
-            if (check)
-                return Ok();
+            if (int.TryParse(User.Claims.FirstOrDefault(C => C.Type == ClaimTypes.NameIdentifier)?.Value, out int userId))
+            {
+                bool check = wishlistRepository.Delete(userId, productId);
+                if (check)
+                    return Ok();
+            }
             return BadRequest();
         }
         #endregion
@@ -172,28 +179,35 @@ namespace API.Controllers
         [HttpGet("favourite")]
         public async Task<IActionResult> GetFavourite()
         {
-            int userId = 1; //---- 
-            var productList = favouriteRepository.UserProducts(userId);
-            if (productList?.Count == 0)
-                return NotFound();
-            return Ok(productList);
+            if (int.TryParse(User.Claims.FirstOrDefault(C => C.Type == ClaimTypes.NameIdentifier)?.Value, out int userId))
+            {
+                var productList = favouriteRepository.UserProducts(userId);
+                if (productList?.Count == 0)
+                    return NotFound();
+                return Ok(productList);
+            }
+            return BadRequest();
         }
         [HttpPost("favourite/{productId:int}")]
         public async Task<IActionResult> AddToFavourite(int productId)
         {
-            int userId = 1; //-----
-            bool check = favouriteRepository.AddNew(userId, productId);
-            if (check)
-                return Ok();
+            if (int.TryParse(User.Claims.FirstOrDefault(C => C.Type == ClaimTypes.NameIdentifier)?.Value, out int userId))
+            {
+                bool check = favouriteRepository.AddNew(userId, productId);
+                if (check)
+                    return Ok();
+            }
             return BadRequest();
         }
         [HttpDelete("favourite/{productId:int}")]
         public async Task<IActionResult> DeleteFromFavourite(int productId)
         {
-            int userId = 1; //-----
-            bool check = favouriteRepository.Delete(userId, productId);
-            if (check)
-                return Ok();
+            if (int.TryParse(User.Claims.FirstOrDefault(C => C.Type == ClaimTypes.NameIdentifier)?.Value, out int userId))
+            {
+                bool check = favouriteRepository.Delete(userId, productId);
+                if (check)
+                    return Ok();
+            }
             return BadRequest();
         }
         #endregion
