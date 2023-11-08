@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Infrastructure.Repositories
 {
-    public class FavouriteRepository:IWishlistFavouriteRepository, IFavouriteRepository
+    public class FavouriteRepository: IFavouriteRepository
     {
         private readonly ECommerceDBContext context;
 
@@ -48,7 +48,7 @@ namespace Infrastructure.Repositories
                     return false;
                 }
             }
-            return false;
+            return true;
         }
 
         public bool Delete(int userId, int productId)
@@ -66,7 +66,7 @@ namespace Infrastructure.Repositories
                     return false;
                 }
             }
-            return false;
+            return true;
         }
 
         public ICollection<UserProductsDto> UserProducts(int userId)
