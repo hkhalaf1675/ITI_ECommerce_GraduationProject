@@ -82,36 +82,14 @@ namespace API.Controllers
                 await userManager.AccessFailedAsync(user);
                 return Unauthorized();
             }
-<<<<<<< HEAD
 
 
 
 
-            // get the claims of the user where the input value (user) contain all the values of the logged in user
-            var userclaims = await userManager.GetClaimsAsync(user);
-
-            //var userclaims = new List<Claim>();
-            //userclaims.Add(new Claim(ClaimTypes.Name, user.UserName));
-            //userclaims.Add(new Claim(ClaimTypes.MobilePhone, user.PhoneNumber));
-            //userclaims.Add(new Claim(ClaimTypes.Email, user.Email));
-            //userclaims.Add(new Claim(ClaimTypes.StreetAddress, user.Address));
-            //userclaims.Add(new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()));
-
-
-=======
-<<<<<<< HEAD
 
             // get the claims of the user where the input value (user) contain all the values of the logged in user
             var userclaims = await userManager.GetClaimsAsync(user);
-=======
-            var userclaims = new List<Claim>();
-            userclaims.Add(new Claim(ClaimTypes.Name, user.UserName));
-            userclaims.Add(new Claim(ClaimTypes.MobilePhone, user.PhoneNumber));
-            userclaims.Add(new Claim(ClaimTypes.Email, user.Email));
-            userclaims.Add(new Claim(ClaimTypes.StreetAddress, user.Address));
-            userclaims.Add(new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()));
->>>>>>> d0a20158b6dbc28b0c59e38ebb0e73e5d5c0ab16
->>>>>>> 8ddf639aa22e3ff8a12fb42bc93d116bf2f3cec8
+
 
             var KeyString = configuration.GetValue<string>("SecretKey");
             var KeyInBytes = Encoding.ASCII.GetBytes(KeyString);
@@ -122,7 +100,6 @@ namespace API.Controllers
 
             // we are going to insert extra claims here with the older one
             // Adulrahman 
-
             List<Claim> claims = new List<Claim>()
             {
                 new Claim("fullname", user.FullName??"N/A"),
