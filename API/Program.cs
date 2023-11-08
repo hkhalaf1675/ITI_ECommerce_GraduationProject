@@ -26,8 +26,10 @@ builder.Services.AddDbContext<ECommerceDBContext>(Options =>
             b => b.MigrationsAssembly(typeof(ECommerceDBContext).Assembly.FullName))
 );
 
-// inject the category repository
+// inject the category,wishlist,favourite repository
 builder.Services.AddScoped(typeof(ICategoryRepository), typeof(CategoryRepository));
+builder.Services.AddScoped(typeof(IWishlistRepository), typeof(WishlistRepository));
+builder.Services.AddScoped(typeof(IFavouriteRepository),typeof(FavouriteRepository));
 
 #region Identity
 //adding dbcontext for identity

@@ -121,20 +121,20 @@ namespace API.Controllers
                 Token = tokenString
             });
         }
-        [HttpGet]
-        [Authorize]
-        [Route("CurrentUser")]
-        public async Task<ActionResult> GetCurrentUser()
-        {
-            var CurrentUser = await userManager.GetUserAsync(User);
-            return Ok(
-                new
-                {
-                    Id = CurrentUser.Id,
-                    UserName = CurrentUser.UserName
-                }
-                );
-        }
+        //[HttpGet]
+        //[Authorize]
+        //[Route("CurrentUser")]
+        //public async Task<ActionResult> GetCurrentUser()
+        //{
+        //    var CurrentUser = await userManager.GetUserAsync(User);
+        //    return Ok(
+        //        new
+        //        {
+        //            Id = CurrentUser.Id,
+        //            UserName = CurrentUser.UserName
+        //        }
+        //        );
+        //}
 
         #region WishList Of User
         // get the wishlist product of the user
@@ -143,7 +143,7 @@ namespace API.Controllers
         {
             int userId = 1; //---- 
             var productList = wishlistRepository.UserProducts(userId);
-            if (productList == null)
+            if (productList?.Count == 0)
                 return NotFound();
             return Ok(productList);
         }
@@ -174,7 +174,7 @@ namespace API.Controllers
         {
             int userId = 1; //---- 
             var productList = favouriteRepository.UserProducts(userId);
-            if (productList == null)
+            if (productList?.Count == 0)
                 return NotFound();
             return Ok(productList);
         }
