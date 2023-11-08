@@ -89,6 +89,7 @@ namespace Infrastructure
         public DbSet<ShopingCart> ShoppingCarts { get; set; }
         public DbSet<Warranty> Warrantys { get; set; }
         public DbSet<Wishlist> Wishlists { get; set; }
+        public DbSet<Favourite> Favourite { get; set; }
         public DbSet<Address> Address { get; set; }
         public DbSet<Phone> Phones { get; set; }
     }

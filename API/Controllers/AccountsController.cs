@@ -82,10 +82,17 @@ namespace API.Controllers
             }
             var userclaims = new List<Claim>();
             userclaims.Add(new Claim("Name", user.UserName));
-            userclaims.Add(new Claim(ClaimTypes.MobilePhone, user.PhoneNumber));
-            userclaims.Add(new Claim(ClaimTypes.Email, user.Email));
-            userclaims.Add(new Claim(ClaimTypes.StreetAddress, user.Address));
+            userclaims.Add(new Claim("PhoneNumber", user.PhoneNumber));
+            userclaims.Add(new Claim("Email", user.Email));
+            userclaims.Add(new Claim("Address", user.Address));
+            userclaims.Add(new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()));
             userclaims.Add(new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()));
+
+            var roles = await userManager.GetRolesAsync(user);
+            foreach(var role in roles)
+            {
+                userclaims.Add(new Claim(ClaimTypes.Role, role));
+            }
 
             var KeyString = configuration.GetValue<string>("SecretKey");
             var KeyInBytes = Encoding.ASCII.GetBytes(KeyString);
