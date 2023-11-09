@@ -90,35 +90,22 @@ namespace API.Controllers
             }
 
 
-
-
-
-            // get the claims of the user where the input value (user) contain all the values of the logged in user
-            //var userclaims = await userManager.GetClaimsAsync(user);
-
-            //var userclaims = new List<Claim>();
-            //userclaims.Add(new Claim(ClaimTypes.Name, user.UserName));
-            //userclaims.Add(new Claim(ClaimTypes.MobilePhone, user.PhoneNumber));
-            //userclaims.Add(new Claim(ClaimTypes.Email, user.Email));
-            //userclaims.Add(new Claim(ClaimTypes.StreetAddress, user.Address));
-            //userclaims.Add(new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()));
-
-
-
-
             // get the claims of the user where the input value (user) contain all the values of the logged in user
             var userclaims = await userManager.GetClaimsAsync(user);
 
-            //var userclaims = new List<Claim>();
+            // add Custom claims from the user data 
             userclaims.Add(new Claim(ClaimTypes.Name, user.UserName));
-            userclaims.Add(new Claim(ClaimTypes.MobilePhone, user.PhoneNumber));
+            userclaims.Add(new Claim(ClaimTypes.GivenName, user.FullName));
             userclaims.Add(new Claim(ClaimTypes.Email, user.Email));
             userclaims.Add(new Claim(ClaimTypes.StreetAddress, user.Address));
+            userclaims.Add(new Claim(ClaimTypes.MobilePhone, user.PhoneNumber));
             userclaims.Add(new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()));
-
+            userclaims.Remove(userclaims[0]);
+            // getting the role of the user 
             var roles = await userManager.GetRolesAsync(user);
             foreach(var role in roles)
             {
+                // add to the userclaims list 
                 userclaims.Add(new Claim(ClaimTypes.Role, role));
             }
 
@@ -128,16 +115,6 @@ namespace API.Controllers
 
             var signingCredentials = new SigningCredentials(Key, SecurityAlgorithms.HmacSha256Signature);
 
-
-            // we are going to insert extra claims here with the older one
-            // Adulrahman 
-            //List<Claim> claims = new List<Claim>()
-            //{
-            //    new Claim("fullname", user.FullName??"N/A"),
-            //    new Claim("phone", user.PhoneNumber??"N/A"),
-            //    new Claim("phone", user.Email ?? "N/A"),
-            //    new Claim("adress", user.Address ?? "N/A")
-            //};
 
             var jwt = new JwtSecurityToken(
                 claims: userclaims,
@@ -154,6 +131,8 @@ namespace API.Controllers
                 Token = tokenString
             });
         }
+
+
         //[HttpGet]
         //[Authorize]
         //[Route("CurrentUser")]
@@ -168,6 +147,7 @@ namespace API.Controllers
         //        }
         //        );
         //}
+
 
         #region WishList Of User
         // get the wishlist product of the user
