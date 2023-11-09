@@ -30,6 +30,7 @@ builder.Services.AddDbContext<ECommerceDBContext>(Options =>
 #region inject the repository
 builder.Services.AddScoped(typeof(ICategoryRepository), typeof(CategoryRepository));
 builder.Services.AddScoped(typeof(IProductRepository), typeof(ProductRepository));
+builder.Services.AddScoped(typeof(IReviewRepository), typeof(ReviewRepository));
 
 #endregion
 // inject the category,wishlist,favourite repository
