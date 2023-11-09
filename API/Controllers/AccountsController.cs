@@ -39,7 +39,7 @@ namespace API.Controllers
                 FullName = input.FullName,
                 UserName = input.UserName,
                 Email = input.Email,
-                Address = input.Address,
+                Address = input.Address, 
                 PhoneNumber = input.PhoneNumber
             };
 
