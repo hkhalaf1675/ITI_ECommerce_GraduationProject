@@ -26,20 +26,13 @@ builder.Services.AddDbContext<ECommerceDBContext>(Options =>
             b => b.MigrationsAssembly(typeof(ECommerceDBContext).Assembly.FullName))
 );
 
-
-#region inject the repository
-builder.Services.AddScoped(typeof(ICategoryRepository), typeof(CategoryRepository));
-builder.Services.AddScoped(typeof(IProductRepository), typeof(ProductRepository));
-builder.Services.AddScoped(typeof(IReviewRepository), typeof(ReviewRepository));
-
-#endregion
-// inject the category,wishlist,favourite repository
+// inject the category,wishlist,favourite,User repository
 builder.Services.AddScoped(typeof(ICategoryRepository), typeof(CategoryRepository));
 builder.Services.AddScoped(typeof(IWishlistRepository), typeof(WishlistRepository));
 builder.Services.AddScoped(typeof(IFavouriteRepository),typeof(FavouriteRepository));
+builder.Services.AddScoped(typeof(IUserRepository),typeof(UserRepository));
 
 #region Identity
-//adding dbcontext for identity
 builder.Services.AddIdentity<User, IdentityRole<int>>(Options =>
 {
     Options.User.RequireUniqueEmail = true;
@@ -68,6 +61,10 @@ builder.Services.AddAuthentication(Options =>
       ValidateIssuer = false,
       ValidateAudience = false
   };
+}).AddGoogle(googleOptions =>
+{
+    googleOptions.ClientId = builder.Configuration.GetSection("GoogleAuthenSetting").GetValue<string>("ClientId");
+    googleOptions.ClientSecret = builder.Configuration.GetSection("GoogleAuthenSetting").GetValue<string>("ClientSecret");
 });
 
 #endregion

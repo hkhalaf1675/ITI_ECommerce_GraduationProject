@@ -19,15 +19,11 @@ namespace API.Controllers
     {
         private readonly UserManager<User> userManager;
         private readonly IConfiguration configuration;
-        private readonly IWishlistRepository wishlistRepository;
-        private readonly IFavouriteRepository favouriteRepository;
 
-        public AccountsController(UserManager<User> _userManager,IConfiguration _configuration,IWishlistRepository _wishlistRepository,IFavouriteRepository _favouriteRepository)
+        public AccountsController(UserManager<User> _userManager,IConfiguration _configuration)
         {
             this.userManager = _userManager;
             this.configuration = _configuration;
-            wishlistRepository = _wishlistRepository;
-            favouriteRepository = _favouriteRepository;
         }
 
         [HttpPost]
