@@ -26,11 +26,12 @@ builder.Services.AddDbContext<ECommerceDBContext>(Options =>
             b => b.MigrationsAssembly(typeof(ECommerceDBContext).Assembly.FullName))
 );
 
-// inject the category,wishlist,favourite,User repository
+// inject the category,wishlist,favourite,User,ShopingCart repository
 builder.Services.AddScoped(typeof(ICategoryRepository), typeof(CategoryRepository));
 builder.Services.AddScoped(typeof(IWishlistRepository), typeof(WishlistRepository));
 builder.Services.AddScoped(typeof(IFavouriteRepository),typeof(FavouriteRepository));
 builder.Services.AddScoped(typeof(IUserRepository),typeof(UserRepository));
+builder.Services.AddScoped(typeof(IShopingCartRepository),typeof(ShopingCartRepository ));
 
 #region Identity
 builder.Services.AddIdentity<User, IdentityRole<int>>(Options =>
