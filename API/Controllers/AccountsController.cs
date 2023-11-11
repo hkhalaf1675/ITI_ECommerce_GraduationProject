@@ -201,8 +201,9 @@ namespace API.Controllers
         //}
         #endregion
 
-        #region WishList Of User
-        // get the wishlist product of the user
+        #region Current User Wishlist
+
+        #region Get All wishlist
         [HttpGet("wishlist")]
         public async Task<IActionResult> GetWishlist()
         {
@@ -215,6 +216,9 @@ namespace API.Controllers
             }
             return BadRequest();
         }
+        #endregion
+
+        #region Add new Wishlist
         [HttpPost("wishlist/{productId:int}")]
         public async Task<IActionResult> AddToWishlist(int productId)
         {
@@ -226,6 +230,9 @@ namespace API.Controllers
             }
             return BadRequest();
         }
+        #endregion
+
+        #region Delete Wishlist
         [HttpDelete("wishlist/{productId:int}")]
         public async Task<IActionResult> DeleteFromWishlist(int productId)
         {
@@ -236,11 +243,14 @@ namespace API.Controllers
                     return Ok();
             }
             return BadRequest();
-        }
+        } 
         #endregion
 
-        #region Favourite Of User
-        // get favorites list for the current user 
+        #endregion
+
+        #region Current User Favorites
+
+        #region Get All Favorites
         [HttpGet("favourite")]
         public async Task<IActionResult> GetFavourite()
         {
@@ -253,6 +263,9 @@ namespace API.Controllers
             }
             return BadRequest();
         }
+        #endregion
+
+        #region Add Favorite
         [HttpPost("favourite/{productId:int}")]
         public async Task<IActionResult> AddToFavourite(int productId)
         {
@@ -264,6 +277,10 @@ namespace API.Controllers
             }
             return BadRequest();
         }
+        #endregion
+
+        #region Delete Favorite 
+
         [HttpDelete("favourite/{productId:int}")]
         public async Task<IActionResult> DeleteFromFavourite(int productId)
         {
@@ -274,8 +291,12 @@ namespace API.Controllers
                     return Ok();
             }
             return BadRequest();
-        }
+        } 
+
         #endregion
+
+        #endregion
+
 
     }
 

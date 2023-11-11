@@ -28,8 +28,7 @@ builder.Services.AddDbContext<ECommerceDBContext>(Options =>
             b => b.MigrationsAssembly(typeof(ECommerceDBContext).Assembly.FullName))
 );
 
-// inject the category,wishlist,favourite,User,ShopingCart repository
-#region inject the repository
+#region Repositories Injection
 builder.Services.AddScoped(typeof(IProductRepository), typeof(ProductRepository));
 builder.Services.AddScoped(typeof(IReviewRepository), typeof(ReviewRepository));
 builder.Services.AddScoped(typeof(ICategoryRepository), typeof(CategoryRepository));
@@ -62,6 +61,7 @@ builder.Services.AddAuthentication(Options =>
     Options.DefaultAuthenticateScheme = "Default";
     Options.DefaultChallengeScheme = "Default";
 })
+
 .AddJwtBearer("Default", options =>
 {
     //var KeyString = builder.Configuration.GetValue<string>("GoogleAuthenSetting:JWT:Key");    // with new version
