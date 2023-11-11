@@ -1,7 +1,9 @@
 using Core.IRepositories;
+using Core.IServices;
 using Core.Models;
 using Infrastructure;
 using Infrastructure.Repositories;
+using Infrastructure.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -39,6 +41,9 @@ builder.Services.AddScoped(typeof(IFavouriteRepository), typeof(FavouriteReposit
 
 
 
+// inject the AccountManger services
+builder.Services.AddScoped(typeof(IAccountManagerServices), typeof(AccountManagerServices));
+
 #region Identity
 builder.Services.AddIdentity<User, IdentityRole<int>>(Options =>
 {
@@ -59,19 +64,15 @@ builder.Services.AddAuthentication(Options =>
 })
 .AddJwtBearer("Default", options =>
 {
-  var KeyString = builder.Configuration.GetValue<string>("SecretKey");
-  var KeyInBytes = Encoding.ASCII.GetBytes(KeyString);
-  var Key = new SymmetricSecurityKey(KeyInBytes);
-  options.TokenValidationParameters = new TokenValidationParameters
-  {
-      IssuerSigningKey = Key,
-      ValidateIssuer = false,
-      ValidateAudience = false
-  };
-}).AddGoogle(googleOptions =>
-{
-    googleOptions.ClientId = builder.Configuration.GetSection("GoogleAuthenSetting").GetValue<string>("ClientId");
-    googleOptions.ClientSecret = builder.Configuration.GetSection("GoogleAuthenSetting").GetValue<string>("ClientSecret");
+    var KeyString = builder.Configuration.GetValue<string>("JWT:Key");
+    var KeyInBytes = Encoding.ASCII.GetBytes(KeyString);
+    var Key = new SymmetricSecurityKey(KeyInBytes);
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        IssuerSigningKey = Key,
+        ValidateIssuer = false,
+        ValidateAudience = false
+    };
 });
 
 #endregion
