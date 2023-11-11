@@ -100,7 +100,9 @@ namespace API.Controllers
             userclaims.Add(new Claim(ClaimTypes.StreetAddress, user.Address));
             userclaims.Add(new Claim(ClaimTypes.MobilePhone, user.PhoneNumber));
             userclaims.Add(new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()));
-            userclaims.Remove(userclaims[0]);
+
+            //don't remove the Identifier from the claims
+            //userclaims.Remove(userclaims[0]);
             // getting the role of the user 
             var roles = await userManager.GetRolesAsync(user);
             foreach(var role in roles)
@@ -188,7 +190,7 @@ namespace API.Controllers
         #endregion
 
         #region Favourite Of User
-        // get the wishlist product of the user
+        // get favorites list for the current user 
         [HttpGet("favourite")]
         public async Task<IActionResult> GetFavourite()
         {
