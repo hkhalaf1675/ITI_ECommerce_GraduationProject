@@ -18,14 +18,15 @@ namespace API.Controllers
     [ApiController]
     public class AccountsController : ControllerBase
     {
+
+        #region Injection
         private readonly UserManager<User> userManager;
         private readonly IAccountManagerServices accountManager;
         private readonly IConfiguration configuration;
         private readonly IWishlistRepository wishlistRepository;
         private readonly IFavouriteRepository favouriteRepository;
 
-        public AccountsController(UserManager<User> _userManager, IConfiguration _configuration, IWishlistRepository _wishlistRepository, IFavouriteRepository _favouriteRepository)
-        public AccountsController(UserManager<User> _userManager,IAccountManagerServices _accountManager,IConfiguration _configuration)
+        public AccountsController(UserManager<User> _userManager, IAccountManagerServices _accountManager, IConfiguration _configuration, IWishlistRepository _wishlistRepository, IFavouriteRepository _favouriteRepository)
         {
             this.userManager = _userManager;
             accountManager = _accountManager;
@@ -33,184 +34,143 @@ namespace API.Controllers
             wishlistRepository = _wishlistRepository;
             favouriteRepository = _favouriteRepository;
         }
+        #endregion
 
-        [HttpPost("register")]
-        public async Task<IActionResult> Register(UserRegisterDTO registerDto)
+        #region Register New Version
+        //[HttpPost("register")]
+        //public async Task<IActionResult> Register(UserRegisterDTO registerDto)
+        //{
+        //    if (!ModelState.IsValid)
+        //        return BadRequest(ModelState);
+
+        //    var result = await accountManager.RegisterAsync(registerDto);
+
+        //    if (!result.IsAuthenticated)
+        //        return BadRequest(result.Message);
+
+        //    return Ok(result);
+        //}
+        #endregion
+
+        #region login New version
+        //[HttpPost("login")]
+        //public async Task<IActionResult> Login(LoginCredentialsDTO loginDto)
+        //{
+        //    if (!ModelState.IsValid)
+        //        return BadRequest(ModelState);
+
+        //    var result = await accountManager.LoginAsync(loginDto);
+
+        //    if (!result.IsAuthenticated)
+        //        return BadRequest(result.Message);
+
+        //    return Ok(result);
+        //}
+        #endregion
+
+
+
+        #region Register 
+        [HttpPost]
+        [Route("Register")]
+        public async Task<ActionResult> register(UserRegisterDTO input)
         {
             User NewUser = new User
             {
                 FullName = input.FullName,
                 UserName = input.UserName,
                 Email = input.Email,
-                Address = input.Address, 
+                Address = input.Address,
                 PhoneNumber = input.PhoneNumber
             };
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
 
-            var result = await accountManager.RegisterAsync(registerDto);
+            var creationResult = await userManager.CreateAsync(NewUser, input.password);
 
-            if (!result.IsAuthenticated)
-                return BadRequest(result.Message);
+            if (!creationResult.Succeeded)
+            {
+                return BadRequest(creationResult.Errors);
 
-            return Ok(result);
+            }
+            var claims = new List<Claim>
+            {
+               new Claim(ClaimTypes.NameIdentifier,NewUser.Id.ToString()),
+               new Claim(ClaimTypes.Role,"Client")
+            };
+
+            var claimsResult = await userManager.AddClaimsAsync(NewUser, claims);
+            if (!claimsResult.Succeeded)
+            {
+                return BadRequest(claimsResult.Errors);
+            }
+            return Ok();
         }
-
-        [HttpPost("login")]
-        public async Task<IActionResult> Login(LoginCredentialsDTO loginDto)
-        {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            var result = await accountManager.LoginAsync(loginDto);
-
-            if (!result.IsAuthenticated)
-                return BadRequest(result.Message);
-
-            return Ok(result);
-        }
-
-        #region Registeer Old Version
-        //[HttpPost]
-        //[Route("Register")]
-        //public async Task<ActionResult> register(UserRegisterDTO input)
-        //{
-        //    User NewUser = new User
-        //    {
-        //        FullName = input.FullName,
-        //        UserName = input.UserName,
-        //        Email = input.Email,
-        //        Address = input.Address,
-        //        PhoneNumber = input.PhoneNumber
-        //    };
-
-        //    var creationResult = await userManager.CreateAsync(NewUser, input.password);
-
-        //    if (!creationResult.Succeeded)
-        //    {
-        //        return BadRequest(creationResult.Errors);
-
-        //    }
-        //    var claims = new List<Claim>
-        //    {
-        //       new Claim(ClaimTypes.NameIdentifier,NewUser.Id.ToString()),
-        //       new Claim(ClaimTypes.Role,"Client")
-        //    };
-
-        //    var claimsResult = await userManager.AddClaimsAsync(NewUser, claims);
-        //    if (!claimsResult.Succeeded)
-        //    {
-        //        return BadRequest(claimsResult.Errors);
-        //    }
-        //    return Ok();
-        //} 
         #endregion
 
-        #region Login Old Version
-        //[HttpPost]
-        //[Route("Login")]
-
-        //public async Task<ActionResult<TokenDTO>> Login(LoginCredentialsDTO loginInput)
-        //{
-        //    var user = await userManager.FindByNameAsync(loginInput.username);
-        //    if (user == null)
-        //    {
-        //        return BadRequest(new { message = "user not found" });
-
+        #region Login
+        [HttpPost]
+        [Route("Login")]
         public async Task<ActionResult<TokenDTO>> Login(LoginCredentialsDTO loginInput)
         {
+
+            #region User name vertification
             var user = await userManager.FindByNameAsync(loginInput.username);
 
             if (user == null)
             {
                 return BadRequest(new { message = "user not found" });
-        //    }
-        //    var Islocked = await userManager.IsLockedOutAsync(user);
-        //    if (Islocked)
-        //    {
-        //        return BadRequest(new { message = "You  are Locked Out" });
-        //    }
-
-        //    if (!await userManager.CheckPasswordAsync(user, loginInput.password))
-        //    {
-        //        await userManager.AccessFailedAsync(user);
-        //        return Unauthorized();
-        //    }
-        //    var userclaims = new List<Claim>();
-        //    userclaims.Add(new Claim("Name", user.UserName));
-        //    userclaims.Add(new Claim("PhoneNumber", user.PhoneNumber));
-        //    userclaims.Add(new Claim("Email", user.Email));
-        //    userclaims.Add(new Claim("Address", user.Address));
-        //    userclaims.Add(new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()));
-        //    userclaims.Add(new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()));
             }
+            #endregion
 
+            #region User lockout check
             var Islocked = await userManager.IsLockedOutAsync(user);
             if (Islocked)
             {
                 return BadRequest(new { message = "You  are Locked Out" });
             }
+            #endregion
 
+            #region User Password Vertification
             if (!await userManager.CheckPasswordAsync(user, loginInput.password))
             {
                 await userManager.AccessFailedAsync(user);
                 return Unauthorized();
             }
+            #endregion
 
-
-            // get the claims of the user where the input value (user) contain all the values of the logged in user
+            #region Get user Claims and Add more custom claims to the list
             var userclaims = await userManager.GetClaimsAsync(user);
-
-            // add Custom claims from the user data 
             userclaims.Add(new Claim(ClaimTypes.Name, user.UserName));
             userclaims.Add(new Claim(ClaimTypes.GivenName, user.FullName));
             userclaims.Add(new Claim(ClaimTypes.Email, user.Email));
             userclaims.Add(new Claim(ClaimTypes.StreetAddress, user.Address));
             userclaims.Add(new Claim(ClaimTypes.MobilePhone, user.PhoneNumber));
             userclaims.Add(new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()));
-        //    var roles = await userManager.GetRolesAsync(user);
-        //    foreach(var role in roles)
-        //    {
-        //        userclaims.Add(new Claim(ClaimTypes.Role, role));
-        //    }
+            #endregion
 
-            //don't remove the Identifier from the claims
-            //userclaims.Remove(userclaims[0]);
-            // getting the role of the user 
+            #region Get the role of the user and add it to the userclaims
             var roles = await userManager.GetRolesAsync(user);
-            foreach(var role in roles)
+            foreach (var role in roles)
             {
                 // add to the userclaims list 
                 userclaims.Add(new Claim(ClaimTypes.Role, role));
             }
-        //    var KeyString = configuration.GetValue<string>("SecretKey");
-        //    var KeyInBytes = Encoding.ASCII.GetBytes(KeyString);
-        //    var Key = new SymmetricSecurityKey(KeyInBytes);
+            #endregion
 
-        //    var signingCredentials = new SigningCredentials(Key, SecurityAlgorithms.HmacSha256Signature);
+            #region Getting the secret key from Appsettings file
+            var KeyString = configuration.GetValue<string>("SecretKey");
+            var KeyInBytes = Encoding.ASCII.GetBytes(KeyString);
+            var Key = new SymmetricSecurityKey(KeyInBytes);
+            #endregion
 
-        //    var jwt = new JwtSecurityToken(
-        //        claims: userclaims,
-        //        signingCredentials: signingCredentials,
-        //        expires: DateTime.Now.AddMinutes(30),
-        //        notBefore: DateTime.Now
-
+            #region Token Signing
+            var signingCredentials = new SigningCredentials(Key, SecurityAlgorithms.HmacSha256Signature);
 
             var jwt = new JwtSecurityToken(
                 claims: userclaims,
                 signingCredentials: signingCredentials,
                 expires: DateTime.Now.AddMinutes(30),
                 notBefore: DateTime.Now
-        //        );
-
-        //    var tokenHandler = new JwtSecurityTokenHandler();
-        //    var tokenString = tokenHandler.WriteToken(jwt);
-        //    return Ok(new TokenDTO
-        //    {
-        //        Token = tokenString
-        //    });
-        //} 
-        #endregion
+                );
 
             var tokenHandler = new JwtSecurityTokenHandler();
             var tokenString = tokenHandler.WriteToken(jwt);
@@ -218,12 +178,14 @@ namespace API.Controllers
             {
                 Token = tokenString
             });
+            #endregion
+
         }
+        #endregion
 
-
-        //[HttpGet]
+        // hashed?
         #region Get Current User
-		//[HttpGet]
+        //[HttpGet]
         //[Authorize]
         //[Route("CurrentUser")]
         //public async Task<ActionResult> GetCurrentUser()
@@ -237,14 +199,14 @@ namespace API.Controllers
         //        }
         //        );
         //}
-
+        #endregion
 
         #region WishList Of User
         // get the wishlist product of the user
         [HttpGet("wishlist")]
         public async Task<IActionResult> GetWishlist()
         {
-            if(int.TryParse(User.Claims.FirstOrDefault(C => C.Type == ClaimTypes.NameIdentifier)?.Value,out int userId))
+            if (int.TryParse(User.Claims.FirstOrDefault(C => C.Type == ClaimTypes.NameIdentifier)?.Value, out int userId))
             {
                 var productList = wishlistRepository.UserProducts(userId);
                 if (productList?.Count == 0)
@@ -314,7 +276,7 @@ namespace API.Controllers
             return BadRequest();
         }
         #endregion
-        //} 
-        #endregion
+
     }
+
 }
