@@ -64,21 +64,24 @@ namespace Infrastructure.Repositories
         {
             List<CartProductsDto> cartProducts = new List<CartProductsDto>();
 
-            var userCart = context.ShoppingCarts.FirstOrDefault(C => C.UserID == userId);
-            if(userCart == null)
+            var userCarts = context.ShoppingCarts.Where(C => C.UserID == userId);
+            if(userCarts?.Count() == 0)
             {
                 return cartProducts;
             }
 
-            Product product = context.Products.FirstOrDefault(P => P.Id == userCart.ProductID);
-            cartProducts.Add(new CartProductsDto
+            foreach(var userCart in userCarts)
             {
-                ProductId = userCart.ProductID,
-                ProductName = product.Name,
-                ProductPrice = product.Price,
-                ProductQuantity = userCart.Quantity,
-                Discount = (product.Discount == null) ? 0 : product.Discount
-            });
+                Product product = context.Products.FirstOrDefault(P => P.Id == userCart.ProductID);
+                cartProducts.Add(new CartProductsDto
+                {
+                    ProductId = userCart.ProductID,
+                    ProductName = product?.Name,
+                    ProductPrice = product?.Price,
+                    ProductQuantity = userCart.Quantity,
+                    Discount = (product?.Discount == null) ? 0 : product.Discount
+                });
+            }
 
             return cartProducts;
         }
