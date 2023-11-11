@@ -157,7 +157,7 @@ namespace API.Controllers
         [HttpGet("wishlist")]
         public async Task<IActionResult> GetWishlist()
         {
-            if (int.TryParse(User.Claims.FirstOrDefault(C => C.Type == ClaimTypes.NameIdentifier).ToString(), out int userId))
+            if (int.TryParse(User.Claims.FirstOrDefault(C => C.Type == ClaimTypes.NameIdentifier).Value, out int userId))
             {
                 var productList = wishlistRepository.UserProducts(userId);
                 if (productList?.Count == 0)
@@ -169,7 +169,7 @@ namespace API.Controllers
         [HttpPost("wishlist/{productId:int}")]
         public async Task<IActionResult> AddToWishlist(int productId)
         {
-            if (int.TryParse(User.Claims.FirstOrDefault(C => C.Type == ClaimTypes.NameIdentifier).ToString(), out int userId))
+            if (int.TryParse(User.Claims.FirstOrDefault(C => C.Type == ClaimTypes.NameIdentifier).Value, out int userId))
             {
                 bool check = wishlistRepository.AddNew(userId, productId);
                 if (check)
@@ -180,7 +180,7 @@ namespace API.Controllers
         [HttpDelete("wishlist/{productId:int}")]
         public async Task<IActionResult> DeleteFromWishlist(int productId)
         {
-            if (int.TryParse(User.Claims.FirstOrDefault(C => C.Type == ClaimTypes.NameIdentifier).ToString(), out int userId))
+            if (int.TryParse(User.Claims.FirstOrDefault(C => C.Type == ClaimTypes.NameIdentifier).Value, out int userId))
             {
                 bool check = wishlistRepository.Delete(userId, productId);
                 if (check)

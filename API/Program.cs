@@ -35,7 +35,6 @@ builder.Services.AddScoped(typeof(IFavouriteRepository),typeof(FavouriteReposito
 builder.Services.AddScoped(typeof(IUserRepository),typeof(UserRepository));
 builder.Services.AddScoped(typeof(IShopingCartRepository),typeof(ShopingCartRepository ));
 
-// inject the AccountManger services
 builder.Services.AddScoped(typeof(IAccountManagerServices), typeof(AccountManagerServices));
 
 #region Identity
