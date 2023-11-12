@@ -22,12 +22,16 @@ namespace API.Controllers
         private readonly UserManager<User> userManager;
         private readonly IAccountManagerServices accountManager;
         private readonly IConfiguration configuration;
+        private readonly IWishlistRepository wishlistRepository;
+        private readonly IFavouriteRepository favouriteRepository;
 
         public AccountsController(UserManager<User> _userManager,IAccountManagerServices _accountManager,IConfiguration _configuration)
         {
             this.userManager = _userManager;
             accountManager = _accountManager;
             this.configuration = _configuration;
+            wishlistRepository = _wishlistRepository;
+            favouriteRepository = _favouriteRepository;
         }
 
         [HttpPost("register")]
