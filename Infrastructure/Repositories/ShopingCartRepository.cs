@@ -62,31 +62,25 @@ namespace Infrastructure.Repositories
 
         public async Task<ICollection<CartProductsDto>> GetUserCartProducts(int userId)
         {
-
-            // modified was returning single value 
-            List<ShopingCart> shoppingcart = new List<ShopingCart>();
             List<CartProductsDto> cartProducts = new List<CartProductsDto>();
 
-            shoppingcart = context.ShoppingCarts.Where(C => C.UserID == userId).ToList();
-
-            if(shoppingcart == null)
+            var userCarts = context.ShoppingCarts.Where(C => C.UserID == userId);
+            if(userCarts?.Count() == 0)
             {
                 return cartProducts;
             }
 
-            foreach(var item in shoppingcart)
+            foreach(var userCart in userCarts)
             {
-
-                Product product = context.Products.FirstOrDefault(P => P.Id == item.ProductID);
+                Product product = context.Products.FirstOrDefault(P => P.Id == userCart.ProductID);
                 cartProducts.Add(new CartProductsDto
                 {
-                    ProductId = item.ProductID,
-                    ProductName = item.Product.Name,
-                    ProductPrice = item.Product.Price,
-                    ProductQuantity = item.Quantity,
-                    Discount = (item.Product.Discount == null) ? 0 : item.Product.Discount
+                    ProductId = userCart.ProductID,
+                    ProductName = product?.Name,
+                    ProductPrice = product?.Price,
+                    ProductQuantity = userCart.Quantity,
+                    Discount = (product?.Discount == null) ? 0 : product.Discount
                 });
-
             }
 
             return cartProducts;

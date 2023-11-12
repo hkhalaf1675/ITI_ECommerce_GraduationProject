@@ -40,7 +40,6 @@ builder.Services.AddScoped(typeof(IFavouriteRepository), typeof(FavouriteReposit
 
 
 
-// inject the AccountManger services
 builder.Services.AddScoped(typeof(IAccountManagerServices), typeof(AccountManagerServices));
 
 #region Identity

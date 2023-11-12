@@ -26,7 +26,7 @@ namespace API.Controllers
         [HttpGet("CartProducts")]
         public async Task<IActionResult> GetCatProducts()
         {
-            if (int.TryParse(User.Claims.FirstOrDefault(C => C.Type == ClaimTypes.NameIdentifier).Value, out int userId))
+            if (int.TryParse(User.Claims.FirstOrDefault(C => C.Type == ClaimTypes.NameIdentifier)?.Value, out int userId))
             {
                 ICollection<CartProductsDto> cartProducts = await shopingCartRepository.GetUserCartProducts(userId);
 
@@ -44,8 +44,7 @@ namespace API.Controllers
         [HttpPost("AddProductToCart")]
         public async Task<IActionResult> PostProductToCart(ProductToCartDto toCartDto)
         {
-            // Modified Replace .ToString() to .Value
-            if (int.TryParse(User.Claims.FirstOrDefault(C => C.Type == ClaimTypes.NameIdentifier).Value, out int userId))
+            if (int.TryParse(User.Claims.FirstOrDefault(C => C.Type == ClaimTypes.NameIdentifier)?.Value, out int userId))
             {
                 bool check = await shopingCartRepository.AddProductToCart(userId, toCartDto);
 
@@ -64,7 +63,7 @@ namespace API.Controllers
         [HttpDelete("DeleteProductFromCart")]
         public async Task<IActionResult> DeleteProductFromcart(int productId)
         {
-            if (int.TryParse(User.Claims.FirstOrDefault(C => C.Type == ClaimTypes.NameIdentifier).Value, out int userId))
+            if (int.TryParse(User.Claims.FirstOrDefault(C => C.Type == ClaimTypes.NameIdentifier)?.Value, out int userId))
             {
                 bool check = await shopingCartRepository.RemoveProductFromCart(userId, productId);
 
@@ -83,7 +82,7 @@ namespace API.Controllers
         [HttpPut("EditCartProductQuntity")]
         public async Task<IActionResult> EditCartProductQuntity(int productId, int newQuantity)
         {
-            if (int.TryParse(User.Claims.FirstOrDefault(C => C.Type == ClaimTypes.NameIdentifier).Value, out int userId))
+            if (int.TryParse(User.Claims.FirstOrDefault(C => C.Type == ClaimTypes.NameIdentifier)?.Value, out int userId))
             {
                 bool check = await shopingCartRepository.EditProductQuantity(userId, productId, newQuantity);
 

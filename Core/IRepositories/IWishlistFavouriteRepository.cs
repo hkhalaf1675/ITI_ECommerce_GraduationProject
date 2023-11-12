@@ -1,4 +1,5 @@
 ﻿using Core.DTOs.UserDtos;
+using Core.DTOs.UserProfileDtos;
 using System;
 using System.Collections.Generic;
 using System.Linq;

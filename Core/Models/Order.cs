@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Identity;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
@@ -14,6 +15,9 @@ namespace Core.Models
         public DateTime Date { get; set; }
         public PayMethods? Method { get; set; }
         public decimal TotalPrice { get; set; }
+        [ForeignKey("Address")]
+        public int? AddressId { get; set; }
+        public Address? Address { get; set; }
         [ForeignKey("User")]
         public int? UserId { get; set; }
         public virtual User? User { get; set; }

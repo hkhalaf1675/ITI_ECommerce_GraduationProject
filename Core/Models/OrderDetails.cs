@@ -10,8 +10,8 @@ namespace Core.Models
     public class OrderDetails
     {
         public int Id { get; set; }
-        public int Quantity { get; set; }
-        public decimal TotalPrice { get; set; }
+        public int? Quantity { get; set; }
+        public decimal? TotalPrice { get; set; }
         [ForeignKey("Order")]
         public int? OrderID { get; set; }
         public virtual Order? Order { get; set; }

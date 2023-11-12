@@ -44,6 +44,9 @@ namespace Infrastructure.Services
                 UserName = registerDto.UserName,
                 Email = registerDto.Email,
                 FullName = registerDto.FullName,
+                Address = registerDto.Address,
+                PhoneNumber = registerDto.PhoneNumber
+                
             };
             var result = await userManager.CreateAsync(user, registerDto.password);
 
@@ -56,6 +59,8 @@ namespace Infrastructure.Services
 
                 return new AuthModel { Message = errors };
             }
+
+            await userManager.AddToRoleAsync(user, "User");
 
             var jwtSecurityToken = await CreateJwtTokenAsync(user);
 
