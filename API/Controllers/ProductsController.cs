@@ -56,7 +56,9 @@ namespace API.Controllers
             productToReturnDto.BrandID = (int)product.BrandID;
             productToReturnDto.BrandName = product.Brand.Name;
             productToReturnDto.Warranties = product.Warranties.ToDictionary(warranty => warranty.PartName, warranty => warranty.Duration);
-            productToReturnDto.Images = product.Images.Select(image => $"{baseUrl}/{image.ImageUrl}").ToList();
+            // modified the url of the image 
+            //productToReturnDto.Images = product.Images.Select(image => $"{baseUrl}/{image.ImageUrl}").ToList();
+              productToReturnDto.Images = product.Images.Select(image => $"{image.ImageUrl}").ToList();
             productToReturnDto.AvgRating = product.Reviews?.Any() == true ? (decimal)product.Reviews.Average(r => r.Rating) : 0;
 
             #endregion

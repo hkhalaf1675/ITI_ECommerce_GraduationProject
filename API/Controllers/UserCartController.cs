@@ -13,13 +13,16 @@ namespace API.Controllers
     [Authorize]
     public class UserCartController : ControllerBase
     {
+        #region Injection
         private readonly IShopingCartRepository shopingCartRepository;
 
         public UserCartController(IShopingCartRepository _shopingCartRepository)
         {
             shopingCartRepository = _shopingCartRepository;
-        }
+        } 
+        #endregion
 
+        #region Get All Cart Products
         [HttpGet("CartProducts")]
         public async Task<IActionResult> GetCatProducts()
         {
@@ -27,22 +30,24 @@ namespace API.Controllers
             {
                 ICollection<CartProductsDto> cartProducts = await shopingCartRepository.GetUserCartProducts(userId);
 
-                if(cartProducts?.Count() == 0)
+                if (cartProducts?.Count() == 0)
                 {
                     return NotFound();
                 }
                 return Ok(cartProducts);
             }
             return BadRequest();
-        }
+        } 
+        #endregion
 
+        #region Add Product To Cart 
         [HttpPost("AddProductToCart")]
         public async Task<IActionResult> PostProductToCart(ProductToCartDto toCartDto)
         {
             // Modified Replace .ToString() to .Value
             if (int.TryParse(User.Claims.FirstOrDefault(C => C.Type == ClaimTypes.NameIdentifier).Value, out int userId))
             {
-                bool check = await shopingCartRepository.AddProductToCart(userId,toCartDto);
+                bool check = await shopingCartRepository.AddProductToCart(userId, toCartDto);
 
                 if (check)
                 {
@@ -53,6 +58,9 @@ namespace API.Controllers
             return BadRequest();
         }
 
+        #endregion
+
+        #region Delete Prodcut From Cart 
         [HttpDelete("DeleteProductFromCart")]
         public async Task<IActionResult> DeleteProductFromcart(int productId)
         {
@@ -69,20 +77,43 @@ namespace API.Controllers
             return BadRequest();
         }
 
+        #endregion
+
+        #region Update Product Amount in Cart
         [HttpPut("EditCartProductQuntity")]
-        public async Task<IActionResult> EditCartProductQuntity(int productId,int newQuantity)
+        public async Task<IActionResult> EditCartProductQuntity(int productId, int newQuantity)
         {
             if (int.TryParse(User.Claims.FirstOrDefault(C => C.Type == ClaimTypes.NameIdentifier).Value, out int userId))
             {
-                bool check = await shopingCartRepository.EditProductQuantity(userId, productId,newQuantity);
+                bool check = await shopingCartRepository.EditProductQuantity(userId, productId, newQuantity);
 
                 if (check)
                 {
                     return Ok();
                 }
-                return BadRequest();
+                else
+                {
+                    ProductToCartDto product = new ProductToCartDto()
+                    {
+                        ProductId = productId,
+                        Quantity = newQuantity
+                    };
+
+                    bool checkAlternate = await shopingCartRepository.AddProductToCart(userId, product);
+
+                    if (checkAlternate)
+                    {
+                        return Ok();
+                    }
+                    else
+                    {
+                        return BadRequest();
+                    }
+                };
             }
+            
             return BadRequest();
-        }
+        } 
+        #endregion
     }
 }
