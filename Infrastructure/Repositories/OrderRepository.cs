@@ -21,14 +21,14 @@ namespace Infrastructure.Repositories
             cartRepository = _cartRepository;
         }
 
-        public async Task<bool> AddNewOrder(int userId, int addressId)
+        public async Task<bool> AddNewOrder(int userId, int addressId,string payMethod)
         {
             Order newOrder = new Order
             {
                 Status = OrderStatus.Pending,
                 AddressId = addressId,
                 UserId = userId,
-                Method = PayMethods.PayPal,
+                Method = payMethod == "PayPal"?PayMethods.PayPal:PayMethods.Cash,
                 Date = DateTime.Now,
                 TotalPrice = 0
             };
