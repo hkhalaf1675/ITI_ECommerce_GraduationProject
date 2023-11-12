@@ -60,7 +60,7 @@ builder.Services.AddAuthentication(Options =>
 
 .AddJwtBearer("Default", options =>
 {
-    //var KeyString = builder.Configuration.GetValue<string>("GoogleAuthenSetting:JWT:Key");    // with new version
+    //var KeyString = builder.Configuration.GetValue<string>("JWT:Key");   
     var KeyString = builder.Configuration.GetValue<string>("SecretKey");
     var KeyInBytes = Encoding.ASCII.GetBytes(KeyString);
     var Key = new SymmetricSecurityKey(KeyInBytes);
