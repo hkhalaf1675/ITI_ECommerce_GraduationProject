@@ -36,11 +36,8 @@ builder.Services.AddScoped(typeof(IWishlistRepository), typeof(WishlistRepositor
 builder.Services.AddScoped(typeof(IUserRepository),typeof(UserRepository));
 builder.Services.AddScoped(typeof(IShopingCartRepository),typeof(ShopingCartRepository ));
 builder.Services.AddScoped(typeof(IFavouriteRepository), typeof(FavouriteRepository));
-#endregion
-
-
-
 builder.Services.AddScoped(typeof(IAccountManagerServices), typeof(AccountManagerServices));
+#endregion
 
 #region Identity
 builder.Services.AddIdentity<User, IdentityRole<int>>(Options =>
