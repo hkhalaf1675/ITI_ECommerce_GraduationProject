@@ -30,9 +30,9 @@ namespace Core.IRepositories
         bool Update(Product product);
         bool Delete(int id);
 
-        public void UpdateWarranties(Product product, IEnumerable<WarrantiesDto> warrantyInput);
+        //public void UpdateWarranties(Product product, IEnumerable<WarrantiesDto> warrantyInput);
 
-        public void UpdateImages(Product product, IEnumerable<ImagesInputDto> imageInput);
+        //public void UpdateImages(Product product, IEnumerable<ImagesInputDto> imageInput);
 
         #endregion
     }

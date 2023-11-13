@@ -1,4 +1,5 @@
 ﻿using Core.Models;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -12,31 +13,31 @@ namespace Core.DTOs.Product
     {
         [Required]
         [MinLength(3)]
-        public string Name { get; set; }
-        public string Description { get; set; }
+        public string name { get; set; }
+        public string description { get; set; }
         [Required]
         [Range(1, int.MaxValue)]
-        public decimal Price { get; set; }
+        public decimal price { get; set; }
         [Required]
         [Range(0, 1)]
-        public int Condition { get; set; }
+        public int condition { get; set; }
         [Required]
         [Range(0, int.MaxValue)]
-        public int StockQuantity { get; set; }
+        public int stockQuantity { get; set; }
         [Range(0, 100)]
-        public int Discount { get; set; }
-        public string Model { get; set; }
-        public string Color { get; set; }
-        public int Storage { get; set; }
-        public int Ram { get; set; }
-        public string Camera { get; set; }
-        public string CPU { get; set; }
-        public float ScreenSize { get; set; }
-        public int BatteryCapacity { get; set; }
-        public string OSVersion { get; set; }
-        public int CategoryID { get; set; }
-        public int BrandID { get; set; }
-        public ICollection<WarrantiesDto> Warranties { get; set; }
-        public ICollection<ImagesInputDto> Images { get; set; }
+        public int discount { get; set; }
+        public string model { get; set; }
+        public string color { get; set; }
+        public int storage { get; set; }
+        public int ram { get; set; }
+        public string camera { get; set; }
+        public string cpu { get; set; }
+        public float screenSize { get; set; }
+        public int batteryCapacity { get; set; }
+        public string osVersion { get; set; }
+        public int categoryID { get; set; }
+        public int brandID { get; set; }
+        public ICollection<WarrantiesDto> warranties { get; set; }
+        public ICollection<IFormFile> images { get; set; }
     }
 }
