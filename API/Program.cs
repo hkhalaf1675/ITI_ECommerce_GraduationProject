@@ -33,11 +33,47 @@ builder.Services.AddScoped(typeof(IProductRepository), typeof(ProductRepository)
 builder.Services.AddScoped(typeof(IReviewRepository), typeof(ReviewRepository));
 builder.Services.AddScoped(typeof(ICategoryRepository), typeof(CategoryRepository));
 builder.Services.AddScoped(typeof(IWishlistRepository), typeof(WishlistRepository));
+builder.Services.AddScoped(typeof(IUserRepository), typeof(UserRepository));
+#endregion
+
+
+=========
+// inject the category,wishlist,favourite,User,ShopingCart repository
+builder.Services.AddScoped(typeof(ICategoryRepository), typeof(CategoryRepository));
+builder.Services.AddScoped(typeof(IWishlistRepository), typeof(WishlistRepository));
+builder.Services.AddScoped(typeof(IFavouriteRepository),typeof(FavouriteRepository));
+builder.Services.AddScoped(typeof(IUserRepository), typeof(UserRepository));
+#endregion
+
+
+=========
+// inject the category,wishlist,favourite,User,ShopingCart repository
+builder.Services.AddScoped(typeof(ICategoryRepository), typeof(CategoryRepository));
+builder.Services.AddScoped(typeof(IWishlistRepository), typeof(WishlistRepository));
+builder.Services.AddScoped(typeof(IFavouriteRepository),typeof(FavouriteRepository));
+builder.Services.AddScoped(typeof(IUserRepository), typeof(UserRepository));
+#endregion
+
+
+=========
+// inject the category,wishlist,favourite,User,ShopingCart repository
+builder.Services.AddScoped(typeof(ICategoryRepository), typeof(CategoryRepository));
+builder.Services.AddScoped(typeof(IWishlistRepository), typeof(WishlistRepository));
+builder.Services.AddScoped(typeof(IFavouriteRepository),typeof(FavouriteRepository));
+builder.Services.AddScoped(typeof(IUserRepository), typeof(UserRepository));
+#endregion
+
+
+#endregion
+// inject the category,wishlist,favourite,User,ShopingCart repository
+builder.Services.AddScoped(typeof(ICategoryRepository), typeof(CategoryRepository));
+builder.Services.AddScoped(typeof(IWishlistRepository), typeof(WishlistRepository));
+builder.Services.AddScoped(typeof(IFavouriteRepository),typeof(FavouriteRepository));
 builder.Services.AddScoped(typeof(IUserRepository),typeof(UserRepository));
 builder.Services.AddScoped(typeof(IShopingCartRepository),typeof(ShopingCartRepository ));
 builder.Services.AddScoped(typeof(IFavouriteRepository), typeof(FavouriteRepository));
 builder.Services.AddScoped(typeof(IAccountManagerServices), typeof(AccountManagerServices));
-#endregion
+>>>>>>>>> Temporary merge branch 2
 
 #region Identity
 builder.Services.AddIdentity<User, IdentityRole<int>>(Options =>
@@ -107,3 +143,4 @@ app.UseStaticFiles();
 app.MapControllers();
 
 app.Run();
+#endregion

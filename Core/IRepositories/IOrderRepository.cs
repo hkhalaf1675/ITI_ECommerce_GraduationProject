@@ -8,6 +8,6 @@ namespace Core.IRepositories
 {
     public interface IOrderRepository
     {
-        Task<bool> AddNewOrder(int userId, int addressId);
+        Task<bool> AddNewOrder(int userId, int addressId, string payMethod);
     }
 }
