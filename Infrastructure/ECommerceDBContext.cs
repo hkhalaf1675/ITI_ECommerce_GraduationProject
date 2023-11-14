@@ -92,5 +92,6 @@ namespace Infrastructure
         public DbSet<Favourite> Favourite { get; set; }
         public DbSet<Address> Address { get; set; }
         public DbSet<Phone> Phones { get; set; }
+        public DbSet<ContactUs> ContactUs { get; set; }
     }
 }
