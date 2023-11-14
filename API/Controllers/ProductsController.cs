@@ -6,6 +6,10 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using static System.Net.Mime.MediaTypeNames;
 using Image = Core.Models.Image;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace API.Controllers
 {
@@ -53,11 +57,13 @@ namespace API.Controllers
             productToReturnDto.BatteryCapacity = (int)product.BatteryCapacity;
             productToReturnDto.OSVersion = product.OSVersion;
             productToReturnDto.CategoryID = (int)product.CategoryID;
-            productToReturnDto.CategoryName = product.Category.Name ;  
+            productToReturnDto.CategoryName = product.Category.Name;
             productToReturnDto.BrandID = (int)product.BrandID;
             productToReturnDto.BrandName = product.Brand.Name;
             productToReturnDto.Warranties = product.Warranties.ToDictionary(warranty => warranty.PartName, warranty => warranty.Duration);
-            productToReturnDto.Images = product.Images.Select(image => $"{baseUrl}/{image.ImageUrl}").ToList();
+            // modified the url of the image 
+            //productToReturnDto.Images = product.Images.Select(image => $"{baseUrl}/{image.ImageUrl}").ToList();
+            productToReturnDto.Images = product.Images.Select(image => $"{image.ImageUrl}").ToList();
             productToReturnDto.AvgRating = product.Reviews?.Any() == true ? (decimal)product.Reviews.Average(r => r.Rating) : 0;
 
             #endregion
@@ -248,43 +254,71 @@ namespace API.Controllers
         #region -------------------------- ADMIN ------------------------------
 
         [Authorize(Roles = "Admin")]
-        [HttpPost] //Post /api/products
-        public IActionResult PostNew([FromBody]ProductToAddDto productInput)
+        [HttpPost] //Post /api/Products
+        public async Task<IActionResult> PostNew()
         {
             if (ModelState.IsValid)
             {
+
+
                 var product = new Product
                 {
-                    Name = productInput.Name,
-                    Description = productInput.Description,
-                    Price = productInput.Price,
-                    Condition = (ProductCondition)productInput.Condition,
-                    StockQuantity = productInput.StockQuantity,
-                    Discount = productInput.Discount,
-                    Model = productInput.Model,
-                    Color = productInput.Color,
-                    Storage = productInput.Storage,
-                    Ram = productInput.Ram,
-                    Carmera = productInput.Camera,
-                    CPU = productInput.CPU,
-                    ScreenSize = productInput.ScreenSize,
-                    BatteryCapacity = productInput.BatteryCapacity,
-                    OSVersion = productInput.OSVersion,
-                    CategoryID = productInput.CategoryID,
-                    BrandID = productInput.BrandID,
 
-                    // Create related entities
-                        Warranties = productInput.Warranties?.Select(w => new Warranty
-                        {
-                            PartName = w.PartName,
-                            Duration = w.Duration
-                        }).ToList(),
+                    Name = Request.Form["name"],
+                    Description = Request.Form["description"],
+                    Price = decimal.Parse(Request.Form["price"]),
+                    Condition = (ProductCondition)Enum.Parse(typeof(ProductCondition), Request.Form["condition"]),
+                    StockQuantity = int.Parse(Request.Form["stockQuantity"]),
+                    Discount = int.Parse(Request.Form["discount"]),
+                    Model = Request.Form["model"],
+                    Color = Request.Form["color"],
+                    Storage = int.Parse(Request.Form["storage"]),
+                    Ram = int.Parse(Request.Form["ram"]),
+                    Carmera = Request.Form["camera"],
+                    CPU = Request.Form["cpu"],
+                    ScreenSize = int.Parse(Request.Form["screenSize"]),
+                    BatteryCapacity = int.Parse(Request.Form["batteryCapacity"]),
+                    OSVersion = Request.Form["osVersion"],
+                    CategoryID = int.Parse(Request.Form["categoryID"]),
+                    BrandID = int.Parse(Request.Form["brandID"]),
 
-                        Images = productInput.Images?.Select(i => new Image
-                        {
-                            ImageUrl = i.ImageUrl
-                        }).ToList()
-                    };
+
+                    //// Create related entities
+                    //Warranties = productInput.warranties?.Select(w => new Warranty
+                    //{
+                    //    PartName = w.partName,
+                    //    Duration = w.duration
+                    //}).ToList(),
+
+                    Images = new List<Image>()
+                };
+
+                // Handle image uploads
+                //if (productInput.images != null && productInput.images.Any())
+                //{
+                //    foreach (var imageInput in productInput.images)
+                //    {
+                //        // Save the image to the "images" folder
+                //        var imageFileName = Guid.NewGuid().ToString() + Path.GetExtension(imageInput.FileName);
+                //        var imagePath = Path.Combine("wwwroot","Images", "Products", imageFileName);
+
+                //        // Ensure the directory exists
+                //        var imageDirectory = Path.GetDirectoryName(imagePath);
+                //        if (!Directory.Exists(imageDirectory))
+                //        {
+                //            Directory.CreateDirectory(imageDirectory);
+                //        }
+
+                //        using (var stream = new FileStream(imagePath, FileMode.Create))
+                //        {
+                //            await imageInput.CopyToAsync(stream);
+                //        }
+
+                //        // Add the image information to the Images list
+                //        product.Images.Add(new Image { ImageUrl = imageFileName });
+
+                //    }
+                //}
 
                 bool check = productRepository.AddNew(product);
                 if (check)
@@ -308,54 +342,57 @@ namespace API.Controllers
             return BadRequest();
         }
 
-        [Authorize(Roles = "Admin")]
-        [HttpPut] //Put /api/product
-        public IActionResult Update(int id, [FromBody] ProductToAddDto productInput)
-        {
-            if (ModelState.IsValid)
-            {
-                // Check if the product with the given id exists
-                var existingProduct = productRepository.GetById(id);
+        //[Authorize(Roles = "Admin")]
+        //[HttpPut] //Put /api/product
+        //public IActionResult Update(int id, [FromBody] ProductToAddDto productInput)
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        // Check if the product with the given id exists
+        //        var existingProduct = productRepository.GetById(id);
 
-                if (existingProduct == null)
-                {
-                    return NotFound(); // Product not found
-                }
+                //        if (existingProduct == null)
+                //        {
+                //            return NotFound(); // Product not found
+                //        }
 
-                // Update the existing product with the new data
-                existingProduct.Name = productInput.Name;
-                existingProduct.Description = productInput.Description;
-                existingProduct.Price = productInput.Price;
-                existingProduct.Condition = (ProductCondition)productInput.Condition;
-                existingProduct.StockQuantity = productInput.StockQuantity;
-                existingProduct.Discount = productInput.Discount;
-                existingProduct.Model = productInput.Model;
-                existingProduct.Color = productInput.Color;
-                existingProduct.Storage = productInput.Storage;
-                existingProduct.Ram = productInput.Ram;
-                existingProduct.Carmera = productInput.Camera;
-                existingProduct.CPU = productInput.CPU;
-                existingProduct.ScreenSize = productInput.ScreenSize;
-                existingProduct.BatteryCapacity = productInput.BatteryCapacity;
-                existingProduct.OSVersion = productInput.OSVersion;
-                existingProduct.CategoryID = productInput.CategoryID;
-                existingProduct.BrandID = productInput.BrandID;
+                //        // Update the existing product with the new data
+                //        existingProduct.Name = productInput.Name;
+                //        existingProduct.Description = productInput.Description;
+                //        existingProduct.Price = productInput.Price;
+                //        existingProduct.Condition = (ProductCondition)productInput.Condition;
+                //        existingProduct.StockQuantity = productInput.StockQuantity;
+                //        existingProduct.Discount = productInput.Discount;
+                //        existingProduct.Model = productInput.Model;
+                //        existingProduct.Color = productInput.Color;
+                //        existingProduct.Storage = productInput.Storage;
+                //        existingProduct.Ram = productInput.Ram;
+                //        existingProduct.Carmera = productInput.Camera;
+                //        existingProduct.CPU = productInput.CPU;
+                //        existingProduct.ScreenSize = productInput.ScreenSize;
+                //        existingProduct.BatteryCapacity = productInput.BatteryCapacity;
+                //        existingProduct.OSVersion = productInput.OSVersion;
+                //        existingProduct.CategoryID = productInput.CategoryID;
+                //        existingProduct.BrandID = productInput.BrandID;
 
-                // Update related entities (Warranties and Images)
-                productRepository.UpdateWarranties(existingProduct, productInput.Warranties);
-                productRepository.UpdateImages(existingProduct, productInput.Images);
+                //        // Update related entities (Warranties and Images)
+                //        productRepository.UpdateWarranties(existingProduct, productInput.Warranties);
+                //        productRepository.UpdateImages(existingProduct, productInput.Images);
 
-                bool check = productRepository.Update(existingProduct);
+                //        bool check = productRepository.Update(existingProduct);
 
-                if (check)
-                {
-                    return Ok();
-                }
-                return BadRequest();
-            }
-            return BadRequest(ModelState);
-        }
+                //        if (check)
+                //        {
+                //            return Ok();
+                //        }
+                //        return BadRequest();
+                //    }
+                //    return BadRequest(ModelState);
+                //}
 
+        //    }
+
+        //} 
 
         // get the count of all products
         [Authorize(Roles = "Admin")]
@@ -364,7 +401,8 @@ namespace API.Controllers
         {
             return Ok(productRepository.GetProductsCount());
         }
-
         #endregion
+
+
     }
 }

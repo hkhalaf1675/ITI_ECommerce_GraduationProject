@@ -17,6 +17,7 @@ namespace Infrastructure.Services
 {
     public class AccountManagerServices:IAccountManagerServices
     {
+        #region Injection
         private readonly UserManager<User> userManager;
         private readonly IConfiguration configuration;
 
@@ -24,7 +25,9 @@ namespace Infrastructure.Services
         {
             userManager = _userManager;
             configuration = _configuration;
-        }
+        } 
+        #endregion
+
         #region Register Methdo Logic
         public async Task<AuthModel> RegisterAsync(UserRegisterDTO registerDto)
         {
