@@ -35,7 +35,8 @@ builder.Services.AddScoped(typeof(ICategoryRepository), typeof(CategoryRepositor
 builder.Services.AddScoped(typeof(IWishlistRepository), typeof(WishlistRepository));
 builder.Services.AddScoped(typeof(IFavouriteRepository),typeof(FavouriteRepository));
 builder.Services.AddScoped(typeof(IUserRepository),typeof(UserRepository));
-builder.Services.AddScoped(typeof(IShopingCartRepository),typeof(ShopingCartRepository ));
+builder.Services.AddScoped(typeof(IShopingCartRepository), typeof(ShopingCartRepository));
+builder.Services.AddScoped(typeof(IBrandRepository),typeof(BrandRepository ));
 
 builder.Services.AddScoped(typeof(IAccountManagerServices), typeof(AccountManagerServices));
 
