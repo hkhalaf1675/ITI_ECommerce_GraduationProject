@@ -10,7 +10,7 @@ namespace Core.IRepositories
     public interface IReviewRepository
     {
         Review? GetById(int id);
-        ICollection<Review> GetAll();
+        ICollection<Review> GetAll(int? pageIndex);
         ICollection<Review> GetReviewsByProduct(int productId);
         //ICollection<Review> GetReviewsWithProductAndUser();
         Review GetByCompositeId(int ProductID, int userID);
