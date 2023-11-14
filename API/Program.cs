@@ -28,17 +28,17 @@ builder.Services.AddDbContext<ECommerceDBContext>(Options =>
             b => b.MigrationsAssembly(typeof(ECommerceDBContext).Assembly.FullName))
 );
 
-#region inject the repository
+#region Repositories Injection
 builder.Services.AddScoped(typeof(IProductRepository), typeof(ProductRepository));
 builder.Services.AddScoped(typeof(IReviewRepository), typeof(ReviewRepository));
+builder.Services.AddScoped(typeof(IUserRepository), typeof(UserRepository));
 builder.Services.AddScoped(typeof(ICategoryRepository), typeof(CategoryRepository));
 builder.Services.AddScoped(typeof(IWishlistRepository), typeof(WishlistRepository));
 builder.Services.AddScoped(typeof(IFavouriteRepository),typeof(FavouriteRepository));
-builder.Services.AddScoped(typeof(IUserRepository),typeof(UserRepository));
 builder.Services.AddScoped(typeof(IShopingCartRepository), typeof(ShopingCartRepository));
 builder.Services.AddScoped(typeof(IBrandRepository),typeof(BrandRepository ));
-
 builder.Services.AddScoped(typeof(IAccountManagerServices), typeof(AccountManagerServices));
+#endregion
 
 #region Identity
 builder.Services.AddIdentity<User, IdentityRole<int>>(Options =>
@@ -58,9 +58,11 @@ builder.Services.AddAuthentication(Options =>
     Options.DefaultAuthenticateScheme = "Default";
     Options.DefaultChallengeScheme = "Default";
 })
+
 .AddJwtBearer("Default", options =>
 {
-    var KeyString = builder.Configuration.GetValue<string>("JWT:Key");
+    //var KeyString = builder.Configuration.GetValue<string>("JWT:Key");   
+    var KeyString = builder.Configuration.GetValue<string>("SecretKey");
     var KeyInBytes = Encoding.ASCII.GetBytes(KeyString);
     var Key = new SymmetricSecurityKey(KeyInBytes);
     options.TokenValidationParameters = new TokenValidationParameters
@@ -106,4 +108,3 @@ app.UseStaticFiles();
 app.MapControllers();
 
 app.Run();
-#endregion

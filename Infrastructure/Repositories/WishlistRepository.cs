@@ -53,7 +53,8 @@ namespace Infrastructure.Repositories
 
         public bool Delete(int userId, int productId)
         {
-            if (!CheckExist(userId, productId))
+            // modified remove the '!' from the condition
+            if (CheckExist(userId, productId))
             {
                 context.Wishlists.Remove(GetByUserIdAndProductId(userId, productId));
                 try

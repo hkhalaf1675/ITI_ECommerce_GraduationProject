@@ -17,6 +17,8 @@ namespace Infrastructure.Repositories
         {
             context = _context;
         }
+
+        // checks if the product id in the user's favorite list
         public Favourite? GetByUserIdAndProductId(int userId, int productId)
         {
             return context.Favourite.FirstOrDefault(F => F.UserID == userId && F.ProductID == productId);
@@ -53,7 +55,8 @@ namespace Infrastructure.Repositories
 
         public bool Delete(int userId, int productId)
         {
-            if (!CheckExist(userId, productId))
+            // modified remove the '!' from the condition 
+            if (CheckExist(userId, productId))
             {
                 context.Favourite.Remove(GetByUserIdAndProductId(userId, productId));
                 try
