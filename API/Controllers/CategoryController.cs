@@ -1,5 +1,6 @@
 ﻿using Core.IRepositories;
 using Core.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -50,6 +51,7 @@ namespace API.Controllers
 
         // --------------------------------------------------------
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public IActionResult PostNew(Category category)
         {
             if (ModelState.IsValid)
@@ -65,6 +67,7 @@ namespace API.Controllers
         }
 
         [HttpDelete]
+        [Authorize(Roles = "Admin")]
         public IActionResult Delete(int id)
         {
             bool check = categoryRepository.Delete(id);
@@ -76,6 +79,7 @@ namespace API.Controllers
         }
 
         [HttpPut]
+        [Authorize(Roles = "Admin")]
         public IActionResult Update(Category category)
         {
             if (ModelState.IsValid)
