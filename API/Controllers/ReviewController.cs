@@ -11,7 +11,6 @@ namespace API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
     public class ReviewController : ControllerBase
     {
         private readonly IReviewRepository _reviewRepository;
@@ -135,9 +134,9 @@ namespace API.Controllers
 
         [HttpGet("GetAllReviews")] //Get /api/review/GetAllReviews
         //[Authorize(Policy = "Admin")]
-        public ActionResult<ReviewToReturnDto> GetAllReviews()
+        public ActionResult<ReviewToReturnDto> GetAllReviews(int? pageIndex)
         {
-            ICollection<Review> reviews = _reviewRepository.GetAll();
+            ICollection<Review> reviews = _reviewRepository.GetAll(pageIndex);
             if (reviews.Count == 0)
             {
                 return NotFound();

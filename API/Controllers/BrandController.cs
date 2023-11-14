@@ -1,6 +1,8 @@
 ﻿using Core.IRepositories;
 using Core.Models;
 using Microsoft.AspNetCore.Authorization;
+using Infrastructure;
+using Infrastructure.Repositories;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -93,6 +95,21 @@ namespace API.Controllers
                 return BadRequest();
             }
             return BadRequest(ModelState);
+    }
+
+    [HttpDelete]
+    public IActionResult Delete(int id)
+    {
+        try
+        {
+            Brand brd = con.Brands.Find(id);
+            con.Brands.Remove(brd);
+            con.SaveChanges();
+            return Ok();
+        }
+        catch (Exception ex)
+        {
+            return BadRequest();
         }
     }
 }

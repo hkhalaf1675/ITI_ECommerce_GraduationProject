@@ -10,6 +10,8 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using System.Runtime.Intrinsics.Arm;
+
 
 namespace API.Controllers
 {
@@ -17,6 +19,7 @@ namespace API.Controllers
     [ApiController]
     public class ProductsController : ControllerBase
     {
+        #region ctor
         IProductRepository productRepository;
         IConfiguration _configuration;
         string baseUrl;
@@ -29,7 +32,9 @@ namespace API.Controllers
         }
 
 
+        #endregion
 
+        #region GetById
         [HttpGet("{id:int}", Name = "GetProductByID")] //Get /api/products/GetProductByID/1
         public IActionResult GetById(int id)
         {
@@ -47,6 +52,7 @@ namespace API.Controllers
             productToReturnDto.Price = product.Price;
             productToReturnDto.Discount = (int)product.Discount;
             productToReturnDto.Condition = (int)product.Condition;
+            productToReturnDto.stockQuantity = product.StockQuantity;
             productToReturnDto.Model = product.Model;
             productToReturnDto.Color = product.Color;
             productToReturnDto.Storage = (int)product.Storage;
@@ -62,8 +68,8 @@ namespace API.Controllers
             productToReturnDto.BrandName = product.Brand.Name;
             productToReturnDto.Warranties = product.Warranties.ToDictionary(warranty => warranty.PartName, warranty => warranty.Duration);
             // modified the url of the image 
-            //productToReturnDto.Images = product.Images.Select(image => $"{baseUrl}/{image.ImageUrl}").ToList();
-            productToReturnDto.Images = product.Images.Select(image => $"{image.ImageUrl}").ToList();
+            productToReturnDto.Images = product.Images.Select(image => $"{baseUrl}/{image.ImageUrl}").ToList();
+            //productToReturnDto.Images = product.Images.Select(image => $"{image.ImageUrl}").ToList();
             productToReturnDto.AvgRating = product.Reviews?.Any() == true ? (decimal)product.Reviews.Average(r => r.Rating) : 0;
 
             #endregion
@@ -72,8 +78,9 @@ namespace API.Controllers
             return Ok(productToReturnDto);
         }
 
+        #endregion
 
-
+        #region GetAll
         [HttpGet("All")] //GET /api/products/all
         public IActionResult GetAll([FromQuery] QueryParametars parametars)
         {
@@ -118,6 +125,9 @@ namespace API.Controllers
             return Ok(productsDto);
         }
 
+        #endregion
+
+        #region GetProductsWithDiscount
 
         [HttpGet("discount")] //GET /api/products/discount
         public IActionResult GetProductsWithDiscount()
@@ -162,6 +172,9 @@ namespace API.Controllers
             return Ok(productsDto);
         }
 
+        #endregion
+
+        #region GetNewProducts
 
         [HttpGet("latest")] //GET /api/products/latest
         public IActionResult GetNewProducts()
@@ -206,6 +219,9 @@ namespace API.Controllers
             return Ok(productsDto);
         }
 
+        #endregion
+
+        #region GetRelatedProductsByBrand
 
         [HttpGet("{brand:alpha}", Name = "related")] //GET /api/products/related/dell
         public IActionResult GetRelatedProductsByBrand(string brand)
@@ -250,87 +266,130 @@ namespace API.Controllers
             return Ok(productsDto);
         }
 
+        #endregion
+
 
         #region -------------------------- ADMIN ------------------------------
 
         [Authorize(Roles = "Admin")]
+        #region Add
+
         [HttpPost] //Post /api/Products
         public async Task<IActionResult> PostNew()
         {
-            if (ModelState.IsValid)
+            try
             {
-
-
-                var product = new Product
+                if (ModelState.IsValid)
                 {
+                    #region ger warranty by Request.Form["warranties"]
+                    var warranties = new List<Warranty>();
 
-                    Name = Request.Form["name"],
-                    Description = Request.Form["description"],
-                    Price = decimal.Parse(Request.Form["price"]),
-                    Condition = (ProductCondition)Enum.Parse(typeof(ProductCondition), Request.Form["condition"]),
-                    StockQuantity = int.Parse(Request.Form["stockQuantity"]),
-                    Discount = int.Parse(Request.Form["discount"]),
-                    Model = Request.Form["model"],
-                    Color = Request.Form["color"],
-                    Storage = int.Parse(Request.Form["storage"]),
-                    Ram = int.Parse(Request.Form["ram"]),
-                    Carmera = Request.Form["camera"],
-                    CPU = Request.Form["cpu"],
-                    ScreenSize = int.Parse(Request.Form["screenSize"]),
-                    BatteryCapacity = int.Parse(Request.Form["batteryCapacity"]),
-                    OSVersion = Request.Form["osVersion"],
-                    CategoryID = int.Parse(Request.Form["categoryID"]),
-                    BrandID = int.Parse(Request.Form["brandID"]),
+                    // Assuming warranties is an array in the form data
+                    var warrantiesFormValues = Request.Form["warranties"];
+
+                    if (warrantiesFormValues.Count > 0)
+                    {
+                        for (int i = 0; i < warrantiesFormValues.Count; i++)
+                        {
+                            var partNameKey = $"warranties[{i}][partName]";
+                            var durationKey = $"warranties[{i}][duration]";
+
+                            // Retrieve values from Request.Form
+                            var partNameValue = Request.Form[partNameKey];
+                            var durationValue = Request.Form[durationKey];
+
+                            var warranty = new Warranty
+                            {
+                                PartName = partNameValue,
+                                Duration = durationValue
+                            };
+
+                            warranties.Add(warranty);
+                        }
+                    }
+
+                    #endregion
 
 
-                    //// Create related entities
-                    //Warranties = productInput.warranties?.Select(w => new Warranty
-                    //{
-                    //    PartName = w.partName,
-                    //    Duration = w.duration
-                    //}).ToList(),
 
-                    Images = new List<Image>()
-                };
+                    #region Declare product to add
+                    var product = new Product
+                    {
 
-                // Handle image uploads
-                //if (productInput.images != null && productInput.images.Any())
-                //{
-                //    foreach (var imageInput in productInput.images)
-                //    {
-                //        // Save the image to the "images" folder
-                //        var imageFileName = Guid.NewGuid().ToString() + Path.GetExtension(imageInput.FileName);
-                //        var imagePath = Path.Combine("wwwroot","Images", "Products", imageFileName);
+                        Name = Request.Form["name"],
+                        Description = Request.Form["description"],
+                        Price = decimal.Parse(Request.Form["price"]),
+                        Condition = (ProductCondition)Enum.Parse(typeof(ProductCondition), Request.Form["condition"]),
+                        StockQuantity = int.Parse(Request.Form["stockQuantity"]),
+                        Discount = int.Parse(Request.Form["discount"]),
+                        Model = Request.Form["model"],
+                        Color = Request.Form["color"],
+                        Storage = int.Parse(Request.Form["storage"]),
+                        Ram = int.Parse(Request.Form["ram"]),
+                        Carmera = Request.Form["camera"],
+                        CPU = Request.Form["cpu"],
+                        ScreenSize = int.Parse(Request.Form["screenSize"]),
+                        BatteryCapacity = int.Parse(Request.Form["batteryCapacity"]),
+                        OSVersion = Request.Form["osVersion"],
+                        CategoryID = int.Parse(Request.Form["categoryID"]),
+                        BrandID = int.Parse(Request.Form["brandID"]),
 
-                //        // Ensure the directory exists
-                //        var imageDirectory = Path.GetDirectoryName(imagePath);
-                //        if (!Directory.Exists(imageDirectory))
-                //        {
-                //            Directory.CreateDirectory(imageDirectory);
-                //        }
 
-                //        using (var stream = new FileStream(imagePath, FileMode.Create))
-                //        {
-                //            await imageInput.CopyToAsync(stream);
-                //        }
+                        //// Create related entities
+                        Warranties = warranties,
 
-                //        // Add the image information to the Images list
-                //        product.Images.Add(new Image { ImageUrl = imageFileName });
+                        Images = new List<Image>()
+                    };
+                    #endregion
 
-                //    }
-                //}
+                    #region Handle image uploads
+                    if (Request.Form.Files.Count > 0)
+                    {
+                        foreach (var formFile in Request.Form.Files)
+                        {
+                            var imageFileName = Guid.NewGuid().ToString() + Path.GetExtension(formFile.FileName);
+                            var imagePath = Path.Combine("wwwroot", "Images", "Products", imageFileName);
 
-                bool check = productRepository.AddNew(product);
-                if (check)
-                {
-                    return Ok();
+                            // Ensure the directory exists
+                            var imageDirectory = Path.GetDirectoryName(imagePath);
+                            if (!Directory.Exists(imageDirectory))
+                            {
+                                Directory.CreateDirectory(imageDirectory);
+                            }
+
+                            using (var stream = new FileStream(imagePath, FileMode.Create))
+                            {
+                                await formFile.CopyToAsync(stream);
+                            }
+
+                            // Add the image information to the Images list
+                            product.Images.Add(new Image { ImageUrl = imageFileName });
+
+                        }
+                    }
+                    #endregion
+
+                    bool check = productRepository.AddNew(product);
+                    if (check)
+                    {
+                        return Ok();
+                    }
+                    return BadRequest();
                 }
-                return BadRequest();
+                return BadRequest(ModelState);
             }
-            return BadRequest(ModelState);
+            catch (Exception ex)
+            {
+                // Log the exception or handle it appropriately
+                return StatusCode(500, "Internal server error");
+            }
         }
 
         [Authorize(Roles = "Admin")]
+        #endregion
+
+
+        #region Delete
         [HttpDelete] //Delete /api/products
         public IActionResult Delete(int id)
         {
@@ -340,6 +399,123 @@ namespace API.Controllers
                 return Ok("deleted Succsesfully");
             }
             return BadRequest();
+        } 
+        #endregion
+
+
+        [HttpPut] //Put /api/product
+        public async Task<IActionResult> Update()
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    // Check if the product with the given id exists
+                    var existingProduct = productRepository.GetById(int.Parse(Request.Form["id"]));
+
+                    if (existingProduct == null)
+                    {
+                        return NotFound(); // Product not found
+                    }
+
+
+                    #region  Update the existing product with the new data
+                    existingProduct.Name = Request.Form["name"];
+                    existingProduct.Description = Request.Form["description"];
+                    existingProduct.Price = decimal.Parse(Request.Form["price"]);
+                    existingProduct.Condition = (ProductCondition)Enum.Parse(typeof(ProductCondition), Request.Form["condition"]);
+                    existingProduct.StockQuantity = int.Parse(Request.Form["stockQuantity"]);
+                    existingProduct.Discount = int.Parse(Request.Form["discount"]);
+                    existingProduct.Model = Request.Form["model"];
+                    existingProduct.Color = Request.Form["color"];
+                    existingProduct.Storage = int.Parse(Request.Form["storage"]);
+                    existingProduct.Ram = int.Parse(Request.Form["ram"]);
+                    existingProduct.Carmera = Request.Form["camera"];
+                    existingProduct.CPU = Request.Form["cpu"];
+                    existingProduct.ScreenSize = int.Parse(Request.Form["screenSize"]);
+                    existingProduct.BatteryCapacity = int.Parse(Request.Form["batteryCapacity"]);
+                    existingProduct.OSVersion = Request.Form["osVersion"];
+                    existingProduct.CategoryID = int.Parse(Request.Form["categoryID"]);
+                    existingProduct.BrandID = int.Parse(Request.Form["brandID"]);
+                    #endregion
+
+                    #region ger warranty by Request.Form["warranties"]
+                    var warranties = new List<WarrantiesDto>();
+
+                    // Assuming warranties is an array in the form data
+                    var warrantiesFormValues = Request.Form["warranties"];
+
+                    if (warrantiesFormValues.Count > 0)
+                    {
+                        for (int i = 0; i < warrantiesFormValues.Count; i++)
+                        {
+                            var partNameKey = $"warranties[{i}][partName]";
+                            var durationKey = $"warranties[{i}][duration]";
+
+                            // Retrieve values from Request.Form
+                            var partNameValue = Request.Form[partNameKey];
+                            var durationValue = Request.Form[durationKey];
+
+                            var warranty = new WarrantiesDto
+                            {
+                                partName = partNameValue,
+                                duration = durationValue
+                            };
+
+                            warranties.Add(warranty);
+                        }
+                    }
+
+                    #endregion
+
+                    var Images = new List<Image>();
+
+                    #region Handle image uploads
+                    if (Request.Form.Files.Count > 0)
+                    {
+                        foreach (var formFile in Request.Form.Files)
+                        {
+                            var imageFileName = Guid.NewGuid().ToString() + Path.GetExtension(formFile.FileName);
+                            var imagePath = Path.Combine("wwwroot", "Images", "Products", imageFileName);
+
+                            // Ensure the directory exists
+                            var imageDirectory = Path.GetDirectoryName(imagePath);
+                            if (!Directory.Exists(imageDirectory))
+                            {
+                                Directory.CreateDirectory(imageDirectory);
+                            }
+
+                            using (var stream = new FileStream(imagePath, FileMode.Create))
+                            {
+                                await formFile.CopyToAsync(stream);
+                            }
+
+                            // Add the image information to the Images list
+                            Images.Add(new Image { ImageUrl = imageFileName });
+
+                        }
+                    }
+                    #endregion
+
+                    // Update related entities (Warranties and Images)
+                    productRepository.UpdateWarranties(existingProduct, warranties);
+                    productRepository.UpdateImages(existingProduct, Images);
+
+                    bool check = productRepository.Update(existingProduct);
+
+                    if (check)
+                    {
+                        return Ok();
+                    }
+                    return BadRequest();
+                }
+                return BadRequest(ModelState);
+            }
+            catch (Exception ex)
+            {
+                // Log the exception or handle it appropriately
+                return StatusCode(500, "Internal server error");
+            }
         }
 
         //[Authorize(Roles = "Admin")]

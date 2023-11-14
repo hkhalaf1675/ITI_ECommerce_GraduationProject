@@ -20,6 +20,7 @@ namespace Core.DTOs.Product
         public decimal PriceAfter => Math.Round(Price - (Price * Discount / 100), 0);
 
         public int Condition { get; set; }
+        public int stockQuantity { get; set; }
         public string? Model { get; set; }
         public string? Color { get; set; }
         public int Storage { get; set; }

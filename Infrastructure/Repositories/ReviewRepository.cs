@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -26,15 +27,14 @@ namespace Infrastructure.Repositories
                 .FirstOrDefault(r => r.Id == id);
         }
 
-        public ICollection<Review> GetAll()
+        public ICollection<Review> GetAll(int? pageIndex)
         {
-            return _context.Reviews
-                .Include(r => r.Product)
-                .Include(r => r.User)
-                .ToList();
+            var reviews = _context.Reviews
+                        .Include(r => r.Product)
+                        .Include(r => r.User)
+            .ToList();
+            return reviews.Skip((int)((pageIndex - 1) * 6)).Take(6).ToList(); 
         }
-
-      
         public ICollection<Review> GetReviewsByProduct(int productId)
         {
             return _context.Reviews
