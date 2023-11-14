@@ -1,7 +1,9 @@
 using Core.IRepositories;
+using Core.IServices;
 using Core.Models;
 using Infrastructure;
 using Infrastructure.Repositories;
+using Infrastructure.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -26,16 +28,18 @@ builder.Services.AddDbContext<ECommerceDBContext>(Options =>
             b => b.MigrationsAssembly(typeof(ECommerceDBContext).Assembly.FullName))
 );
 
-
-#region inject the repository
-builder.Services.AddScoped(typeof(ICategoryRepository), typeof(CategoryRepository));
+#region Repositories Injection
 builder.Services.AddScoped(typeof(IProductRepository), typeof(ProductRepository));
 builder.Services.AddScoped(typeof(IReviewRepository), typeof(ReviewRepository));
-
+builder.Services.AddScoped(typeof(IUserRepository), typeof(UserRepository));
+builder.Services.AddScoped(typeof(ICategoryRepository), typeof(CategoryRepository));
+builder.Services.AddScoped(typeof(IWishlistRepository), typeof(WishlistRepository));
+builder.Services.AddScoped(typeof(IShopingCartRepository),typeof(ShopingCartRepository ));
+builder.Services.AddScoped(typeof(IFavouriteRepository), typeof(FavouriteRepository));
+builder.Services.AddScoped(typeof(IAccountManagerServices), typeof(AccountManagerServices));
 #endregion
 
 #region Identity
-//adding dbcontext for identity
 builder.Services.AddIdentity<User, IdentityRole<int>>(Options =>
 {
     Options.User.RequireUniqueEmail = true;
@@ -53,17 +57,19 @@ builder.Services.AddAuthentication(Options =>
     Options.DefaultAuthenticateScheme = "Default";
     Options.DefaultChallengeScheme = "Default";
 })
+
 .AddJwtBearer("Default", options =>
 {
-  var KeyString = builder.Configuration.GetValue<string>("SecretKey");
-  var KeyInBytes = Encoding.ASCII.GetBytes(KeyString);
-  var Key = new SymmetricSecurityKey(KeyInBytes);
-  options.TokenValidationParameters = new TokenValidationParameters
-  {
-      IssuerSigningKey = Key,
-      ValidateIssuer = false,
-      ValidateAudience = false
-  };
+    //var KeyString = builder.Configuration.GetValue<string>("JWT:Key");   
+    var KeyString = builder.Configuration.GetValue<string>("SecretKey");
+    var KeyInBytes = Encoding.ASCII.GetBytes(KeyString);
+    var Key = new SymmetricSecurityKey(KeyInBytes);
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        IssuerSigningKey = Key,
+        ValidateIssuer = false,
+        ValidateAudience = false
+    };
 });
 
 #endregion

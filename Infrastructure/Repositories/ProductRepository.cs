@@ -180,75 +180,75 @@ namespace Infrastructure.Repositories
             }
         }
 
-        //public void UpdateWarranties(Product product, IEnumerable<WarrantiesDto> warrantyInput)
-        //{
-        //    // Remove existing warranties not in the input
-        //    var existingWarranties = product.Warranties.ToList();
-        //    foreach (var existingWarranty in existingWarranties)
-        //    {
-        //        var matchingInputWarranty = warrantyInput.FirstOrDefault(w => w.PartName == existingWarranty.PartName);
-        //        if (matchingInputWarranty == null)
-        //        {
-        //            product.Warranties.Remove(existingWarranty);
-        //        }
-        //    }
+        public void UpdateWarranties(Product product, IEnumerable<WarrantiesDto> warrantyInput)
+        {
+            // Remove existing warranties not in the input
+            var existingWarranties = product.Warranties.ToList();
+            foreach (var existingWarranty in existingWarranties)
+            {
+                var matchingInputWarranty = warrantyInput.FirstOrDefault(w => w.partName == existingWarranty.PartName);
+                if (matchingInputWarranty == null)
+                {
+                    product.Warranties.Remove(existingWarranty);
+                }
+            }
 
-        //    // Add or update warranties from the input
-        //    foreach (var warranty in warrantyInput)
-        //    {
-        //        var existingWarranty = product.Warranties.FirstOrDefault(w => w.PartName == warranty.PartName);
-        //        if (existingWarranty == null)
-        //        {
-        //            // Create a new warranty
-        //            var newWarranty = new Warranty
-        //            {
-        //                PartName = warranty.PartName,
-        //                Duration = warranty.Duration
-        //            };
-        //            product.Warranties.Add(newWarranty);
-        //        }
-        //        else
-        //        {
-        //            // Update existing warranty
-        //            existingWarranty.PartName = warranty.PartName;
-        //            existingWarranty.Duration = warranty.Duration;
-        //        }
-        //    }
-        //}
+            // Add or update warranties from the input
+            foreach (var warranty in warrantyInput)
+            {
+                var existingWarranty = product.Warranties.FirstOrDefault(w => w.PartName == warranty.partName);
+                if (existingWarranty == null)
+                {
+                    // Create a new warranty
+                    var newWarranty = new Warranty
+                    {
+                        PartName = warranty.partName,
+                        Duration = warranty.duration
+                    };
+                    product.Warranties.Add(newWarranty);
+                }
+                else
+                {
+                    // Update existing warranty
+                    existingWarranty.PartName = warranty.partName;
+                    existingWarranty.Duration = warranty.duration;
+                }
+            }
+        }
 
-        //public void UpdateImages(Product product, IEnumerable<ImagesInputDto> imageInput)
-        //{
-        //    // Remove existing images not in the input
-        //    var existingImages = product.Images.ToList();
-        //    foreach (var existingImage in existingImages)
-        //    {
-        //        var matchingInputImage = imageInput.FirstOrDefault(i => i.ImageUrl == existingImage.ImageUrl);
-        //        if (matchingInputImage == null)
-        //        {
-        //            product.Images.Remove(existingImage);
-        //        }
-        //    }
+        public void UpdateImages(Product product, IEnumerable<Image> imageInput)
+        {
+            // Remove existing images not in the input
+            var existingImages = product.Images.ToList();
+            foreach (var existingImage in existingImages)
+            {
+                var matchingInputImage = imageInput.FirstOrDefault(i => i.ImageUrl == existingImage.ImageUrl);
+                if (matchingInputImage == null)
+                {
+                    product.Images.Remove(existingImage);
+                }
+            }
 
-        //    // Add or update images from the input
-        //    foreach (var image in imageInput)
-        //    {
-        //        var existingImage = product.Images.FirstOrDefault(i => i.ImageUrl == image.ImageUrl);
-        //        if (existingImage == null)
-        //        {
-        //            // Create a new image
-        //            var newImage = new Image
-        //            {
-        //                ImageUrl = image.ImageUrl
-        //            };
-        //            product.Images.Add(newImage);
-        //        }
-        //        else
-        //        {
-        //            // Update existing image
-        //            existingImage.ImageUrl = image.ImageUrl;
-        //        }
-        //    }
-        //}
+            // Add or update images from the input
+            foreach (var image in imageInput)
+            {
+                var existingImage = product.Images.FirstOrDefault(i => i.ImageUrl == image.ImageUrl);
+                if (existingImage == null)
+                {
+                    // Create a new image
+                    var newImage = new Image
+                    {
+                        ImageUrl = image.ImageUrl
+                    };
+                    product.Images.Add(newImage);
+                }
+                else
+                {
+                    // Update existing image
+                    existingImage.ImageUrl = image.ImageUrl;
+                }
+            }
+        }
 
         public bool Update(Product product)
         {
