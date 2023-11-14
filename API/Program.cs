@@ -37,6 +37,9 @@ builder.Services.AddScoped(typeof(IWishlistRepository), typeof(WishlistRepositor
 builder.Services.AddScoped(typeof(IFavouriteRepository),typeof(FavouriteRepository));
 builder.Services.AddScoped(typeof(IShopingCartRepository), typeof(ShopingCartRepository));
 builder.Services.AddScoped(typeof(IBrandRepository),typeof(BrandRepository ));
+builder.Services.AddScoped(typeof(IAdminUserManager),typeof(AdminUserManager ));
+builder.Services.AddScoped(typeof(IContactUsRepository),typeof(ContactUsRepository ));
+
 builder.Services.AddScoped(typeof(IAccountManagerServices), typeof(AccountManagerServices));
 #endregion
 

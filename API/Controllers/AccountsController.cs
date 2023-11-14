@@ -24,16 +24,12 @@ namespace API.Controllers
         private readonly UserManager<User> userManager;
         private readonly IAccountManagerServices accountManager;
         private readonly IConfiguration configuration;
-        private readonly IWishlistRepository wishlistRepository;
-        private readonly IFavouriteRepository favouriteRepository;
 
-        public AccountsController(UserManager<User> _userManager, IAccountManagerServices _accountManager, IConfiguration _configuration, IWishlistRepository _wishlistRepository, IFavouriteRepository _favouriteRepository)
+        public AccountsController(UserManager<User> _userManager, IAccountManagerServices _accountManager, IConfiguration _configuration)
         {
             this.userManager = _userManager;
             accountManager = _accountManager;
             this.configuration = _configuration;
-            wishlistRepository = _wishlistRepository;
-            favouriteRepository = _favouriteRepository;
         }
         #endregion
 
@@ -201,103 +197,6 @@ namespace API.Controllers
         //        );
         //}
         #endregion
-
-        #region Current User Wishlist
-
-        #region Get All wishlist
-        [HttpGet("wishlist")]
-        public async Task<IActionResult> GetWishlist()
-        {
-            if (int.TryParse(User.Claims.FirstOrDefault(C => C.Type == ClaimTypes.NameIdentifier)?.Value, out int userId))
-            {
-                var productList = wishlistRepository.UserProducts(userId);
-                if (productList?.Count == 0)
-                    return NotFound();
-                return Ok(productList);
-            }
-            return BadRequest();
-        }
-        #endregion
-
-        #region Add new Wishlist
-        [HttpPost("wishlist/{productId:int}")]
-        public async Task<IActionResult> AddToWishlist(int productId)
-        {
-            if (int.TryParse(User.Claims.FirstOrDefault(C => C.Type == ClaimTypes.NameIdentifier)?.Value, out int userId))
-            {
-                bool check = wishlistRepository.AddNew(userId, productId);
-                if (check)
-                    return Ok();
-            }
-            return BadRequest();
-        }
-        #endregion
-
-        #region Delete Wishlist
-        [HttpDelete("wishlist/{productId:int}")]
-        public async Task<IActionResult> DeleteFromWishlist(int productId)
-        {
-            if (int.TryParse(User.Claims.FirstOrDefault(C => C.Type == ClaimTypes.NameIdentifier)?.Value, out int userId))
-            {
-                bool check = wishlistRepository.Delete(userId, productId);
-                if (check)
-                    return Ok();
-            }
-            return BadRequest();
-        } 
-        #endregion
-
-        #endregion
-
-        #region Current User Favorites
-
-        #region Get All Favorites
-        [HttpGet("favourite")]
-        public async Task<IActionResult> GetFavourite()
-        {
-            if (int.TryParse(User.Claims.FirstOrDefault(C => C.Type == ClaimTypes.NameIdentifier)?.Value, out int userId))
-            {
-                var productList = favouriteRepository.UserProducts(userId);
-                if (productList?.Count == 0)
-                    return NotFound();
-                return Ok(productList);
-            }
-            return BadRequest();
-        }
-        #endregion
-
-        #region Add Favorite
-        [HttpPost("favourite/{productId:int}")]
-        public async Task<IActionResult> AddToFavourite(int productId)
-        {
-            if (int.TryParse(User.Claims.FirstOrDefault(C => C.Type == ClaimTypes.NameIdentifier)?.Value, out int userId))
-            {
-                bool check = favouriteRepository.AddNew(userId, productId);
-                if (check)
-                    return Ok();
-            }
-            return BadRequest();
-        }
-        #endregion
-
-        #region Delete Favorite 
-
-        [HttpDelete("favourite/{productId:int}")]
-        public async Task<IActionResult> DeleteFromFavourite(int productId)
-        {
-            if (int.TryParse(User.Claims.FirstOrDefault(C => C.Type == ClaimTypes.NameIdentifier)?.Value, out int userId))
-            {
-                bool check = favouriteRepository.Delete(userId, productId);
-                if (check)
-                    return Ok();
-            }
-            return BadRequest();
-        } 
-
-        #endregion
-
-        #endregion
-
 
     }
 
