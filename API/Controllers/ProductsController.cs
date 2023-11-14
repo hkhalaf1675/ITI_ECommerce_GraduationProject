@@ -8,7 +8,7 @@ using Image = Core.Models.Image;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-
+using Newtonsoft.Json;
 
 namespace API.Controllers
 {
@@ -253,66 +253,70 @@ namespace API.Controllers
         #region -------------------------- ADMIN ------------------------------
 
         [HttpPost] //Post /api/Products
-        public async Task<IActionResult> PostNew([FromForm]ProductToAddDto productInput)
+        public async Task<IActionResult> PostNew()
         {
             if (ModelState.IsValid)
             {
+
+
                 var product = new Product
                 {
-                    Name = productInput.name,
-                    Description = productInput.description,
-                    Price = productInput.price,
-                    Condition = (ProductCondition)productInput.condition,
-                    StockQuantity = productInput.stockQuantity,
-                    Discount = productInput.discount,
-                    Model = productInput.model,
-                    Color = productInput.color,
-                    Storage = productInput.storage,
-                    Ram = productInput.ram,
-                    Carmera = productInput.camera,
-                    CPU = productInput.cpu,
-                    ScreenSize = productInput.screenSize,
-                    BatteryCapacity = productInput.batteryCapacity,
-                    OSVersion = productInput.osVersion,
-                    CategoryID = productInput.categoryID,
-                    BrandID = productInput.brandID,
 
-                    // Create related entities
-                    Warranties = productInput.warranties?.Select(w => new Warranty
-                    {
-                        PartName = w.partName,
-                        Duration = w.duration
-                    }).ToList(),
+                    Name = Request.Form["name"],
+                    Description = Request.Form["description"],
+                    Price = decimal.Parse(Request.Form["price"]),
+                    Condition = (ProductCondition)Enum.Parse(typeof(ProductCondition), Request.Form["condition"]),
+                    StockQuantity = int.Parse(Request.Form["stockQuantity"]),
+                    Discount = int.Parse(Request.Form["discount"]),
+                    Model = Request.Form["model"],
+                    Color = Request.Form["color"],
+                    Storage = int.Parse(Request.Form["storage"]),
+                    Ram = int.Parse(Request.Form["ram"]),
+                    Carmera = Request.Form["camera"],
+                    CPU = Request.Form["cpu"],
+                    ScreenSize = int.Parse(Request.Form["screenSize"]),
+                    BatteryCapacity = int.Parse(Request.Form["batteryCapacity"]),
+                    OSVersion = Request.Form["osVersion"],
+                    CategoryID = int.Parse(Request.Form["categoryID"]),
+                    BrandID = int.Parse(Request.Form["brandID"]),
+
+
+                    //// Create related entities
+                    //Warranties = productInput.warranties?.Select(w => new Warranty
+                    //{
+                    //    PartName = w.partName,
+                    //    Duration = w.duration
+                    //}).ToList(),
 
                     Images = new List<Image>()
                 };
 
                 // Handle image uploads
-                if (productInput.images != null && productInput.images.Any())
-                {
-                    foreach (var imageInput in productInput.images)
-                    {
-                        // Save the image to the "images" folder
-                        var imageFileName = Guid.NewGuid().ToString() + Path.GetExtension(imageInput.FileName);
-                        var imagePath = Path.Combine("wwwroot","Images", "Products", imageFileName);
+                //if (productInput.images != null && productInput.images.Any())
+                //{
+                //    foreach (var imageInput in productInput.images)
+                //    {
+                //        // Save the image to the "images" folder
+                //        var imageFileName = Guid.NewGuid().ToString() + Path.GetExtension(imageInput.FileName);
+                //        var imagePath = Path.Combine("wwwroot","Images", "Products", imageFileName);
 
-                        // Ensure the directory exists
-                        var imageDirectory = Path.GetDirectoryName(imagePath);
-                        if (!Directory.Exists(imageDirectory))
-                        {
-                            Directory.CreateDirectory(imageDirectory);
-                        }
+                //        // Ensure the directory exists
+                //        var imageDirectory = Path.GetDirectoryName(imagePath);
+                //        if (!Directory.Exists(imageDirectory))
+                //        {
+                //            Directory.CreateDirectory(imageDirectory);
+                //        }
 
-                        using (var stream = new FileStream(imagePath, FileMode.Create))
-                        {
-                            await imageInput.CopyToAsync(stream);
-                        }
+                //        using (var stream = new FileStream(imagePath, FileMode.Create))
+                //        {
+                //            await imageInput.CopyToAsync(stream);
+                //        }
 
-                        // Add the image information to the Images list
-                        product.Images.Add(new Image { ImageUrl = imageFileName });
+                //        // Add the image information to the Images list
+                //        product.Images.Add(new Image { ImageUrl = imageFileName });
 
-                    }
-                }
+                //    }
+                //}
 
                 bool check = productRepository.AddNew(product);
                 if (check)

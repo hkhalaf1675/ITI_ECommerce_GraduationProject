@@ -8,7 +8,7 @@ namespace Core.DTOs.Product
 {
     public class WarrantiesDto
     {
-        public string partName { get; set; }
-        public string duration { get; set; }
+        public string partName { get; set; } = "N/A";
+        public string duration { get; set; } = "N/A";
     }
 }
