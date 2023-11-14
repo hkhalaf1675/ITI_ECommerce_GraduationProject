@@ -277,7 +277,11 @@ namespace Infrastructure.Repositories
             }
         }
 
-
+        // get the count of all products
+        public int GetProductsCount()
+        {
+            return context.Products.Count();
+        }
 
 
         #endregion

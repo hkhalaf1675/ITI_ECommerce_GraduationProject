@@ -34,6 +34,8 @@ namespace Core.IRepositories
 
         public void UpdateImages(Product product, IEnumerable<ImagesInputDto> imageInput);
 
+        int GetProductsCount();
+
         #endregion
     }
 }

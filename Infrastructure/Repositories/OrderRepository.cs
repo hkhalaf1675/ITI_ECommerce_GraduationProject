@@ -1,5 +1,6 @@
 ﻿
 using Core.DTOs.ShopingCartDtos;
+using Core.DTOs.UserProfileDtos;
 using Core.IRepositories;
 using Core.Models;
 using System;
@@ -75,11 +76,62 @@ namespace Infrastructure.Repositories
 
 
         }
+        
+        public async Task<int> GetOrdersCount()
+        {
+            return context.Orders.Count();
+        }
+
+        public async Task<bool> AdminDeleteOrder(int orderId)
+        {
+            Order order = context.Orders.FirstOrDefault(O => O.Id == orderId);
+            if (order == null)
+            {
+                return false;
+            }
+            context.Orders.Remove(order);
+
+            try
+            {
+                context.SaveChanges();
+                return true;
+            }
+            catch(Exception ex)
+            {
+                return false;
+            }
+        }
+
+        public async Task<IEnumerable<UserOrderDto>> GetAllOrders(int pageNumber)
+        {
+            List<UserOrderDto> allOrders = new List<UserOrderDto>();
+
+            var orders = context.Orders.Skip((pageNumber - 1) * 10).Take(10);
+
+            foreach(var order in orders)
+            {
+                allOrders.Add(new UserOrderDto
+                {
+                    OrderId = order.Id,
+                    Status = order.Status,
+                    Date = order.Date,
+                    UserId = order.UserId
+                });
+            }
+
+            return allOrders;
+        }
+
+        public async Task<decimal> TotalSell()
+        {
+            return context.Orders.Sum(O => O.TotalPrice);
+        }
 
         private Order? GetLastOrder(int userId)
         {
             return context.Orders.OrderByDescending(O => O.UserId == userId)?
                 .FirstOrDefault();
         }
+
     }
 }

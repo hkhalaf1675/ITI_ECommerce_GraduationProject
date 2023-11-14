@@ -12,5 +12,6 @@ namespace Core.DTOs.UserProfileDtos
         public int OrderId { get; set; }
         public OrderStatus Status { get; set; }
         public DateTime Date { get; set; }
+        public int? UserId { get; set; }
     }
 }

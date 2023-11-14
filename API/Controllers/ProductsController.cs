@@ -1,6 +1,7 @@
 ﻿using Core.DTOs.Product;
 using Core.IRepositories;
 using Core.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using static System.Net.Mime.MediaTypeNames;
@@ -246,6 +247,7 @@ namespace API.Controllers
 
         #region -------------------------- ADMIN ------------------------------
 
+        [Authorize(Roles = "Admin")]
         [HttpPost] //Post /api/products
         public IActionResult PostNew([FromBody]ProductToAddDto productInput)
         {
@@ -294,6 +296,7 @@ namespace API.Controllers
             return BadRequest(ModelState);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpDelete] //Delete /api/products
         public IActionResult Delete(int id)
         {
@@ -305,6 +308,7 @@ namespace API.Controllers
             return BadRequest();
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPut] //Put /api/product
         public IActionResult Update(int id, [FromBody] ProductToAddDto productInput)
         {
@@ -352,7 +356,14 @@ namespace API.Controllers
             return BadRequest(ModelState);
         }
 
-       
+
+        // get the count of all products
+        [Authorize(Roles = "Admin")]
+        [HttpGet("GetProductsCount")]
+        public async Task<IActionResult> GetProductsCount()
+        {
+            return Ok(productRepository.GetProductsCount());
+        }
 
         #endregion
     }
