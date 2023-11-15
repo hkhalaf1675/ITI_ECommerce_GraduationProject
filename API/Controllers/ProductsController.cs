@@ -272,7 +272,7 @@ namespace API.Controllers
 
         #region -------------------------- ADMIN ------------------------------
 
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         #region Add
 
         [HttpPost] //Post /api/Products
@@ -282,36 +282,6 @@ namespace API.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    #region ger warranty by Request.Form["warranties"]
-                    var warranties = new List<Warranty>();
-
-                    // Assuming warranties is an array in the form data
-                    var warrantiesFormValues = Request.Form["warranties"];
-
-                    if (warrantiesFormValues.Count > 0)
-                    {
-                        for (int i = 0; i < warrantiesFormValues.Count; i++)
-                        {
-                            var partNameKey = $"warranties[{i}][partName]";
-                            var durationKey = $"warranties[{i}][duration]";
-
-                            // Retrieve values from Request.Form
-                            var partNameValue = Request.Form[partNameKey];
-                            var durationValue = Request.Form[durationKey];
-
-                            var warranty = new Warranty
-                            {
-                                PartName = partNameValue,
-                                Duration = durationValue
-                            };
-
-                            warranties.Add(warranty);
-                        }
-                    }
-
-                    #endregion
-
-
 
                     #region Declare product to add
                     var product = new Product
@@ -335,13 +305,32 @@ namespace API.Controllers
                         CategoryID = int.Parse(Request.Form["categoryID"]),
                         BrandID = int.Parse(Request.Form["brandID"]),
 
-
-                        //// Create related entities
-                        Warranties = warranties,
-
+                        Warranties = new List<Warranty>(),
                         Images = new List<Image>()
                     };
                     #endregion
+
+                    #region ger warranty by Request.Form["warranties"]
+                    // make it in a shape of Json Array 
+                    var jsonString = "[" + Request.Form["warranties"].ToString() + "]";
+
+                    // Deserialize it using Newtonsoft.json library $
+                    var warranties = JsonConvert.DeserializeObject<List<WarrantiesDto>>(jsonString);
+
+                    // That's it all! No magic here
+                    #endregion
+
+                    foreach (var item in warranties)
+                    {
+                        Warranty warranty = new Warranty()
+                        {
+                            PartName = item.partName,
+                            Duration = item.duration
+                        };
+
+                        product.Warranties.Add(warranty);
+                    }
+
 
                     #region Handle image uploads
                     if (Request.Form.Files.Count > 0)
@@ -419,7 +408,6 @@ namespace API.Controllers
                         return NotFound(); // Product not found
                     }
 
-
                     #region  Update the existing product with the new data
                     existingProduct.Name = Request.Form["name"];
                     existingProduct.Description = Request.Form["description"];
@@ -440,46 +428,19 @@ namespace API.Controllers
                     existingProduct.BrandID = int.Parse(Request.Form["brandID"]);
                     #endregion
 
-                    #region ger warranty by Request.Form["warranties"]
-
-                    // Assuming warranties is an array in the form data
-                    // Abdulrahman: It's Not an array, Tasneem!. Its a Json Structure and we have to desercialize it to make it
-                    // in an array Shape! so we have to install library called NewtonJson to deserialize it 
-
-                    //var warranties = new List<WarrantiesDto>();
-                    //var warrantiesFormValues = Request.Form["warranties"];
-                    //if (warrantiesFormValues.Count > 0)
-                    //{
-                    //    for (int i = 0; i < warrantiesFormValues.Count; i++)
-                    //    {
-                    //        var partNameKey = $"warranties[{i}][partName]";
-                    //        var durationKey = $"warranties[{i}][duration]";
-
-                    //        // Retrieve values from Request.Form
-                    //        var partNameValue = Request.Form[partNameKey];
-                    //        var durationValue = Request.Form[durationKey];
-
-                    //        var warranty = new WarrantiesDto
-                    //        {
-                    //            partName = partNameValue,
-                    //            duration = durationValue
-                    //        };
-
-                    //        warranties.Add(warranty);
-                    //    }
-                    //}
-
-
+                    #region Get Warranties
+                    // make it in a shape of Json Array 
                     var jsonString = "[" + Request.Form["warranties"].ToString() + "]";
+
+                    // Deserialize it using Newtonsoft.json library $
                     var warranties = JsonConvert.DeserializeObject<List<WarrantiesDto>>(jsonString);
 
-                    
-
+                    // That's it all! No magic here
                     #endregion
 
+                    #region Handle image uploads
                     var Images = new List<Image>();
 
-                    #region Handle image uploads
                     if (Request.Form.Files.Count > 0)
                     {
                         foreach (var formFile in Request.Form.Files)
@@ -501,10 +462,10 @@ namespace API.Controllers
 
                             // Add the image information to the Images list
                             Images.Add(new Image { ImageUrl = imageFileName });
-
                         }
                     }
                     #endregion
+                    
 
                     // Update related entities (Warranties and Images)
                     productRepository.UpdateWarranties(existingProduct, warranties);
