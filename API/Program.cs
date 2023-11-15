@@ -38,6 +38,8 @@ builder.Services.AddScoped(typeof(IFavouriteRepository),typeof(FavouriteReposito
 builder.Services.AddScoped(typeof(IShopingCartRepository), typeof(ShopingCartRepository));
 builder.Services.AddScoped(typeof(IBrandRepository),typeof(BrandRepository ));
 builder.Services.AddScoped(typeof(IAccountManagerServices), typeof(AccountManagerServices));
+//builder.Services.AddScoped(typeof(IAdminUserManager), typeof(AdminUserManager)); // tasnem: add this to get all users for admin
+
 #endregion
 
 #region Identity
