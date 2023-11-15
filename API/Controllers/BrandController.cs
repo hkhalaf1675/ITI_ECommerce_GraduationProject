@@ -1,7 +1,6 @@
 ﻿using Core.IRepositories;
 using Core.Models;
-using Infrastructure;
-using Infrastructure.Repositories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,19 +10,17 @@ namespace API.Controllers
     [ApiController]
     public class BrandController : ControllerBase
     {
-        private readonly ECommerceDBContext con;
+        private readonly IBrandRepository brandRepository;
 
-        //Brand Controller
-
-        public BrandController(ECommerceDBContext con)
+        public BrandController(IBrandRepository _brandRepository)
         {
-            this.con = con;
+            brandRepository = _brandRepository;
         }
 
         [HttpGet("All")]
         public IActionResult GetAll()
         {
-            ICollection<Brand> brands = con.Brands.ToList();
+            ICollection<Brand> brands = brandRepository.GetAll();
             if (brands?.Count == 0)
             {
                 return NotFound();
@@ -31,21 +28,71 @@ namespace API.Controllers
             return Ok(brands);
         }
 
-        [HttpDelete]
-        public IActionResult Delete(int id)
+        [HttpGet("{id:int}", Name = "BrandGetByID")]
+        public IActionResult GetById(int id)
         {
-            try
+            Brand brand = brandRepository.GetById(id);
+            if (brand == null)
             {
-                Brand brd = con.Brands.Find(id);
-                con.Brands.Remove(brd);
-                con.SaveChanges();
-                return Ok();
+                return NotFound();
             }
-            catch (Exception ex)
+            return Ok(brand);
+        }
+
+        [HttpGet("{name:alpha}")]
+        public IActionResult GetByName(string name)
+        {
+            ICollection<Brand> brands = brandRepository.GetByName(name);
+            if (brands?.Count == 0)
             {
+                return NotFound();
+            }
+            return Ok(brands);
+        }
+
+        // --------------------------------------------------------
+        [HttpPost]
+       // [Authorize(Roles = "Admin")]
+        public IActionResult PostNew(Brand brand)
+        {
+            if (ModelState.IsValid)
+            {
+                bool check = brandRepository.AddNew(brand);
+                if (check)
+                {
+                    return Ok();
+                }
                 return BadRequest();
             }
+            return BadRequest(ModelState);
+        }
 
+        [HttpDelete]
+        //[Authorize(Roles = "Admin")]
+        public IActionResult Delete(int id)
+        {
+            bool check = brandRepository.Delete(id);
+            if (check)
+            {
+                return Ok();
+            }
+            return BadRequest();
+        }
+
+        [HttpPut]
+        //[Authorize(Roles = "Admin")]
+        public IActionResult Update(Brand brand)
+        {
+            if (ModelState.IsValid)
+            {
+                bool check = brandRepository.Update(brand);
+                if (check)
+                {
+                    return Ok();
+                }
+                return BadRequest();
+            }
+            return BadRequest(ModelState);
         }
     }
 }

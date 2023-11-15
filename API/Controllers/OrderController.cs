@@ -10,7 +10,7 @@ namespace API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    [Authorize(Roles = "Admin")]
     public class OrderController : ControllerBase
     {
         private readonly IOrderRepository orderRepository;
@@ -20,6 +20,7 @@ namespace API.Controllers
             orderRepository = _orderRepository;
         }
 
+        [Authorize]
         [HttpPost("addOrder")]
         public async Task<IActionResult> AddNewOrder(int addressId,string payMethod)
         {
@@ -30,6 +31,36 @@ namespace API.Controllers
                     return Ok();
             }
             return BadRequest();
+        }
+
+        
+        [HttpGet("GetOrdersCount")]
+        public async Task<IActionResult> GetOrdersCount()
+        {
+            return Ok(orderRepository.GetOrdersCount());
+        }
+
+        [HttpGet("GetAllOrders/{pageNumber:int}")]
+        public async Task<IActionResult> GetAllOrders(int pageNumber)
+        {
+            return Ok(await orderRepository.GetAllOrders(pageNumber));
+        }
+
+        [HttpDelete("DeleteOrder/{orderId:int}")]
+        public async Task<IActionResult> DeleteOrder(int orderId)
+        {
+            bool check = await orderRepository.AdminDeleteOrder(orderId);
+
+            if (check) 
+                return Ok();
+
+            return BadRequest();
+        }
+
+        [HttpGet("TotalSell")]
+        public async Task<IActionResult> GetTotalSell()
+        {
+            return Ok(orderRepository.TotalSell);
         }
     }
 }

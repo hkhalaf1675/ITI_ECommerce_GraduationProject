@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Core.DTOs.UserProfileDtos;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,5 +10,9 @@ namespace Core.IRepositories
     public interface IOrderRepository
     {
         Task<bool> AddNewOrder(int userId, int addressId, string payMethod);
+        Task<int> GetOrdersCount();
+        Task<IEnumerable<UserOrderDto>> GetAllOrders(int pageNumber);
+        Task<bool> AdminDeleteOrder(int orderId);
+        Task<decimal> TotalSell();
     }
 }

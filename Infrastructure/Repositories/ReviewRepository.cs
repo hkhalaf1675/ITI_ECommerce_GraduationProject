@@ -27,14 +27,24 @@ namespace Infrastructure.Repositories
                 .FirstOrDefault(r => r.Id == id);
         }
 
-        public ICollection<Review> GetAll(int? pageIndex)
+        public ICollection<Review> GetAll()
         {
             var reviews = _context.Reviews
                         .Include(r => r.Product)
                         .Include(r => r.User)
             .ToList();
-            return reviews.Skip((int)((pageIndex - 1) * 6)).Take(6).ToList(); 
+            return reviews; 
         }
+
+        public ICollection<Review> GetAllAdmin(int? pageIndex)
+        {
+            var reviews = _context.Reviews
+                        .Include(r => r.Product)
+                        .Include(r => r.User)
+            .ToList();
+            return reviews.Skip((int)((pageIndex - 1) * 6)).Take(6).ToList();
+        }
+
         public ICollection<Review> GetReviewsByProduct(int productId)
         {
             return _context.Reviews

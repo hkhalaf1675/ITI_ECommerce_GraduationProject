@@ -1,6 +1,7 @@
 ﻿using Core.DTOs.Product;
 using Core.IRepositories;
 using Core.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using static System.Net.Mime.MediaTypeNames;
@@ -515,8 +516,17 @@ namespace API.Controllers
             }
         }
 
+        //    }
 
+        //} 
 
+        // get the count of all products
+        [Authorize(Roles = "Admin")]
+        [HttpGet("GetProductsCount")]
+        public async Task<IActionResult> GetProductsCount()
+        {
+            return Ok(productRepository.GetProductsCount());
+        }
         #endregion
 
 
