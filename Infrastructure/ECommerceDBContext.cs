@@ -73,6 +73,50 @@ namespace Infrastructure
             #endregion
 
 
+            #region Product Behavior
+            modelBuilder.Entity<Product>()
+                .HasMany(p => p.Carts)
+                .WithOne(sc => sc.Product)
+                .HasForeignKey(sc => sc.ProductID)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Product>()
+                .HasMany(p => p.Wishlists)
+                .WithOne(w => w.Product)
+                .HasForeignKey(w => w.ProductID)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Product>()
+                .HasMany(p => p.Favourites)
+                .WithOne(f => f.Product)
+                .HasForeignKey(f => f.ProductID)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Product>()
+                .HasMany(p => p.Images)
+                .WithOne(i => i.Product)
+                .HasForeignKey(i => i.ProductID)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Product>()
+                .HasMany(p => p.OrderDetails)
+                .WithOne(od => od.Product)
+                .HasForeignKey(od => od.ProductID)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Product>()
+                .HasMany(p => p.Reviews)
+                .WithOne(rv => rv.Product)
+                .HasForeignKey(rv => rv.ProductID)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Product>()
+                .HasMany(p => p.Warranties)
+                .WithOne(w => w.Product)
+                .HasForeignKey(w => w.ProductID)
+                .OnDelete(DeleteBehavior.Cascade);
+            #endregion
+
             base.OnModelCreating(modelBuilder);
         }
 

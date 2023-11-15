@@ -114,7 +114,7 @@ namespace API.Controllers
                     productToReturnDto.CategoryName = product.Category.Name;
                     productToReturnDto.BrandID = (int)product.BrandID;
                     productToReturnDto.BrandName = product.Brand.Name;
-                   // productToReturnDto.Warranties = product.Warranties.ToDictionary(warranty => warranty.PartName, warranty => warranty.Duration);
+                    // productToReturnDto.Warranties = product.Warranties.ToDictionary(warranty => warranty.PartName, warranty => warranty.Duration);
                     productToReturnDto.Images = product.Images.Select(image => $"{baseUrl}/{image.ImageUrl}").ToList();
                     productToReturnDto.AvgRating = product.Reviews?.Any() == true ? (decimal)product.Reviews.Average(r => r.Rating) : 0;
 
@@ -375,24 +375,25 @@ namespace API.Controllers
             }
         }
 
-        [Authorize(Roles = "Admin")]
         #endregion
 
 
         #region Delete
+        //[Authorize(Roles = "Admin")]
         [HttpDelete] //Delete /api/products
         public IActionResult Delete(int id)
         {
             bool check = productRepository.Delete(id);
             if (check)
             {
-                return Ok("deleted Succsesfully");
+                return Ok();
             }
             return BadRequest();
-        } 
+        }
         #endregion
 
 
+        #region Edit
         [HttpPut] //Put /api/product
         public async Task<IActionResult> Update()
         {
@@ -465,7 +466,7 @@ namespace API.Controllers
                         }
                     }
                     #endregion
-                    
+
 
                     // Update related entities (Warranties and Images)
                     productRepository.UpdateWarranties(existingProduct, warranties);
@@ -488,6 +489,9 @@ namespace API.Controllers
             }
         }
 
+        #endregion
+
+
         //[Authorize(Roles = "Admin")]
         //[HttpPut] //Put /api/product
         //public IActionResult Update(int id, [FromBody] ProductToAddDto productInput)
@@ -497,58 +501,69 @@ namespace API.Controllers
         //        // Check if the product with the given id exists
         //        var existingProduct = productRepository.GetById(id);
 
-                //        if (existingProduct == null)
-                //        {
-                //            return NotFound(); // Product not found
-                //        }
+        //        if (existingProduct == null)
+        //        {
+        //            return NotFound(); // Product not found
+        //        }
 
-                //        // Update the existing product with the new data
-                //        existingProduct.Name = productInput.Name;
-                //        existingProduct.Description = productInput.Description;
-                //        existingProduct.Price = productInput.Price;
-                //        existingProduct.Condition = (ProductCondition)productInput.Condition;
-                //        existingProduct.StockQuantity = productInput.StockQuantity;
-                //        existingProduct.Discount = productInput.Discount;
-                //        existingProduct.Model = productInput.Model;
-                //        existingProduct.Color = productInput.Color;
-                //        existingProduct.Storage = productInput.Storage;
-                //        existingProduct.Ram = productInput.Ram;
-                //        existingProduct.Camera = productInput.Camera;
-                //        existingProduct.CPU = productInput.CPU;
-                //        existingProduct.ScreenSize = productInput.ScreenSize;
-                //        existingProduct.BatteryCapacity = productInput.BatteryCapacity;
-                //        existingProduct.OSVersion = productInput.OSVersion;
-                //        existingProduct.CategoryID = productInput.CategoryID;
-                //        existingProduct.BrandID = productInput.BrandID;
+        //        // Update the existing product with the new data
+        //        existingProduct.Name = productInput.Name;
+        //        existingProduct.Description = productInput.Description;
+        //        existingProduct.Price = productInput.Price;
+        //        existingProduct.Condition = (ProductCondition)productInput.Condition;
+        //        existingProduct.StockQuantity = productInput.StockQuantity;
+        //        existingProduct.Discount = productInput.Discount;
+        //        existingProduct.Model = productInput.Model;
+        //        existingProduct.Color = productInput.Color;
+        //        existingProduct.Storage = productInput.Storage;
+        //        existingProduct.Ram = productInput.Ram;
+        //        existingProduct.Camera = productInput.Camera;
+        //        existingProduct.CPU = productInput.CPU;
+        //        existingProduct.ScreenSize = productInput.ScreenSize;
+        //        existingProduct.BatteryCapacity = productInput.BatteryCapacity;
+        //        existingProduct.OSVersion = productInput.OSVersion;
+        //        existingProduct.CategoryID = productInput.CategoryID;
+        //        existingProduct.BrandID = productInput.BrandID;
 
-                //        // Update related entities (Warranties and Images)
-                //        productRepository.UpdateWarranties(existingProduct, productInput.Warranties);
-                //        productRepository.UpdateImages(existingProduct, productInput.Images);
+        //        // Update related entities (Warranties and Images)
+        //        productRepository.UpdateWarranties(existingProduct, productInput.Warranties);
+        //        productRepository.UpdateImages(existingProduct, productInput.Images);
 
-                //        bool check = productRepository.Update(existingProduct);
+        //        bool check = productRepository.Update(existingProduct);
 
-                //        if (check)
-                //        {
-                //            return Ok();
-                //        }
-                //        return BadRequest();
-                //    }
-                //    return BadRequest(ModelState);
-                //}
-
+        //        if (check)
+        //        {
+        //            return Ok();
+        //        }
+        //        return BadRequest();
         //    }
+        //    return BadRequest(ModelState);
+        //}
 
-        //} 
 
         // get the count of all products
+
+
+        #region Count
         [Authorize(Roles = "Admin")]
         [HttpGet("GetProductsCount")]
         public async Task<IActionResult> GetProductsCount()
         {
             return Ok(productRepository.GetProductsCount());
-        }
+        } 
         #endregion
 
 
     }
+
+
+    
+
 }
+#endregion
+
+
+
+
+
+
