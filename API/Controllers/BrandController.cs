@@ -56,7 +56,7 @@ namespace API.Controllers
 
         // --------------------------------------------------------
         [HttpPost]
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         public IActionResult PostNew(Brand brand)
         {
             if (ModelState.IsValid)
@@ -73,6 +73,7 @@ namespace API.Controllers
 
         [HttpDelete]
         [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         public IActionResult Delete(int id)
         {
             bool check = brandRepository.Delete(id);

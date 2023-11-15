@@ -285,7 +285,7 @@ namespace Infrastructure.Migrations
                     b.Property<string>("CPU")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Carmera")
+                    b.Property<string>("Camera")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("CategoryID")

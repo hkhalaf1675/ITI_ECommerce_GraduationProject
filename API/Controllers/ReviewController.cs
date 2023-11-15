@@ -54,9 +54,33 @@ namespace API.Controllers
         #region GetReviewsByProductId
         [AllowAnonymous]
         [HttpGet("GetReviewsByProductId/{productId:int}", Name = "GetReviewsByProductId")] //Get /api/review/GetReviewsByProductId/1
-        public ActionResult<ReviewToReturnDto> GetReviewsByProductId(int productId)
+        public ActionResult<List<ReviewToReturnDto>> GetReviewsByProductId(int productId)
         {
             ICollection<Review> reviews = _reviewRepository.GetReviewsByProduct(productId);
+            if (reviews.Count == 0)
+            {
+                return NotFound();
+            }
+            //Mapping
+            List<ReviewToReturnDto> reviewsToReturnDtoList = new List<ReviewToReturnDto>();
+            foreach (Review review in reviews)
+            {
+                ReviewToReturnDto reviewToReturnDto = MapReviewToReviewDto(review);
+
+                reviewsToReturnDtoList.Add(reviewToReturnDto);
+            }
+
+            return Ok(reviewsToReturnDtoList);
+        }
+        #endregion
+
+        #region Get All Reviews
+
+        [HttpGet("GetAllReviews")] //Get /api/review/GetAllReviews
+        //[Authorize(Policy = "Admin")]
+        public ActionResult<ReviewToReturnDto> GetAllReviews()
+        {
+            ICollection<Review> reviews = _reviewRepository.GetAll();
             if (reviews.Count == 0)
             {
                 return NotFound();
@@ -130,13 +154,13 @@ namespace API.Controllers
         }
         #endregion
 
-        #region Get All Reviews
+        #region Get All Reviews Admin
 
-        [HttpGet("GetAllReviews")] //Get /api/review/GetAllReviews
+        [HttpGet("GetAllReviewsAdmin")] //Get /api/review/GetAllReviewsAdmin
         //[Authorize(Policy = "Admin")]
         public ActionResult<ReviewToReturnDto> GetAllReviews(int? pageIndex)
         {
-            ICollection<Review> reviews = _reviewRepository.GetAll(pageIndex);
+            ICollection<Review> reviews = _reviewRepository.GetAllAdmin(pageIndex);
             if (reviews.Count == 0)
             {
                 return NotFound();

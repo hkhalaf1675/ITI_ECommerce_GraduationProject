@@ -11,6 +11,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using System.Runtime.Intrinsics.Arm;
+using System.Collections.Generic;
 
 
 namespace API.Controllers
@@ -58,7 +59,7 @@ namespace API.Controllers
             productToReturnDto.Storage = (int)product.Storage;
             productToReturnDto.CPU = product.CPU;
             productToReturnDto.Ram = (int)product.Ram;
-            productToReturnDto.Carmera = product.Carmera;
+            productToReturnDto.Camera = product.Camera;
             productToReturnDto.ScreenSize = (float)product.ScreenSize;
             productToReturnDto.BatteryCapacity = (int)product.BatteryCapacity;
             productToReturnDto.OSVersion = product.OSVersion;
@@ -105,7 +106,7 @@ namespace API.Controllers
                     productToReturnDto.Storage = (int)product.Storage;
                     productToReturnDto.CPU = product.CPU;
                     productToReturnDto.Ram = (int)product.Ram;
-                    productToReturnDto.Carmera = product.Carmera;
+                    productToReturnDto.Camera = product.Camera;
                     productToReturnDto.ScreenSize = (float)product.ScreenSize;
                     productToReturnDto.BatteryCapacity = (int)product.BatteryCapacity;
                     productToReturnDto.OSVersion = product.OSVersion;
@@ -113,7 +114,7 @@ namespace API.Controllers
                     productToReturnDto.CategoryName = product.Category.Name;
                     productToReturnDto.BrandID = (int)product.BrandID;
                     productToReturnDto.BrandName = product.Brand.Name;
-                    productToReturnDto.Warranties = product.Warranties.ToDictionary(warranty => warranty.PartName, warranty => warranty.Duration);
+                   // productToReturnDto.Warranties = product.Warranties.ToDictionary(warranty => warranty.PartName, warranty => warranty.Duration);
                     productToReturnDto.Images = product.Images.Select(image => $"{baseUrl}/{image.ImageUrl}").ToList();
                     productToReturnDto.AvgRating = product.Reviews?.Any() == true ? (decimal)product.Reviews.Average(r => r.Rating) : 0;
 
@@ -152,7 +153,7 @@ namespace API.Controllers
                     productToReturnDto.Storage = (int)product.Storage;
                     productToReturnDto.CPU = product.CPU;
                     productToReturnDto.Ram = (int)product.Ram;
-                    productToReturnDto.Carmera = product.Carmera;
+                    productToReturnDto.Camera = product.Camera;
                     productToReturnDto.ScreenSize = (float)product.ScreenSize;
                     productToReturnDto.BatteryCapacity = (int)product.BatteryCapacity;
                     productToReturnDto.OSVersion = product.OSVersion;
@@ -199,7 +200,7 @@ namespace API.Controllers
                     productToReturnDto.Storage = (int)product.Storage;
                     productToReturnDto.CPU = product.CPU;
                     productToReturnDto.Ram = (int)product.Ram;
-                    productToReturnDto.Carmera = product.Carmera;
+                    productToReturnDto.Camera = product.Camera;
                     productToReturnDto.ScreenSize = (float)product.ScreenSize;
                     productToReturnDto.BatteryCapacity = (int)product.BatteryCapacity;
                     productToReturnDto.OSVersion = product.OSVersion;
@@ -246,7 +247,7 @@ namespace API.Controllers
                     productToReturnDto.Storage = (int)product.Storage;
                     productToReturnDto.CPU = product.CPU;
                     productToReturnDto.Ram = (int)product.Ram;
-                    productToReturnDto.Carmera = product.Carmera;
+                    productToReturnDto.Camera = product.Camera;
                     productToReturnDto.ScreenSize = (float)product.ScreenSize;
                     productToReturnDto.BatteryCapacity = (int)product.BatteryCapacity;
                     productToReturnDto.OSVersion = product.OSVersion;
@@ -326,7 +327,7 @@ namespace API.Controllers
                         Color = Request.Form["color"],
                         Storage = int.Parse(Request.Form["storage"]),
                         Ram = int.Parse(Request.Form["ram"]),
-                        Carmera = Request.Form["camera"],
+                        Camera = Request.Form["camera"],
                         CPU = Request.Form["cpu"],
                         ScreenSize = int.Parse(Request.Form["screenSize"]),
                         BatteryCapacity = int.Parse(Request.Form["batteryCapacity"]),
@@ -430,7 +431,7 @@ namespace API.Controllers
                     existingProduct.Color = Request.Form["color"];
                     existingProduct.Storage = int.Parse(Request.Form["storage"]);
                     existingProduct.Ram = int.Parse(Request.Form["ram"]);
-                    existingProduct.Carmera = Request.Form["camera"];
+                    existingProduct.Camera = Request.Form["camera"];
                     existingProduct.CPU = Request.Form["cpu"];
                     existingProduct.ScreenSize = int.Parse(Request.Form["screenSize"]);
                     existingProduct.BatteryCapacity = int.Parse(Request.Form["batteryCapacity"]);
@@ -440,31 +441,39 @@ namespace API.Controllers
                     #endregion
 
                     #region ger warranty by Request.Form["warranties"]
-                    var warranties = new List<WarrantiesDto>();
 
                     // Assuming warranties is an array in the form data
-                    var warrantiesFormValues = Request.Form["warranties"];
+                    // Abdulrahman: It's Not an array, Tasneem!. Its a Json Structure and we have to desercialize it to make it
+                    // in an array Shape! so we have to install library called NewtonJson to deserialize it 
 
-                    if (warrantiesFormValues.Count > 0)
-                    {
-                        for (int i = 0; i < warrantiesFormValues.Count; i++)
-                        {
-                            var partNameKey = $"warranties[{i}][partName]";
-                            var durationKey = $"warranties[{i}][duration]";
+                    //var warranties = new List<WarrantiesDto>();
+                    //var warrantiesFormValues = Request.Form["warranties"];
+                    //if (warrantiesFormValues.Count > 0)
+                    //{
+                    //    for (int i = 0; i < warrantiesFormValues.Count; i++)
+                    //    {
+                    //        var partNameKey = $"warranties[{i}][partName]";
+                    //        var durationKey = $"warranties[{i}][duration]";
 
-                            // Retrieve values from Request.Form
-                            var partNameValue = Request.Form[partNameKey];
-                            var durationValue = Request.Form[durationKey];
+                    //        // Retrieve values from Request.Form
+                    //        var partNameValue = Request.Form[partNameKey];
+                    //        var durationValue = Request.Form[durationKey];
 
-                            var warranty = new WarrantiesDto
-                            {
-                                partName = partNameValue,
-                                duration = durationValue
-                            };
+                    //        var warranty = new WarrantiesDto
+                    //        {
+                    //            partName = partNameValue,
+                    //            duration = durationValue
+                    //        };
 
-                            warranties.Add(warranty);
-                        }
-                    }
+                    //        warranties.Add(warranty);
+                    //    }
+                    //}
+
+
+                    var jsonString = "[" + Request.Form["warranties"].ToString() + "]";
+                    var warranties = JsonConvert.DeserializeObject<List<WarrantiesDto>>(jsonString);
+
+                    
 
                     #endregion
 
@@ -543,7 +552,7 @@ namespace API.Controllers
                 //        existingProduct.Color = productInput.Color;
                 //        existingProduct.Storage = productInput.Storage;
                 //        existingProduct.Ram = productInput.Ram;
-                //        existingProduct.Carmera = productInput.Camera;
+                //        existingProduct.Camera = productInput.Camera;
                 //        existingProduct.CPU = productInput.CPU;
                 //        existingProduct.ScreenSize = productInput.ScreenSize;
                 //        existingProduct.BatteryCapacity = productInput.BatteryCapacity;

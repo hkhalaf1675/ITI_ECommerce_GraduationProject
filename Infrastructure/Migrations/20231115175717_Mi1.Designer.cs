@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(ECommerceDBContext))]
-    [Migration("20231114212543_addContactUs")]
-    partial class addContactUs
+    [Migration("20231115175717_Mi1")]
+    partial class Mi1
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -288,7 +288,7 @@ namespace Infrastructure.Migrations
                     b.Property<string>("CPU")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Carmera")
+                    b.Property<string>("Camera")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("CategoryID")

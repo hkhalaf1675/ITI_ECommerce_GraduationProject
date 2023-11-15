@@ -28,37 +28,23 @@ namespace Infrastructure.Repositories
                 .FirstOrDefault(r => r.Id == id);
         }
 
-        public ICollection<Review> GetAll(int? pageIndex)
+        public ICollection<Review> GetAll()
         {
             var reviews = _context.Reviews
-                .Include(r => r.Product)
-                .Include(r => r.User)
-                .ToList();
-
-
-            // At first we have to check that the page index has a value in the first place before proceed on 
-            if (pageIndex.HasValue && pageIndex > 0)
-            {
-                int startIndex = (pageIndex.Value - 1) * 6;
-
-                // Here we make sure to not going out of bound!
-                if (startIndex >= 0 && startIndex < reviews.Count)
-                {
-                    return reviews.Skip(startIndex).Take(6).ToList();
-                }
-                else
-                {
-                    // In case it went out of bound we send back an empty list     
-                    return new List<Review>();
-                }
-            }
-            else
-            {
-                // In case the page index is null here, we send back an empty list 
-                return new List<Review>();
-            }
+                        .Include(r => r.Product)
+                        .Include(r => r.User)
+            .ToList();
+            return reviews; 
         }
 
+        public ICollection<Review> GetAllAdmin(int? pageIndex)
+        {
+            var reviews = _context.Reviews
+                        .Include(r => r.Product)
+                        .Include(r => r.User)
+            .ToList();
+            return reviews.Skip((int)((pageIndex - 1) * 6)).Take(6).ToList();
+        }
 
         public ICollection<Review> GetReviewsByProduct(int productId)
         {
