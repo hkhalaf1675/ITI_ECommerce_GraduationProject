@@ -29,7 +29,7 @@ namespace Core.Models
         public string? Color { get; set; }
         public int? Storage { get; set; }
         public int? Ram { get; set; }
-        public string? Carmera { get; set; }
+        public string? Camera { get; set; }
         public string? CPU { get; set; }
         public float? ScreenSize { get; set; }
         public int? BatteryCapacity { get; set; }

@@ -11,6 +11,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using System.Runtime.Intrinsics.Arm;
+using System.Collections.Generic;
 
 
 namespace API.Controllers
@@ -58,7 +59,7 @@ namespace API.Controllers
             productToReturnDto.Storage = (int)product.Storage;
             productToReturnDto.CPU = product.CPU;
             productToReturnDto.Ram = (int)product.Ram;
-            productToReturnDto.Carmera = product.Carmera;
+            productToReturnDto.Camera = product.Camera;
             productToReturnDto.ScreenSize = (float)product.ScreenSize;
             productToReturnDto.BatteryCapacity = (int)product.BatteryCapacity;
             productToReturnDto.OSVersion = product.OSVersion;
@@ -105,7 +106,7 @@ namespace API.Controllers
                     productToReturnDto.Storage = (int)product.Storage;
                     productToReturnDto.CPU = product.CPU;
                     productToReturnDto.Ram = (int)product.Ram;
-                    productToReturnDto.Carmera = product.Carmera;
+                    productToReturnDto.Camera = product.Camera;
                     productToReturnDto.ScreenSize = (float)product.ScreenSize;
                     productToReturnDto.BatteryCapacity = (int)product.BatteryCapacity;
                     productToReturnDto.OSVersion = product.OSVersion;
@@ -113,7 +114,7 @@ namespace API.Controllers
                     productToReturnDto.CategoryName = product.Category.Name;
                     productToReturnDto.BrandID = (int)product.BrandID;
                     productToReturnDto.BrandName = product.Brand.Name;
-                    productToReturnDto.Warranties = product.Warranties.ToDictionary(warranty => warranty.PartName, warranty => warranty.Duration);
+                   // productToReturnDto.Warranties = product.Warranties.ToDictionary(warranty => warranty.PartName, warranty => warranty.Duration);
                     productToReturnDto.Images = product.Images.Select(image => $"{baseUrl}/{image.ImageUrl}").ToList();
                     productToReturnDto.AvgRating = product.Reviews?.Any() == true ? (decimal)product.Reviews.Average(r => r.Rating) : 0;
 
@@ -152,7 +153,7 @@ namespace API.Controllers
                     productToReturnDto.Storage = (int)product.Storage;
                     productToReturnDto.CPU = product.CPU;
                     productToReturnDto.Ram = (int)product.Ram;
-                    productToReturnDto.Carmera = product.Carmera;
+                    productToReturnDto.Camera = product.Camera;
                     productToReturnDto.ScreenSize = (float)product.ScreenSize;
                     productToReturnDto.BatteryCapacity = (int)product.BatteryCapacity;
                     productToReturnDto.OSVersion = product.OSVersion;
@@ -199,7 +200,7 @@ namespace API.Controllers
                     productToReturnDto.Storage = (int)product.Storage;
                     productToReturnDto.CPU = product.CPU;
                     productToReturnDto.Ram = (int)product.Ram;
-                    productToReturnDto.Carmera = product.Carmera;
+                    productToReturnDto.Camera = product.Camera;
                     productToReturnDto.ScreenSize = (float)product.ScreenSize;
                     productToReturnDto.BatteryCapacity = (int)product.BatteryCapacity;
                     productToReturnDto.OSVersion = product.OSVersion;
@@ -246,7 +247,7 @@ namespace API.Controllers
                     productToReturnDto.Storage = (int)product.Storage;
                     productToReturnDto.CPU = product.CPU;
                     productToReturnDto.Ram = (int)product.Ram;
-                    productToReturnDto.Carmera = product.Carmera;
+                    productToReturnDto.Camera = product.Camera;
                     productToReturnDto.ScreenSize = (float)product.ScreenSize;
                     productToReturnDto.BatteryCapacity = (int)product.BatteryCapacity;
                     productToReturnDto.OSVersion = product.OSVersion;
@@ -271,6 +272,7 @@ namespace API.Controllers
 
         #region -------------------------- ADMIN ------------------------------
 
+        //[Authorize(Roles = "Admin")]
         #region Add
 
         [HttpPost] //Post /api/Products
@@ -280,36 +282,6 @@ namespace API.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    #region ger warranty by Request.Form["warranties"]
-                    var warranties = new List<Warranty>();
-
-                    // Assuming warranties is an array in the form data
-                    var warrantiesFormValues = Request.Form["warranties"];
-
-                    if (warrantiesFormValues.Count > 0)
-                    {
-                        for (int i = 0; i < warrantiesFormValues.Count; i++)
-                        {
-                            var partNameKey = $"warranties[{i}][partName]";
-                            var durationKey = $"warranties[{i}][duration]";
-
-                            // Retrieve values from Request.Form
-                            var partNameValue = Request.Form[partNameKey];
-                            var durationValue = Request.Form[durationKey];
-
-                            var warranty = new Warranty
-                            {
-                                PartName = partNameValue,
-                                Duration = durationValue
-                            };
-
-                            warranties.Add(warranty);
-                        }
-                    }
-
-                    #endregion
-
-
 
                     #region Declare product to add
                     var product = new Product
@@ -325,7 +297,7 @@ namespace API.Controllers
                         Color = Request.Form["color"],
                         Storage = int.Parse(Request.Form["storage"]),
                         Ram = int.Parse(Request.Form["ram"]),
-                        Carmera = Request.Form["camera"],
+                        Camera = Request.Form["camera"],
                         CPU = Request.Form["cpu"],
                         ScreenSize = int.Parse(Request.Form["screenSize"]),
                         BatteryCapacity = int.Parse(Request.Form["batteryCapacity"]),
@@ -333,13 +305,32 @@ namespace API.Controllers
                         CategoryID = int.Parse(Request.Form["categoryID"]),
                         BrandID = int.Parse(Request.Form["brandID"]),
 
-
-                        //// Create related entities
-                        Warranties = warranties,
-
+                        Warranties = new List<Warranty>(),
                         Images = new List<Image>()
                     };
                     #endregion
+
+                    #region ger warranty by Request.Form["warranties"]
+                    // make it in a shape of Json Array 
+                    var jsonString = "[" + Request.Form["warranties"].ToString() + "]";
+
+                    // Deserialize it using Newtonsoft.json library $
+                    var warranties = JsonConvert.DeserializeObject<List<WarrantiesDto>>(jsonString);
+
+                    // That's it all! No magic here
+                    #endregion
+
+                    foreach (var item in warranties)
+                    {
+                        Warranty warranty = new Warranty()
+                        {
+                            PartName = item.partName,
+                            Duration = item.duration
+                        };
+
+                        product.Warranties.Add(warranty);
+                    }
+
 
                     #region Handle image uploads
                     if (Request.Form.Files.Count > 0)
@@ -384,6 +375,7 @@ namespace API.Controllers
             }
         }
 
+        [Authorize(Roles = "Admin")]
         #endregion
 
 
@@ -416,7 +408,6 @@ namespace API.Controllers
                         return NotFound(); // Product not found
                     }
 
-
                     #region  Update the existing product with the new data
                     existingProduct.Name = Request.Form["name"];
                     existingProduct.Description = Request.Form["description"];
@@ -428,7 +419,7 @@ namespace API.Controllers
                     existingProduct.Color = Request.Form["color"];
                     existingProduct.Storage = int.Parse(Request.Form["storage"]);
                     existingProduct.Ram = int.Parse(Request.Form["ram"]);
-                    existingProduct.Carmera = Request.Form["camera"];
+                    existingProduct.Camera = Request.Form["camera"];
                     existingProduct.CPU = Request.Form["cpu"];
                     existingProduct.ScreenSize = int.Parse(Request.Form["screenSize"]);
                     existingProduct.BatteryCapacity = int.Parse(Request.Form["batteryCapacity"]);
@@ -437,38 +428,19 @@ namespace API.Controllers
                     existingProduct.BrandID = int.Parse(Request.Form["brandID"]);
                     #endregion
 
-                    #region ger warranty by Request.Form["warranties"]
-                    var warranties = new List<WarrantiesDto>();
+                    #region Get Warranties
+                    // make it in a shape of Json Array 
+                    var jsonString = "[" + Request.Form["warranties"].ToString() + "]";
 
-                    // Assuming warranties is an array in the form data
-                    var warrantiesFormValues = Request.Form["warranties"];
+                    // Deserialize it using Newtonsoft.json library $
+                    var warranties = JsonConvert.DeserializeObject<List<WarrantiesDto>>(jsonString);
 
-                    if (warrantiesFormValues.Count > 0)
-                    {
-                        for (int i = 0; i < warrantiesFormValues.Count; i++)
-                        {
-                            var partNameKey = $"warranties[{i}][partName]";
-                            var durationKey = $"warranties[{i}][duration]";
-
-                            // Retrieve values from Request.Form
-                            var partNameValue = Request.Form[partNameKey];
-                            var durationValue = Request.Form[durationKey];
-
-                            var warranty = new WarrantiesDto
-                            {
-                                partName = partNameValue,
-                                duration = durationValue
-                            };
-
-                            warranties.Add(warranty);
-                        }
-                    }
-
+                    // That's it all! No magic here
                     #endregion
 
+                    #region Handle image uploads
                     var Images = new List<Image>();
 
-                    #region Handle image uploads
                     if (Request.Form.Files.Count > 0)
                     {
                         foreach (var formFile in Request.Form.Files)
@@ -490,10 +462,10 @@ namespace API.Controllers
 
                             // Add the image information to the Images list
                             Images.Add(new Image { ImageUrl = imageFileName });
-
                         }
                     }
                     #endregion
+                    
 
                     // Update related entities (Warranties and Images)
                     productRepository.UpdateWarranties(existingProduct, warranties);
@@ -516,12 +488,64 @@ namespace API.Controllers
             }
         }
 
+        //[Authorize(Roles = "Admin")]
+        //[HttpPut] //Put /api/product
+        //public IActionResult Update(int id, [FromBody] ProductToAddDto productInput)
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        // Check if the product with the given id exists
+        //        var existingProduct = productRepository.GetById(id);
+
+                //        if (existingProduct == null)
+                //        {
+                //            return NotFound(); // Product not found
+                //        }
+
+                //        // Update the existing product with the new data
+                //        existingProduct.Name = productInput.Name;
+                //        existingProduct.Description = productInput.Description;
+                //        existingProduct.Price = productInput.Price;
+                //        existingProduct.Condition = (ProductCondition)productInput.Condition;
+                //        existingProduct.StockQuantity = productInput.StockQuantity;
+                //        existingProduct.Discount = productInput.Discount;
+                //        existingProduct.Model = productInput.Model;
+                //        existingProduct.Color = productInput.Color;
+                //        existingProduct.Storage = productInput.Storage;
+                //        existingProduct.Ram = productInput.Ram;
+                //        existingProduct.Camera = productInput.Camera;
+                //        existingProduct.CPU = productInput.CPU;
+                //        existingProduct.ScreenSize = productInput.ScreenSize;
+                //        existingProduct.BatteryCapacity = productInput.BatteryCapacity;
+                //        existingProduct.OSVersion = productInput.OSVersion;
+                //        existingProduct.CategoryID = productInput.CategoryID;
+                //        existingProduct.BrandID = productInput.BrandID;
+
+                //        // Update related entities (Warranties and Images)
+                //        productRepository.UpdateWarranties(existingProduct, productInput.Warranties);
+                //        productRepository.UpdateImages(existingProduct, productInput.Images);
+
+                //        bool check = productRepository.Update(existingProduct);
+
+                //        if (check)
+                //        {
+                //            return Ok();
+                //        }
+                //        return BadRequest();
+                //    }
+                //    return BadRequest(ModelState);
+                //}
+
         //    }
 
         //} 
 
         // get the count of all products
-        [Authorize(Roles = "Admin")]
+
+
+
+
+        //[Authorize(Roles = "Admin")]
         [HttpGet("GetProductsCount")]
         public async Task<IActionResult> GetProductsCount()
         {
