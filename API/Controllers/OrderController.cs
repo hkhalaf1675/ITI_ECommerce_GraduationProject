@@ -37,7 +37,7 @@ namespace API.Controllers
         [HttpGet("GetOrdersCount")]
         public async Task<IActionResult> GetOrdersCount()
         {
-            return Ok(orderRepository.GetOrdersCount());
+            return Ok(await orderRepository.GetOrdersCount());
         }
 
         [HttpGet("GetAllOrders/{pageNumber:int}")]
@@ -60,7 +60,7 @@ namespace API.Controllers
         [HttpGet("TotalSell")]
         public async Task<IActionResult> GetTotalSell()
         {
-            return Ok(orderRepository.TotalSell);
+            return Ok(await orderRepository.TotalSell());
         }
     }
 }

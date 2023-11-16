@@ -1,8 +1,10 @@
 ﻿
 using Core.DTOs.ShopingCartDtos;
+using Core.DTOs.UserDtos;
 using Core.DTOs.UserProfileDtos;
 using Core.IRepositories;
 using Core.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -106,16 +108,53 @@ namespace Infrastructure.Repositories
         {
             List<UserOrderDto> allOrders = new List<UserOrderDto>();
 
-            var orders = context.Orders.Skip((pageNumber - 1) * 10).Take(10);
+            // get the orders
+            var orders = context.Orders.Include(O => O.User)
+                .Include(O => O.Address)
+                .Include(O => O.OrderDetails)
+                .Skip((pageNumber - 1) * 10).Take(10).ToList();
 
+            // loop to map for each order
             foreach(var order in orders)
             {
+                List<UserProductsDto> products = new List<UserProductsDto>();
+
+                foreach(var product in order.OrderDetails)
+                {
+                    // get the order details => order products details
+                    var productDetail = context.Products.Include(P => P.Images)
+                        .Include(P => P.Brand)
+                        .FirstOrDefault(P => P.Id == product.Id);
+
+                    // lsit ts save the url of the images of each product
+                    List<string> images = new List<string>();
+                    foreach(var image in productDetail.Images)
+                    {
+                        images.Add(image.ImageUrl);
+                    }
+
+                    // map the product to the dto
+                    products.Add(new UserProductsDto
+                    {
+                        Id = product.Id,
+                        Name = productDetail.Name,
+                        Model = productDetail.Model,
+                        Price = productDetail.Price,
+                        BrandName = productDetail.Brand.Name,
+                        Images = images
+                    });
+                }
+
+                //map the order the dto
                 allOrders.Add(new UserOrderDto
                 {
                     OrderId = order.Id,
                     Status = order.Status,
                     Date = order.Date,
-                    UserId = order.UserId
+                    UserName = order.User.UserName,
+                    TotalPrice = order.TotalPrice,
+                    Address = order.Address.ToString(),
+                    Products = products
                 });
             }
 

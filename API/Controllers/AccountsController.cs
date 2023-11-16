@@ -88,17 +88,21 @@ namespace API.Controllers
                 return BadRequest(creationResult.Errors);
 
             }
-            var claims = new List<Claim>
-            {
-               new Claim(ClaimTypes.NameIdentifier,NewUser.Id.ToString()),
-               new Claim(ClaimTypes.Role,"Client")
-            };
 
-            var claimsResult = await userManager.AddClaimsAsync(NewUser, claims);
-            if (!claimsResult.Succeeded)
-            {
-                return BadRequest(claimsResult.Errors);
-            }
+            await userManager.AddToRoleAsync(NewUser, "Client");
+
+            //var claims = new List<Claim>
+            //{
+            //   new Claim(ClaimTypes.NameIdentifier,NewUser.Id.ToString()),
+            //   new Claim(ClaimTypes.Role,"Client")
+            //};
+
+            //var claimsResult = await userManager.AddClaimsAsync(NewUser, claims);
+            //if (!claimsResult.Succeeded)
+            //{
+            //    return BadRequest(claimsResult.Errors);
+            //}
+
             return Ok();
         }
         #endregion

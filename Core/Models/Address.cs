@@ -19,5 +19,9 @@ namespace Core.Models
         [ForeignKey("User")]
         public int? UserID { get; set; }
         public virtual User? User { get; set; }
+        public override string ToString()
+        {
+            return $"{Street}, {City}, {Country}";
+        }
     }
 }

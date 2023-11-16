@@ -60,7 +60,7 @@ namespace Infrastructure.Services
                 return new AuthModel { Message = errors };
             }
 
-            await userManager.AddToRoleAsync(user, "User");
+            await userManager.AddToRoleAsync(user, "Client");
 
             var jwtSecurityToken = await CreateJwtTokenAsync(user);
 
@@ -116,7 +116,8 @@ namespace Infrastructure.Services
 
             var claims = new[]
             {
-                new Claim("Name", user.UserName),
+                new Claim("Name", 
+                user.UserName),
                 new Claim("Email", user.Email),
                 new Claim("Address", user.Address),
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
