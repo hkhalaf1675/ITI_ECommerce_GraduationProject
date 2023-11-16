@@ -1,8 +1,6 @@
 ﻿using Core.IRepositories;
 using Core.Models;
 using Microsoft.AspNetCore.Authorization;
-using Infrastructure;
-using Infrastructure.Repositories;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,12 +11,10 @@ namespace API.Controllers
     public class BrandController : ControllerBase
     {
         private readonly IBrandRepository brandRepository;
-        //private readonly ECommerceDBContext con;
 
-        public BrandController(IBrandRepository _brandRepository, ECommerceDBContext con)
+        public BrandController(IBrandRepository _brandRepository)
         {
             brandRepository = _brandRepository;
-            //this.con = con;
         }
 
         [HttpGet("All")]
@@ -99,22 +95,5 @@ namespace API.Controllers
             }
             return BadRequest(ModelState);
         }
-
-
-        //[HttpDelete]
-        //public IActionResult Delete(int id)
-        //{   
-        //    try
-        //    {
-        //        Brand brd = con.Brands.Find(id);
-        //        con.Brands.Remove(brd);
-        //        con.SaveChanges();
-        //        return Ok();
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return BadRequest();
-        //    }
-        //}
     }
 }

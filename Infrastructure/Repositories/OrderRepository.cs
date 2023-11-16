@@ -5,6 +5,7 @@ using Core.DTOs.UserProfileDtos;
 using Core.IRepositories;
 using Core.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,11 +18,15 @@ namespace Infrastructure.Repositories
     {
         private readonly ECommerceDBContext context;
         private readonly IShopingCartRepository cartRepository;
+        IConfiguration _configuration; // tasneem add it
+        string baseUrl; //tasneem add it
 
-        public OrderRepository(ECommerceDBContext _context,IShopingCartRepository _cartRepository)
+        public OrderRepository(ECommerceDBContext _context,IShopingCartRepository _cartRepository , IConfiguration configuration)
         {
             context = _context;
             cartRepository = _cartRepository;
+            _configuration = configuration; //tasneem add it
+            baseUrl = _configuration["ApiBaseUrl"]; //tasneem add it 
         }
 
         public async Task<bool> AddNewOrder(int userId, int addressId,string payMethod)
@@ -79,6 +84,51 @@ namespace Infrastructure.Repositories
 
         }
         
+        //public async Task<int> GetOrdersCount()
+        //{
+        //    return context.Orders.Count();
+        //}
+
+        //public async Task<bool> AdminDeleteOrder(int orderId)
+        //{
+        //    Order order = context.Orders.FirstOrDefault(O => O.Id == orderId);
+        //    if (order == null)
+        //    {
+        //        return false;
+        //    }
+        //    context.Orders.Remove(order);
+
+        //    try
+        //    {
+        //        context.SaveChanges();
+        //        return true;
+        //    }
+        //    catch(Exception ex)
+        //    {
+        //        return false;
+        //    }
+        //}
+
+        //public async Task<IEnumerable<UserOrderDto>> GetAllOrders(int pageNumber)
+        //{
+        //    List<UserOrderDto> allOrders = new List<UserOrderDto>();
+
+        //    var orders = context.Orders.Skip((pageNumber - 1) * 10).Take(10);
+
+        //    foreach(var order in orders)
+        //    {
+        //        allOrders.Add(new UserOrderDto
+        //        {
+        //            OrderId = order.Id,
+        //            Status = order.Status,
+        //            Date = order.Date,
+        //            UserId = order.UserId
+        //        });
+        //    }
+
+
+        //}
+        
         public async Task<int> GetOrdersCount()
         {
             return context.Orders.Count();
@@ -130,7 +180,7 @@ namespace Infrastructure.Repositories
                     List<string> images = new List<string>();
                     foreach(var image in productDetail.Images)
                     {
-                        images.Add(image.ImageUrl);
+                        images.Add($"{baseUrl}/{image.ImageUrl}"); // tasneem add it 
                     }
 
                     // map the product to the dto
