@@ -159,7 +159,7 @@ namespace API.Controllers
         {
             if (int.TryParse(User.Claims.FirstOrDefault(C => C.Type == ClaimTypes.NameIdentifier)?.Value, out int userId))
             {
-                var productList = wishlistRepository.UserProducts(userId);
+                var productList =  wishlistRepository.UserProducts(userId);
                 if (productList?.Count == 0)
                     return NotFound();
                 return Ok(productList);

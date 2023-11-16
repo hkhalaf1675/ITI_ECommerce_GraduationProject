@@ -116,7 +116,7 @@ namespace API.Controllers
                     productToReturnDto.CategoryName = product.Category.Name;
                     productToReturnDto.BrandID = (int)product.BrandID;
                     productToReturnDto.BrandName = product.Brand.Name;
-                    // productToReturnDto.Warranties = product.Warranties.ToDictionary(warranty => warranty.PartName, warranty => warranty.Duration);
+                    productToReturnDto.Warranties = product.Warranties.ToDictionary(warranty => warranty.PartName, warranty => warranty.Duration);
                     productToReturnDto.Images = product.Images.Select(image => $"{baseUrl}/{image.ImageUrl}").ToList();
                     productToReturnDto.AvgRating = product.Reviews?.Any() == true ? (decimal)product.Reviews.Average(r => r.Rating) : 0;
 
@@ -377,6 +377,7 @@ namespace API.Controllers
             }
         }
 
+        [Authorize(Roles = "Admin")]
         #endregion
 
 

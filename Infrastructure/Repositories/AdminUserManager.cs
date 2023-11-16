@@ -64,7 +64,7 @@ namespace Infrastructure.Repositories
         {
             List<AdminUserInfo> AllUsers = new List<AdminUserInfo>();
 
-            List<User> users = userManager.Users.Skip((pageNumber - 1) * 10).Take(10).ToList();
+            List<User> users = userManager.Users.Skip((pageNumber - 1) * 6).Take(6).ToList();
 
             foreach (User user in users)
             {

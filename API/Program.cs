@@ -43,6 +43,7 @@ builder.Services.AddScoped(typeof(IContactUsRepository),typeof(ContactUsReposito
 builder.Services.AddScoped(typeof(IOrderRepository),typeof(OrderRepository));
 
 builder.Services.AddScoped(typeof(IAccountManagerServices), typeof(AccountManagerServices));
+builder.Services.AddScoped(typeof(IOrderRepository), typeof(OrderRepository)); // tasneem add it !!
 #endregion
 
 #region Identity

@@ -10,7 +10,7 @@ namespace API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = "Admin")]
+    //[Authorize(Roles = "Admin")]
     public class OrderController : ControllerBase
     {
         private readonly IOrderRepository orderRepository;
@@ -40,6 +40,7 @@ namespace API.Controllers
             return Ok(await orderRepository.GetOrdersCount());
         }
 
+
         [HttpGet("GetAllOrders/{pageNumber:int}")]
         public async Task<IActionResult> GetAllOrders(int pageNumber)
         {
@@ -56,6 +57,7 @@ namespace API.Controllers
 
             return BadRequest();
         }
+
 
         [HttpGet("TotalSell")]
         public async Task<IActionResult> GetTotalSell()
