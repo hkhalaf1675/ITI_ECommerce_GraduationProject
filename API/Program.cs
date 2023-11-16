@@ -41,9 +41,7 @@ builder.Services.AddScoped(typeof(IBrandRepository),typeof(BrandRepository ));
 builder.Services.AddScoped(typeof(IAdminUserManager),typeof(AdminUserManager ));
 builder.Services.AddScoped(typeof(IContactUsRepository),typeof(ContactUsRepository ));
 builder.Services.AddScoped(typeof(IOrderRepository),typeof(OrderRepository));
-
 builder.Services.AddScoped(typeof(IAccountManagerServices), typeof(AccountManagerServices));
-builder.Services.AddScoped(typeof(IOrderRepository), typeof(OrderRepository)); // tasneem add it !!
 #endregion
 
 #region Identity
@@ -55,7 +53,7 @@ builder.Services.AddIdentity<User, IdentityRole<int>>(Options =>
     Options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromSeconds(20);
 
 
-}).AddEntityFrameworkStores<ECommerceDBContext>().AddRoles<IdentityRole>().AddDefaultTokenProviders();
+}).AddEntityFrameworkStores<ECommerceDBContext>();  //.AddRoles<IdentityRole>().AddDefaultTokenProviders()
 #endregion
 
 #region Authentication

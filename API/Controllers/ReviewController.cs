@@ -13,15 +13,16 @@ namespace API.Controllers
     [ApiController]
     public class ReviewController : ControllerBase
     {
+        #region Repository Injection
         private readonly IReviewRepository _reviewRepository;
 
         public ReviewController(IReviewRepository reviewRepository)
         {
             _reviewRepository = reviewRepository;
-        }
+        } 
+        #endregion
 
         #region Map from Review to DTO
-
         public static ReviewToReturnDto MapReviewToReviewDto(Review review)
         {
             var reviewDto = new ReviewToReturnDto
@@ -46,10 +47,7 @@ namespace API.Controllers
 
             return reviewDto;
         }
-
         #endregion
-
-
 
         #region GetReviewsByProductId
         [AllowAnonymous]
@@ -57,12 +55,15 @@ namespace API.Controllers
         public ActionResult<List<ReviewToReturnDto>> GetReviewsByProductId(int productId)
         {
             ICollection<Review> reviews = _reviewRepository.GetReviewsByProduct(productId);
+
+            List<ReviewToReturnDto> reviewsToReturnDtoList = new List<ReviewToReturnDto>();
+
             if (reviews.Count == 0)
             {
-                return NotFound();
+                return Ok(reviewsToReturnDtoList);
             }
+
             //Mapping
-            List<ReviewToReturnDto> reviewsToReturnDtoList = new List<ReviewToReturnDto>();
             foreach (Review review in reviews)
             {
                 ReviewToReturnDto reviewToReturnDto = MapReviewToReviewDto(review);
@@ -81,12 +82,14 @@ namespace API.Controllers
         public ActionResult<ReviewToReturnDto> GetAllReviews()
         {
             ICollection<Review> reviews = _reviewRepository.GetAll();
+
+            List<ReviewToReturnDto> reviewsToReturnDtoList = new List<ReviewToReturnDto>();
+
             if (reviews.Count == 0)
             {
-                return NotFound();
+                return Ok(reviewsToReturnDtoList);
             }
             //Mapping
-            List<ReviewToReturnDto> reviewsToReturnDtoList = new List<ReviewToReturnDto>();
             foreach (Review review in reviews)
             {
                 ReviewToReturnDto reviewToReturnDto = MapReviewToReviewDto(review);

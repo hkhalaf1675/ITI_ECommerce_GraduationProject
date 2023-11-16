@@ -26,7 +26,7 @@ namespace Core.Models
         }
 
 
-        private int pageSize = 6;
+        private int pageSize = 8;
         public int PageSize
         {
             get { return pageSize; }

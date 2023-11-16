@@ -68,9 +68,7 @@ namespace API.Controllers
             productToReturnDto.BrandID = (int)product.BrandID;
             productToReturnDto.BrandName = product.Brand.Name;
             productToReturnDto.Warranties = product.Warranties.ToDictionary(warranty => warranty.PartName, warranty => warranty.Duration);
-            // modified the url of the image 
             productToReturnDto.Images = product.Images.Select(image => $"{baseUrl}/{image.ImageUrl}").ToList();
-            //productToReturnDto.Images = product.Images.Select(image => $"{image.ImageUrl}").ToList();
             productToReturnDto.AvgRating = product.Reviews?.Any() == true ? (decimal)product.Reviews.Average(r => r.Rating) : 0;
 
             #endregion
@@ -83,7 +81,7 @@ namespace API.Controllers
 
         #region GetAll
 
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         [HttpGet("All")] //GET /api/products/all
         public IActionResult GetAll([FromQuery] QueryParametars parametars)
         {

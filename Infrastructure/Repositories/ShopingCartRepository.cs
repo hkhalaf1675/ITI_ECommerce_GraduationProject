@@ -2,22 +2,36 @@
 using Core.DTOs.ShopingCartDtos;
 using Core.IRepositories;
 using Core.Models;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+
 namespace Infrastructure.Repositories
 {
     public class ShopingCartRepository : IShopingCartRepository
     {
+        #region Injection
         private readonly ECommerceDBContext context;
 
-        public ShopingCartRepository(ECommerceDBContext _context)
+        // Added Newly
+        IConfiguration _configuration;
+        string baseUrl;
+
+        public ShopingCartRepository(ECommerceDBContext _context, IConfiguration configuration)
         {
             context = _context;
-        }
+
+            // Added Newly
+            _configuration = configuration;
+            baseUrl = _configuration["ApiBaseUrl"];
+        } 
+        #endregion
+
         public async Task<bool> AddProductToCart(int userId, ProductToCartDto toCartDto)
         {
             int? productStock = context.Products.FirstOrDefault(P => P.Id == toCartDto.ProductId)?.StockQuantity;
@@ -26,8 +40,8 @@ namespace Infrastructure.Repositories
                 return false;
             }
 
-            ShopingCart userCart 
-                = context.ShoppingCarts.FirstOrDefault(C => C.UserID == userId && C.ProductID == toCartDto.ProductId);
+            ShopingCart userCart = context.ShoppingCarts.FirstOrDefault(C => C.UserID == userId && C.ProductID == toCartDto.ProductId);
+
             if ( userCart != null)
             {
                 if(userCart.Quantity + toCartDto.Quantity > Convert.ToInt32(productStock))
@@ -60,6 +74,7 @@ namespace Infrastructure.Repositories
             }
         }
 
+
         public async Task<ICollection<CartProductsDto>> GetUserCartProducts(int userId)
         {
 
@@ -77,14 +92,15 @@ namespace Infrastructure.Repositories
             foreach (var item in shoppingcart)
             {
 
-                Product product = context.Products.FirstOrDefault(P => P.Id == item.ProductID);
+                Product product = context.Products.Include(p=> p.Images).FirstOrDefault(P => P.Id == item.ProductID);
                 cartProducts.Add(new CartProductsDto
                 {
                     ProductId = item.ProductID,
                     ProductName = item.Product.Name,
                     ProductPrice = item.Product.Price,
                     ProductQuantity = item.Quantity,
-                    Discount = (item.Product.Discount == null) ? 0 : item.Product.Discount
+                    Discount = (item.Product.Discount == null) ? 0 : item.Product.Discount,
+                    Images = item.Product.Images.Select(image => $"{baseUrl}/{image.ImageUrl}").ToList()
                 });
 
             }
