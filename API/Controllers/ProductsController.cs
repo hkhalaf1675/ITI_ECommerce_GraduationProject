@@ -82,6 +82,8 @@ namespace API.Controllers
         #endregion
 
         #region GetAll
+
+        [Authorize(Roles = "Admin")]
         [HttpGet("All")] //GET /api/products/all
         public IActionResult GetAll([FromQuery] QueryParametars parametars)
         {
