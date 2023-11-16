@@ -1,6 +1,7 @@
 ﻿using Core.DTOs.UserDtos;
 using Core.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,10 +13,14 @@ namespace Infrastructure.Repositories
     public class WishlistRepository : IWishlistRepository
     {
         private readonly ECommerceDBContext context;
+        IConfiguration _configuration; // tasneem add it
+        string baseUrl; //tasneem add it
 
-        public WishlistRepository(ECommerceDBContext _context)
+        public WishlistRepository(ECommerceDBContext _context, IConfiguration configuration)
         {
             context = _context;
+            _configuration = configuration; //tasneem add it
+            baseUrl = _configuration["ApiBaseUrl"]; //tasneem add it 
         }
         public Wishlist? GetByUserIdAndProductId(int userId, int productId)
         {
@@ -80,8 +85,8 @@ namespace Infrastructure.Repositories
                 Product? product = context.Products.Include(P => P.Brand).Include(P => P.Images).FirstOrDefault(P => P.Id == item.ProductID);
                 foreach(var image in product?.Images)
                 {
-                  
-                    images.Add(image?.ImageUrl);
+
+                    images.Add($"{baseUrl}/{image.ImageUrl}"); // tasneem add it 
                 }
                 products.Add(new UserProductsDto()
                 {

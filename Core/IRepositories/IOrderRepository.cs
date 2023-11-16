@@ -9,6 +9,7 @@ namespace Core.IRepositories
 {
     public interface IOrderRepository
     {
+        Task<UserOrderDto?> GetById(int id);
         Task<bool> AddNewOrder(int userId, int addressId, string payMethod);
         Task<int> GetOrdersCount();
         Task<IEnumerable<UserOrderDto>> GetAllOrders(int pageNumber);

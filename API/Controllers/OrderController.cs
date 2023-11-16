@@ -62,5 +62,17 @@ namespace API.Controllers
         {
             return Ok(await orderRepository.TotalSell());
         }
+
+        // add the get order by Id
+        [HttpGet("{id:int}")]
+        public async Task<IActionResult> GetOrderById(int id)
+        {
+            var order = await orderRepository.GetById(id);
+
+            if (order is null)
+                return NotFound();
+
+            return Ok(order);
+        }
     }
 }
