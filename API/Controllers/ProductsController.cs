@@ -544,6 +544,7 @@ namespace API.Controllers
 
 
 
+        //} 
 
         //[Authorize(Roles = "Admin")]
         [HttpGet("GetProductsCount")]

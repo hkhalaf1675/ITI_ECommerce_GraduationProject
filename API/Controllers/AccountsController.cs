@@ -88,7 +88,9 @@ namespace API.Controllers
                 return BadRequest(creationResult.Errors);
 
             }
+
             await userManager.AddToRoleAsync(NewUser, "Client");
+
             //var claims = new List<Claim>
             //{
             //   new Claim(ClaimTypes.NameIdentifier,NewUser.Id.ToString()),
@@ -100,6 +102,7 @@ namespace API.Controllers
             //{
             //    return BadRequest(claimsResult.Errors);
             //}
+
             return Ok();
         }
         #endregion

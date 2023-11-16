@@ -39,6 +39,8 @@ builder.Services.AddScoped(typeof(IShopingCartRepository), typeof(ShopingCartRep
 builder.Services.AddScoped(typeof(IBrandRepository),typeof(BrandRepository ));
 builder.Services.AddScoped(typeof(IAdminUserManager),typeof(AdminUserManager ));
 builder.Services.AddScoped(typeof(IContactUsRepository),typeof(ContactUsRepository ));
+builder.Services.AddScoped(typeof(IOrderRepository),typeof(OrderRepository));
+
 builder.Services.AddScoped(typeof(IAccountManagerServices), typeof(AccountManagerServices));
 builder.Services.AddScoped(typeof(IOrderRepository), typeof(OrderRepository)); // tasneem add it !!
 #endregion
