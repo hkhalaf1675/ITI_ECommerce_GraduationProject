@@ -65,8 +65,6 @@ namespace API.Controllers
         //}
         #endregion
 
-
-
         #region Register 
         [HttpPost]
         [Route("Register")]
