@@ -5,6 +5,7 @@ using Core.DTOs.UserProfileDtos;
 using Core.IRepositories;
 using Core.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,11 +18,34 @@ namespace Infrastructure.Repositories
     {
         private readonly ECommerceDBContext context;
         private readonly IShopingCartRepository cartRepository;
+        IConfiguration _configuration; // tasneem add it
+        string baseUrl; //tasneem add it
 
-        public OrderRepository(ECommerceDBContext _context,IShopingCartRepository _cartRepository)
+        public OrderRepository(ECommerceDBContext _context,IShopingCartRepository _cartRepository, IConfiguration configuration)
         {
             context = _context;
             cartRepository = _cartRepository;
+            _configuration = configuration; //tasneem add it
+            baseUrl = _configuration["ApiBaseUrl"]; //tasneem add it 
+        }
+
+        public async Task<UserOrderDto?> GetById(int id)
+        {
+            var order = context.Orders.Include(O => O.User)
+                .Include(O => O.Address)
+                .Include(O => O.OrderDetails)
+                .FirstOrDefault(O => O.Id == id);
+
+            if (order is null)
+                return null;
+
+            // get order detail and map the products to dtos
+            var products = GetOrderDetails(order);
+
+            // map the order to dto
+            UserOrderDto orderDto = MapOrderToDto(order, products);
+
+            return orderDto;
         }
 
         public async Task<bool> AddNewOrder(int userId, int addressId,string payMethod)
@@ -62,6 +86,13 @@ namespace Infrastructure.Repositories
                 });
 
                 orderTotalPrice += product.TotalPrice;
+            }
+
+            // delete the products from user cart
+            var check = await cartRepository.DeleteUserCartProducts(userId);
+            if (!check)
+            {
+                return false;
             }
 
             lastOrder.TotalPrice = Convert.ToDecimal(orderTotalPrice);
@@ -117,45 +148,10 @@ namespace Infrastructure.Repositories
             // loop to map for each order
             foreach(var order in orders)
             {
-                List<UserProductsDto> products = new List<UserProductsDto>();
-
-                foreach(var product in order.OrderDetails)
-                {
-                    // get the order details => order products details
-                    var productDetail = context.Products.Include(P => P.Images)
-                        .Include(P => P.Brand)
-                        .FirstOrDefault(P => P.Id == product.Id);
-
-                    // lsit ts save the url of the images of each product
-                    List<string> images = new List<string>();
-                    foreach(var image in productDetail.Images)
-                    {
-                        images.Add(image.ImageUrl);
-                    }
-
-                    // map the product to the dto
-                    products.Add(new UserProductsDto
-                    {
-                        Id = product.Id,
-                        Name = productDetail.Name,
-                        Model = productDetail.Model,
-                        Price = productDetail.Price,
-                        BrandName = productDetail.Brand.Name,
-                        Images = images
-                    });
-                }
+                var products = GetOrderDetails(order);
 
                 //map the order the dto
-                allOrders.Add(new UserOrderDto
-                {
-                    OrderId = order.Id,
-                    Status = order.Status,
-                    Date = order.Date,
-                    UserName = order.User.UserName,
-                    TotalPrice = order.TotalPrice,
-                    Address = order.Address.ToString(),
-                    Products = products
-                });
+                allOrders.Add(MapOrderToDto(order,products));
             }
 
             return allOrders;
@@ -172,5 +168,53 @@ namespace Infrastructure.Repositories
                 .FirstOrDefault();
         }
 
+        // method to get order detials and map the products into dto
+        private List<UserProductsDto> GetOrderDetails(Order order)
+        {
+            List<UserProductsDto> products = new List<UserProductsDto>();
+
+            foreach (var product in order?.OrderDetails)
+            {
+                // get the order details => order products details
+                var productDetail = context.Products.Include(P => P.Images)
+                    .Include(P => P.Brand)
+                    .FirstOrDefault(P => P.Id == product.Id);
+
+                // lsit ts save the url of the images of each product
+                List<string> images = new List<string>();
+                foreach (var image in productDetail.Images)
+                {
+                    images.Add($"{baseUrl}/{image.ImageUrl}"); // tasneem add it 
+                }
+
+                // map the product to the dto
+                products.Add(new UserProductsDto
+                {
+                    Id = product.Id,
+                    Name = productDetail.Name,
+                    Model = productDetail.Model,
+                    Price = productDetail.Price,
+                    BrandName = productDetail.Brand.Name,
+                    Images = images
+                });
+            }
+
+            return products;
+        }
+
+        // method to map order to orderdto
+        private UserOrderDto MapOrderToDto(Order order,List<UserProductsDto> products)
+        {
+            return new UserOrderDto
+            {
+                OrderId = order.Id,
+                Status = order.Status,
+                Date = order.Date,
+                UserName = order.User.UserName,
+                TotalPrice = order.TotalPrice,
+                Address = order.Address.ToString(),
+                Products = products
+            };
+        }
     }
 }

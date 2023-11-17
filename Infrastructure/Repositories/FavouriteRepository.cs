@@ -1,6 +1,7 @@
 ﻿using Core.DTOs.UserDtos;
 using Core.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,10 +13,14 @@ namespace Infrastructure.Repositories
     public class FavouriteRepository: IFavouriteRepository
     {
         private readonly ECommerceDBContext context;
+        IConfiguration _configuration; // tasneem add it
+        string baseUrl; //tasneem add it
 
-        public FavouriteRepository(ECommerceDBContext _context)
+        public FavouriteRepository(ECommerceDBContext _context, IConfiguration configuration)
         {
             context = _context;
+            _configuration = configuration; //tasneem add it
+            baseUrl = _configuration["ApiBaseUrl"]; //tasneem add it 
         }
 
         // checks if the product id in the user's favorite list
@@ -83,7 +88,7 @@ namespace Infrastructure.Repositories
                 foreach (var image in product?.Images)
                 {
 
-                    images.Add(image?.ImageUrl);
+                    images.Add($"{baseUrl}/{image.ImageUrl}"); // tasneem add it 
                 }
                 products.Add(new UserProductsDto()
                 {
