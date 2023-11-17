@@ -142,7 +142,7 @@ namespace API.Controllers
         #region Get Review by id
 
         [HttpGet("GetReviewById/{id:int}", Name = "GetReviewByID")] //Get /api/review/GetProductByID/1
-        //[Authorize(Policy = "Admin")]
+        [Authorize(Roles = "Admin")]
         public ActionResult<ReviewToReturnDto> GetReviewById(int id)
         {
             Review review = _reviewRepository.GetById(id);
@@ -160,7 +160,7 @@ namespace API.Controllers
         #region Get All Reviews Admin
 
         [HttpGet("GetAllReviewsAdmin")] //Get /api/review/GetAllReviewsAdmin
-        //[Authorize(Policy = "Admin")]
+        [Authorize(Roles = "Admin")]
         public ActionResult<ReviewToReturnDto> GetAllReviews(int? pageIndex)
         {
             ICollection<Review> reviews = _reviewRepository.GetAllAdmin(pageIndex);
@@ -199,7 +199,7 @@ namespace API.Controllers
 
         #region Delete For ADMIN
         [HttpDelete("{id:int}")] //Delete /api/review/DeleteReview/1
-        //[Authorize(Policy = "Admin")]
+        [Authorize(Roles = "Admin")]
         public ActionResult DeleteReview(int id)
         {
             bool check = _reviewRepository.Delete(id);

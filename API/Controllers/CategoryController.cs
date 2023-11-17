@@ -51,7 +51,7 @@ namespace API.Controllers
 
         // --------------------------------------------------------
         [HttpPost]
-       // [Authorize(Roles = "Admin")]
+       [Authorize(Roles = "Admin")]
         public IActionResult PostNew(Category category)
         {
             if (ModelState.IsValid)
@@ -67,7 +67,7 @@ namespace API.Controllers
         }
 
         [HttpDelete]
-       // [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin")]
         public IActionResult Delete(int id)
         {
             bool check = categoryRepository.Delete(id);
@@ -79,7 +79,7 @@ namespace API.Controllers
         }
 
         [HttpPut]
-        //[Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin")]
         public IActionResult Update(Category category)
         {
             if (ModelState.IsValid)

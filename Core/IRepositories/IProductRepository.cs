@@ -36,7 +36,6 @@ namespace Core.IRepositories
 
         int GetProductsCount();
 
-        //int GetProductsCount();
 
         #endregion
     }

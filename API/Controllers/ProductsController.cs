@@ -272,10 +272,10 @@ namespace API.Controllers
 
         #region -------------------------- ADMIN ------------------------------
 
-        //[Authorize(Roles = "Admin")]
         #region Add
 
         [HttpPost] //Post /api/Products
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> PostNew()
         {
             try
@@ -380,7 +380,7 @@ namespace API.Controllers
 
 
         #region Delete
-        //[Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin")]
         [HttpDelete] //Delete /api/products
         public IActionResult Delete(int id)
         {
@@ -396,6 +396,7 @@ namespace API.Controllers
 
         #region Edit
         [HttpPut] //Put /api/product
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Update()
         {
             try
@@ -502,10 +503,10 @@ namespace API.Controllers
         //        // Check if the product with the given id exists
         //        var existingProduct = productRepository.GetById(id);
 
-        //        if (existingProduct == null)
-        //        {
-        //            return NotFound(); // Product not found
-        //        }
+                //        if (existingProduct == null)
+                //        {
+                //            return NotFound(); // Product not found
+                //        }
 
         //        // Update the existing product with the new data
         //        existingProduct.Name = productInput.Name;
@@ -526,27 +527,28 @@ namespace API.Controllers
         //        existingProduct.CategoryID = productInput.CategoryID;
         //        existingProduct.BrandID = productInput.BrandID;
 
-        //        // Update related entities (Warranties and Images)
-        //        productRepository.UpdateWarranties(existingProduct, productInput.Warranties);
-        //        productRepository.UpdateImages(existingProduct, productInput.Images);
+                //        // Update related entities (Warranties and Images)
+                //        productRepository.UpdateWarranties(existingProduct, productInput.Warranties);
+                //        productRepository.UpdateImages(existingProduct, productInput.Images);
 
-        //        bool check = productRepository.Update(existingProduct);
+                //        bool check = productRepository.Update(existingProduct);
 
-        //        if (check)
-        //        {
-        //            return Ok();
-        //        }
-        //        return BadRequest();
+                //        if (check)
+                //        {
+                //            return Ok();
+                //        }
+                //        return BadRequest();
+                //    }
+                //    return BadRequest(ModelState);
+                //}
+
         //    }
-        //    return BadRequest(ModelState);
-        //}
-
 
         // get the count of all products
 
 
         #region Count
-        //[Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin")]
         [HttpGet("GetProductsCount")]
         public async Task<IActionResult> GetProductsCount()
         {
