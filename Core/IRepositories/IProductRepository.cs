@@ -10,6 +10,9 @@ namespace Core.IRepositories
 {
     public interface IProductRepository
     {
+        // Modifcation :
+        // -> add get top three review products
+
         Product GetById(int id);
         Task<Product> GetByIdAsync(int id);
 
@@ -22,6 +25,9 @@ namespace Core.IRepositories
         public ICollection<Product> GetNewProducts();
 
         int GetCount();
+
+        // add get top three products rate
+        Task<ICollection<ProductToReturnDto>> GetTopThreeRate();
 
 
         #region ADMIN

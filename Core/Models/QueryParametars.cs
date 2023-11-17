@@ -33,5 +33,8 @@ namespace Core.Models
             set { pageSize = value > 10 ? 10 : value; }
         }
         public int PageIndex { get; set; } = 1;
+
+        // add the color
+        public string? Color { get; set; }
     }
 }

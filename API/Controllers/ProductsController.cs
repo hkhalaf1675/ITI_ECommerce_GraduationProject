@@ -20,6 +20,9 @@ namespace API.Controllers
     [ApiController]
     public class ProductsController : ControllerBase
     {
+        // Modification :
+        // -> add end api to get top three rating
+
         #region ctor
         IProductRepository productRepository;
         IConfiguration _configuration;
@@ -267,6 +270,16 @@ namespace API.Controllers
             return Ok(productsDto);
         }
 
+        #endregion
+
+        #region Get Top Three products with top rating
+        [HttpGet("GetTopThreerating")]
+        public async Task<IActionResult> GetTopThreeRating()
+        {
+            var products = await productRepository.GetTopThreeRate();
+
+            return Ok(products);
+        }
         #endregion
 
 
