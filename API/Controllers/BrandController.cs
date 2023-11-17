@@ -69,7 +69,6 @@ namespace API.Controllers
 
         [HttpDelete]
         [Authorize(Roles = "Admin")]
-        //[Authorize(Roles = "Admin")]
         public IActionResult Delete(int id)
         {
             bool check = brandRepository.Delete(id);

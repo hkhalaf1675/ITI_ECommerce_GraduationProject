@@ -44,15 +44,15 @@ namespace Infrastructure.Repositories
 
             if ( userCart != null)
             {
-                if(userCart.Quantity + toCartDto.Quantity > Convert.ToInt32(productStock))
+                if (userCart.Quantity + toCartDto.Quantity > Convert.ToInt32(productStock))
                 {
                     return false;
                 }
-                userCart.Quantity += toCartDto.Quantity; 
+                userCart.Quantity += toCartDto.Quantity;
             }
             else
             {
-                if(toCartDto.Quantity > Convert.ToInt32(productStock))
+                if (toCartDto.Quantity > Convert.ToInt32(productStock))
                 {
                     return false;
                 }
@@ -79,12 +79,11 @@ namespace Infrastructure.Repositories
         {
 
             // modified was returning single value 
-            List<ShopingCart> shoppingcart = new List<ShopingCart>();
+            List<ShopingCart> shoppingcart = GetUserCart(userId); // modified to get the list from method
+
             List<CartProductsDto> cartProducts = new List<CartProductsDto>();
 
-            shoppingcart = context.ShoppingCarts.Where(C => C.UserID == userId).ToList();
-
-            if (shoppingcart == null)
+            if (shoppingcart == null || shoppingcart.Count == 0)
             {
                 return cartProducts;
             }
@@ -128,6 +127,7 @@ namespace Infrastructure.Repositories
                 return false;
             }
         }
+
         public async Task<bool> EditProductQuantity(int userId, int productId, int newQuntity)
         {
             ShopingCart userCart
@@ -159,6 +159,34 @@ namespace Infrastructure.Repositories
             {
                 return false;
             }
+        }
+
+        public async Task<bool> DeleteUserCartProducts(int userId)
+        {
+            var products = GetUserCart(userId);
+
+            if(products == null || products.Count == 0)
+            {
+                return true;
+            }
+
+            context.ShoppingCarts.RemoveRange(products);
+
+            try
+            {
+                context.SaveChanges();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
+        // get list of products of user cart
+        private List<ShopingCart> GetUserCart(int userId)
+        {
+            return context.ShoppingCarts.Where(C => C.UserID == userId).ToList();
         }
     }
 }

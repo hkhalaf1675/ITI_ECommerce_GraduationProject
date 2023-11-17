@@ -55,7 +55,7 @@ namespace Infrastructure.Migrations
 
                     b.HasIndex("UserID");
 
-                    b.ToTable("Address", (string)null);
+                    b.ToTable("Address");
                 });
 
             modelBuilder.Entity("Core.Models.Brand", b =>
@@ -72,7 +72,7 @@ namespace Infrastructure.Migrations
 
                     b.HasKey("ID");
 
-                    b.ToTable("Brands", (string)null);
+                    b.ToTable("Brands");
                 });
 
             modelBuilder.Entity("Core.Models.Category", b =>
@@ -89,7 +89,7 @@ namespace Infrastructure.Migrations
 
                     b.HasKey("ID");
 
-                    b.ToTable("Categories", (string)null);
+                    b.ToTable("Categories");
                 });
 
             modelBuilder.Entity("Core.Models.ContactUs", b =>
@@ -117,7 +117,7 @@ namespace Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ContactUs", (string)null);
+                    b.ToTable("ContactUs");
                 });
 
             modelBuilder.Entity("Core.Models.Favourite", b =>
@@ -140,7 +140,7 @@ namespace Infrastructure.Migrations
 
                     b.HasIndex("UserID");
 
-                    b.ToTable("Favourite", (string)null);
+                    b.ToTable("Favourite");
                 });
 
             modelBuilder.Entity("Core.Models.Image", b =>
@@ -162,7 +162,7 @@ namespace Infrastructure.Migrations
 
                     b.HasIndex("ProductID");
 
-                    b.ToTable("Image", (string)null);
+                    b.ToTable("Image");
                 });
 
             modelBuilder.Entity("Core.Models.Order", b =>
@@ -197,7 +197,7 @@ namespace Infrastructure.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Orders", (string)null);
+                    b.ToTable("Orders");
                 });
 
             modelBuilder.Entity("Core.Models.OrderDetails", b =>
@@ -226,7 +226,7 @@ namespace Infrastructure.Migrations
 
                     b.HasIndex("ProductID");
 
-                    b.ToTable("OrdersDetails", (string)null);
+                    b.ToTable("OrdersDetails");
                 });
 
             modelBuilder.Entity("Core.Models.PaymentMethod", b =>
@@ -250,7 +250,7 @@ namespace Infrastructure.Migrations
 
                     b.HasIndex("OrderID");
 
-                    b.ToTable("PaymentMethods", (string)null);
+                    b.ToTable("PaymentMethods");
                 });
 
             modelBuilder.Entity("Core.Models.Phone", b =>
@@ -265,7 +265,7 @@ namespace Infrastructure.Migrations
 
                     b.HasIndex("UserID");
 
-                    b.ToTable("Phones", (string)null);
+                    b.ToTable("Phones");
                 });
 
             modelBuilder.Entity("Core.Models.Product", b =>
@@ -334,7 +334,7 @@ namespace Infrastructure.Migrations
 
                     b.HasIndex("CategoryID");
 
-                    b.ToTable("Products", (string)null);
+                    b.ToTable("Products");
                 });
 
             modelBuilder.Entity("Core.Models.ProductIdentity", b =>
@@ -349,7 +349,7 @@ namespace Infrastructure.Migrations
 
                     b.HasIndex("ProductID");
 
-                    b.ToTable("ProductIdentities", (string)null);
+                    b.ToTable("ProductIdentities");
                 });
 
             modelBuilder.Entity("Core.Models.Promotion", b =>
@@ -368,7 +368,7 @@ namespace Infrastructure.Migrations
 
                     b.HasKey("Code");
 
-                    b.ToTable("Promotions", (string)null);
+                    b.ToTable("Promotions");
                 });
 
             modelBuilder.Entity("Core.Models.Review", b =>
@@ -400,7 +400,7 @@ namespace Infrastructure.Migrations
 
                     b.HasIndex("UserID");
 
-                    b.ToTable("Reviews", (string)null);
+                    b.ToTable("Reviews");
                 });
 
             modelBuilder.Entity("Core.Models.Shipment", b =>
@@ -436,7 +436,7 @@ namespace Infrastructure.Migrations
 
                     b.HasIndex("OrderId");
 
-                    b.ToTable("Shipment", (string)null);
+                    b.ToTable("Shipment");
                 });
 
             modelBuilder.Entity("Core.Models.ShopingCart", b =>
@@ -462,7 +462,7 @@ namespace Infrastructure.Migrations
 
                     b.HasIndex("UserID");
 
-                    b.ToTable("ShoppingCarts", (string)null);
+                    b.ToTable("ShoppingCarts");
                 });
 
             modelBuilder.Entity("Core.Models.User", b =>
@@ -563,7 +563,7 @@ namespace Infrastructure.Migrations
 
                     b.HasIndex("ProductID");
 
-                    b.ToTable("Warrantys", (string)null);
+                    b.ToTable("Warrantys");
                 });
 
             modelBuilder.Entity("Core.Models.Wishlist", b =>
@@ -586,7 +586,7 @@ namespace Infrastructure.Migrations
 
                     b.HasIndex("UserID");
 
-                    b.ToTable("Wishlists", (string)null);
+                    b.ToTable("Wishlists");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole<int>", b =>

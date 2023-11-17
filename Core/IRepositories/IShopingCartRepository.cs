@@ -14,6 +14,7 @@ namespace Core.IRepositories
         Task<bool> RemoveProductFromCart(int userId, int productId);
         Task<bool> EditProductQuantity(int userId, int productId, int newQuntity);
         Task<ICollection<CartProductsDto>> GetUserCartProducts(int userId);
+        Task<bool> DeleteUserCartProducts(int userId);
 
     }
 }
