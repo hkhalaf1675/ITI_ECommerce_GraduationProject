@@ -51,7 +51,7 @@ namespace API.Controllers
 
         // --------------------------------------------------------
         [HttpPost]
-        [Authorize(Roles = "Admin")]
+       [Authorize(Roles = "Admin")]
         public IActionResult PostNew(Category category)
         {
             if (ModelState.IsValid)

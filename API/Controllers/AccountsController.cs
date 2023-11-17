@@ -22,12 +22,14 @@ namespace API.Controllers
 
         #region Injection
         private readonly UserManager<User> userManager;
+       
         private readonly IAccountManagerServices accountManager;
         private readonly IConfiguration configuration;
 
         public AccountsController(UserManager<User> _userManager, IAccountManagerServices _accountManager, IConfiguration _configuration)
         {
             this.userManager = _userManager;
+           
             accountManager = _accountManager;
             this.configuration = _configuration;
         }
@@ -87,19 +89,25 @@ namespace API.Controllers
 
             }
 
+            ////check exist role client 
+            //if (!await roleManager.RoleExistsAsync("Client"))
+            //{
+            //    await roleManager.CreateAsync(new IdentityRole<int>("Client"));
+            //}
+
             await userManager.AddToRoleAsync(NewUser, "Client");
 
-            //var claims = new List<Claim>
-            //{
-            //   new Claim(ClaimTypes.NameIdentifier,NewUser.Id.ToString()),
-            //   new Claim(ClaimTypes.Role,"Client")
-            //};
+            var claims = new List<Claim>
+            {
+               new Claim(ClaimTypes.NameIdentifier,NewUser.Id.ToString()),
 
-            //var claimsResult = await userManager.AddClaimsAsync(NewUser, claims);
-            //if (!claimsResult.Succeeded)
-            //{
-            //    return BadRequest(claimsResult.Errors);
-            //}
+            };
+
+            var claimsResult = await userManager.AddClaimsAsync(NewUser, claims);
+            if (!claimsResult.Succeeded)
+            {
+                return BadRequest(claimsResult.Errors);
+            }
 
             return Ok();
         }

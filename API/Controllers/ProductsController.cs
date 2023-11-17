@@ -272,10 +272,10 @@ namespace API.Controllers
 
         #region -------------------------- ADMIN ------------------------------
 
-        //[Authorize(Roles = "Admin")]
         #region Add
 
         [HttpPost] //Post /api/Products
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> PostNew()
         {
             try
@@ -380,7 +380,7 @@ namespace API.Controllers
 
 
         #region Delete
-        //[Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin")]
         [HttpDelete] //Delete /api/products
         public IActionResult Delete(int id)
         {
@@ -396,6 +396,7 @@ namespace API.Controllers
 
         #region Edit
         [HttpPut] //Put /api/product
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Update()
         {
             try
