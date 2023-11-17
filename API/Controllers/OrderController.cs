@@ -13,6 +13,9 @@ namespace API.Controllers
     //[Authorize(Roles = "Admin")]
     public class OrderController : ControllerBase
     {
+        // Modification :
+        // -> edit BadRequest() to Unauthorized()
+
         private readonly IOrderRepository orderRepository;
 
         public OrderController(IOrderRepository _orderRepository)
@@ -29,8 +32,10 @@ namespace API.Controllers
                 bool check = await orderRepository.AddNewOrder(userId, addressId, payMethod);
                 if (check)
                     return Ok();
+
+                return BadRequest();
             }
-            return BadRequest();
+            return Unauthorized();
         }
 
         
