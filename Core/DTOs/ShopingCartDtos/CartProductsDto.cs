@@ -14,5 +14,9 @@ namespace Core.DTOs.ShopingCartDtos
         public int? Discount { get; set; } = 0;
         public int? ProductQuantity { get; set; } = 0;
         public decimal? TotalPrice => ((Discount / 100) * ProductPrice) * ProductQuantity;
+
+        // newely Added By Abdulrahman 
+        public ICollection<string> Images { get; set; }
+
     }
 }

@@ -34,7 +34,7 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetAllMessages(int pageNumber)
         {
             var messages = await contactUsRepository.GetAll(pageNumber);

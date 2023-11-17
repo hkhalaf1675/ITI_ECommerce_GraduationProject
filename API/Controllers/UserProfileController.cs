@@ -15,6 +15,8 @@ namespace API.Controllers
     [Authorize]
     public class UserProfileController : ControllerBase
     {
+
+        #region Repository Injection
         private readonly IUserRepository userRepository;
         private readonly UserManager<User> userManager;
         private readonly IWishlistRepository wishlistRepository;
@@ -26,7 +28,8 @@ namespace API.Controllers
             userManager = _userManager;
             wishlistRepository = _wishlistRepository;
             favouriteRepository = _favouriteRepository;
-        }
+        } 
+        #endregion
 
         #region User Info , Update ,Delete User , Change Password
         [HttpGet]
@@ -35,7 +38,7 @@ namespace API.Controllers
             var currentUser = await userManager.GetUserAsync(User);
             if (currentUser == null)
             {
-                return BadRequest();
+                return Unauthorized();
             }
             return Ok(userRepository.GetUserInfo(currentUser));
         }
@@ -45,7 +48,7 @@ namespace API.Controllers
             var currentUser = await userManager.GetUserAsync(User);
             if (currentUser == null)
             {
-                return BadRequest();
+                return Unauthorized();
             }
             bool check = await userRepository.DeleteUser(currentUser, password);
             if (check)
@@ -92,7 +95,7 @@ namespace API.Controllers
             var currentUser = await userManager.GetUserAsync(User);
             if (currentUser == null)
             {
-                return BadRequest();
+                return Unauthorized();
             }
 
             bool check = await userRepository.AddAddress(currentUser, addressDto);
@@ -107,7 +110,7 @@ namespace API.Controllers
             var currentUser = await userManager.GetUserAsync(User);
             if (currentUser == null)
             {
-                return BadRequest();
+                return Unauthorized();
             }
 
             bool check = await userRepository.DeleteAddress(currentUser, addressId);
@@ -122,7 +125,7 @@ namespace API.Controllers
             var currentUser = await userManager.GetUserAsync(User);
             if (currentUser == null)
             {
-                return BadRequest();
+                return Unauthorized();
             }
 
             var addreses = await userRepository.userAddresses(currentUser);
@@ -141,14 +144,13 @@ namespace API.Controllers
             var currentUser = await userManager.GetUserAsync(User);
             if (currentUser == null)
             {
-                return BadRequest();
+                return Unauthorized();
             }
 
             var orders = await userRepository.userOrders(currentUser);
-            if (orders?.Count() == 0)
-                return NotFound();
 
             return Ok(orders?.ToList());
+
         }
         #endregion
 
@@ -159,13 +161,13 @@ namespace API.Controllers
         {
             if (int.TryParse(User.Claims.FirstOrDefault(C => C.Type == ClaimTypes.NameIdentifier)?.Value, out int userId))
             {
-                var productList = wishlistRepository.UserProducts(userId);
-                if (productList?.Count == 0)
-                    return NotFound();
+                var productList =  wishlistRepository.UserProducts(userId);
+
                 return Ok(productList);
             }
-            return BadRequest();
+            return Unauthorized();
         }
+
         [HttpPost("wishlist/{productId:int}")]
         public async Task<IActionResult> AddToWishlist(int productId)
         {
@@ -175,7 +177,7 @@ namespace API.Controllers
                 if (check)
                     return Ok();
             }
-            return BadRequest();
+            return Unauthorized();
         }
         [HttpDelete("wishlist/{productId:int}")]
         public async Task<IActionResult> DeleteFromWishlist(int productId)
@@ -186,7 +188,7 @@ namespace API.Controllers
                 if (check)
                     return Ok();
             }
-            return BadRequest();
+            return Unauthorized();
         }
         #endregion
 
@@ -198,11 +200,10 @@ namespace API.Controllers
             if (int.TryParse(User.Claims.FirstOrDefault(C => C.Type == ClaimTypes.NameIdentifier)?.Value, out int userId))
             {
                 var productList = favouriteRepository.UserProducts(userId);
-                if (productList?.Count == 0)
-                    return NotFound();
+
                 return Ok(productList);
             }
-            return BadRequest();
+            return Unauthorized();
         }
         [HttpPost("favourite/{productId:int}")]
         public async Task<IActionResult> AddToFavourite(int productId)
@@ -213,7 +214,7 @@ namespace API.Controllers
                 if (check)
                     return Ok();
             }
-            return BadRequest();
+            return Unauthorized();
         }
         [HttpDelete("favourite/{productId:int}")]
         public async Task<IActionResult> DeleteFromFavourite(int productId)
@@ -224,7 +225,7 @@ namespace API.Controllers
                 if (check)
                     return Ok();
             }
-            return BadRequest();
+            return Unauthorized();
         }
         #endregion
 

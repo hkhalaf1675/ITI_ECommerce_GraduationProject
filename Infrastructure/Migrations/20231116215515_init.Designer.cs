@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(ECommerceDBContext))]
-    [Migration("20231115175717_Mi1")]
-    partial class Mi1
+    [Migration("20231116215515_init")]
+    partial class init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -739,7 +739,8 @@ namespace Infrastructure.Migrations
                 {
                     b.HasOne("Core.Models.Product", "Product")
                         .WithMany("Favourites")
-                        .HasForeignKey("ProductID");
+                        .HasForeignKey("ProductID")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("Core.Models.User", "User")
                         .WithMany("Favourites")
@@ -755,7 +756,8 @@ namespace Infrastructure.Migrations
                 {
                     b.HasOne("Core.Models.Product", "Product")
                         .WithMany("Images")
-                        .HasForeignKey("ProductID");
+                        .HasForeignKey("ProductID")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("Product");
                 });
@@ -784,7 +786,8 @@ namespace Infrastructure.Migrations
 
                     b.HasOne("Core.Models.Product", "Product")
                         .WithMany("OrderDetails")
-                        .HasForeignKey("ProductID");
+                        .HasForeignKey("ProductID")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("Order");
 
@@ -841,7 +844,8 @@ namespace Infrastructure.Migrations
                 {
                     b.HasOne("Core.Models.Product", "Product")
                         .WithMany("Reviews")
-                        .HasForeignKey("ProductID");
+                        .HasForeignKey("ProductID")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("Core.Models.User", "User")
                         .WithMany("Reviews")
@@ -866,7 +870,8 @@ namespace Infrastructure.Migrations
                 {
                     b.HasOne("Core.Models.Product", "Product")
                         .WithMany("Carts")
-                        .HasForeignKey("ProductID");
+                        .HasForeignKey("ProductID")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("Core.Models.User", "User")
                         .WithMany("Carts")
@@ -882,7 +887,8 @@ namespace Infrastructure.Migrations
                 {
                     b.HasOne("Core.Models.Product", "Product")
                         .WithMany("Warranties")
-                        .HasForeignKey("ProductID");
+                        .HasForeignKey("ProductID")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("Product");
                 });
@@ -891,7 +897,8 @@ namespace Infrastructure.Migrations
                 {
                     b.HasOne("Core.Models.Product", "Product")
                         .WithMany("Wishlists")
-                        .HasForeignKey("ProductID");
+                        .HasForeignKey("ProductID")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("Core.Models.User", "User")
                         .WithMany("Wishlists")

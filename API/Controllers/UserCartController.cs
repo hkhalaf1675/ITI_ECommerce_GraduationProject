@@ -30,13 +30,9 @@ namespace API.Controllers
             {
                 ICollection<CartProductsDto> cartProducts = await shopingCartRepository.GetUserCartProducts(userId);
 
-                if (cartProducts?.Count() == 0)
-                {
-                    return NotFound();
-                }
                 return Ok(cartProducts);
             }
-            return BadRequest();
+            return Unauthorized();
         } 
         #endregion
 
@@ -54,7 +50,7 @@ namespace API.Controllers
                 }
                 return BadRequest();
             }
-            return BadRequest();
+            return Unauthorized();
         }
 
         #endregion
@@ -73,7 +69,7 @@ namespace API.Controllers
                 }
                 return BadRequest();
             }
-            return BadRequest();
+            return Unauthorized();
         }
 
         #endregion
@@ -111,7 +107,7 @@ namespace API.Controllers
                 };
             }
             
-            return BadRequest();
+            return Unauthorized();
         } 
         #endregion
     }

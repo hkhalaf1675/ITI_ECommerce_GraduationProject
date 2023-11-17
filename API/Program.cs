@@ -12,9 +12,9 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
+// Add services to the container
 builder.Services.AddControllers();
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -28,6 +28,7 @@ builder.Services.AddDbContext<ECommerceDBContext>(Options =>
             b => b.MigrationsAssembly(typeof(ECommerceDBContext).Assembly.FullName))
 );
 
+
 #region Repositories Injection
 builder.Services.AddScoped(typeof(IProductRepository), typeof(ProductRepository));
 builder.Services.AddScoped(typeof(IReviewRepository), typeof(ReviewRepository));
@@ -40,9 +41,7 @@ builder.Services.AddScoped(typeof(IBrandRepository),typeof(BrandRepository ));
 builder.Services.AddScoped(typeof(IAdminUserManager),typeof(AdminUserManager ));
 builder.Services.AddScoped(typeof(IContactUsRepository),typeof(ContactUsRepository ));
 builder.Services.AddScoped(typeof(IOrderRepository),typeof(OrderRepository));
-
 builder.Services.AddScoped(typeof(IAccountManagerServices), typeof(AccountManagerServices));
-builder.Services.AddScoped(typeof(IOrderRepository), typeof(OrderRepository)); // tasneem add it !!
 #endregion
 
 #region Identity
@@ -54,7 +53,7 @@ builder.Services.AddIdentity<User, IdentityRole<int>>(Options =>
     Options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromSeconds(20);
 
 
-}).AddEntityFrameworkStores<ECommerceDBContext>();
+}).AddEntityFrameworkStores<ECommerceDBContext>();  //.AddRoles<IdentityRole>().AddDefaultTokenProviders()
 #endregion
 
 #region Authentication

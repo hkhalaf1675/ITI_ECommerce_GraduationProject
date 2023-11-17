@@ -41,7 +41,7 @@ namespace Infrastructure.Repositories
         {
             List<ContactUsDto> contactUsDtos = new List<ContactUsDto>();
 
-            var list = context.ContactUs.Skip((pageNumber - 1) * 10).Take(10);
+            var list = context.ContactUs.Skip((pageNumber - 1) * 6).Take(6);
 
             foreach(var item in list)
             {
