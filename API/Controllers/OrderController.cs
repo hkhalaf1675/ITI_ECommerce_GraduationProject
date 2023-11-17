@@ -40,7 +40,6 @@ namespace API.Controllers
             return Ok(await orderRepository.GetOrdersCount());
         }
 
-
         [HttpGet("GetAllOrders/{pageNumber:int}")]
         public async Task<IActionResult> GetAllOrders(int pageNumber)
         {
@@ -57,7 +56,6 @@ namespace API.Controllers
 
             return BadRequest();
         }
-
 
         [HttpGet("TotalSell")]
         public async Task<IActionResult> GetTotalSell()
