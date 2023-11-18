@@ -176,9 +176,11 @@ namespace Infrastructure.Repositories
             foreach (var product in order?.OrderDetails)
             {
                 // get the order details => order products details
-                var productDetail = context.Products.Include(P => P.Images)
+                var productDetail = context.Products
+                    .Include(P => P.Images)
                     .Include(P => P.Brand)
-                    .FirstOrDefault(P => P.Id == product.Id);
+                    //.FirstOrDefault(P => P.Id == product.id);
+                    .FirstOrDefault(P => P.Id == product.ProductID); // tasneem edit it
 
                 // lsit ts save the url of the images of each product
                 List<string> images = new List<string>();
