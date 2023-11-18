@@ -12,6 +12,7 @@ using System.Text;
 using Infrastructure.Repositories;
 using Core.IRepositories;
 using Core.IServices;
+using Core.DTOs;
 
 namespace API.Controllers
 {
@@ -19,19 +20,23 @@ namespace API.Controllers
     [ApiController]
     public class AccountsController : ControllerBase
     {
+        // Modification :
+        // -> check the role exists
 
         #region Injection
         private readonly UserManager<User> userManager;
        
         private readonly IAccountManagerServices accountManager;
         private readonly IConfiguration configuration;
+        private readonly RoleManager<IdentityRole<int>> roleManager;
 
-        public AccountsController(UserManager<User> _userManager, IAccountManagerServices _accountManager, IConfiguration _configuration)
+        public AccountsController(UserManager<User> _userManager, IAccountManagerServices _accountManager, IConfiguration _configuration, RoleManager<IdentityRole<int>> _roleManager)
         {
             this.userManager = _userManager;
            
             accountManager = _accountManager;
             this.configuration = _configuration;
+            roleManager = _roleManager;
         }
         #endregion
 

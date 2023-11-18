@@ -12,11 +12,17 @@ namespace Infrastructure.Repositories
 {
     public class AdminUserManager:IAdminUserManager
     {
+        // modifiaction : 
+        // -> injcet the roleManager
+        // -> modify the user mapping
+        // -> check if the role is exists or not
         private readonly UserManager<User> userManager;
+        private readonly RoleManager<IdentityRole<int>> roleManager;
 
-        public AdminUserManager(UserManager<User> _userManager)
+        public AdminUserManager(UserManager<User> _userManager,RoleManager<IdentityRole<int>> _roleManager)
         {
             userManager = _userManager;
+            roleManager = _roleManager;
         }
         public async Task<bool> AdminDeleteUser(string userName)
         {
@@ -41,13 +47,28 @@ namespace Infrastructure.Repositories
             {
                 UserName = newUser.UserName,
                 FullName = newUser.FullName,
-                Email = newUser.Email
+                Email = newUser.Email,
+                Address = newUser.Address,
+                PhoneNumber = newUser.PhoneNumber
             };
 
             var result = await userManager.CreateAsync(_user, newUser.Password);
 
             if (!result.Succeeded)
                 return false;
+
+            // check the role exists
+            var check = await roleManager.RoleExistsAsync(newUser.Role);
+
+            if (!check)
+            {
+                var role = new IdentityRole<int>(newUser.Role);
+
+                var checkRoleCreation = await roleManager.CreateAsync(role);
+
+                if (!checkRoleCreation.Succeeded)
+                    return false;
+            }
 
             try
             {

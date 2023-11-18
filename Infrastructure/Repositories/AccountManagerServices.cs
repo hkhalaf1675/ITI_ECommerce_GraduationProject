@@ -17,14 +17,19 @@ namespace Infrastructure.Services
 {
     public class AccountManagerServices:IAccountManagerServices
     {
+        // Modification :
+        // -> check the role exists
+
         #region Injection
         private readonly UserManager<User> userManager;
         private readonly IConfiguration configuration;
+        private readonly RoleManager<IdentityRole<int>> roleManager;
 
-        public AccountManagerServices(UserManager<User> _userManager, IConfiguration _configuration)
+        public AccountManagerServices(UserManager<User> _userManager, IConfiguration _configuration, RoleManager<IdentityRole<int>> _roleManager)
         {
             userManager = _userManager;
             configuration = _configuration;
+            roleManager = _roleManager;
         } 
         #endregion
 
@@ -60,7 +65,18 @@ namespace Infrastructure.Services
                 return new AuthModel { Message = errors };
             }
 
-            await userManager.AddToRoleAsync(user, "Client");
+            // check the role exists
+            var check = await roleManager.RoleExistsAsync("Client");
+
+            if (!check)
+            {
+                var role = new IdentityRole<int>("Client");
+
+                var checkRoleCreation = await roleManager.CreateAsync(role);
+
+                if (!checkRoleCreation.Succeeded)
+                    return new AuthModel { Message = "can non add role" };
+            }
 
             var jwtSecurityToken = await CreateJwtTokenAsync(user);
 

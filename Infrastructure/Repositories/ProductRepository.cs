@@ -1,6 +1,7 @@
 ﻿using Core.DTOs.Product;
 using Core.IRepositories;
 using Core.Models;
+using Infrastructure.Prodfiles;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -12,6 +13,10 @@ namespace Infrastructure.Repositories
 {
     public class ProductRepository : IProductRepository
     {
+        // Modification :
+        // -> add filter by color
+        // -> add get top three rating
+
         ECommerceDBContext context;
         public ProductRepository(ECommerceDBContext _context)
         {
@@ -115,6 +120,12 @@ namespace Infrastructure.Repositories
                 products = products.OrderByDescending(p => p.Price).ToList();
             }
 
+            // add filter by color
+            if(parametars.Color != null)
+            {
+                products = products.Where(P => P.Color.ToLower() == parametars.Color.ToLower()).ToList();
+            }
+
             return products.Skip((parametars.PageIndex - 1) * parametars.PageSize).Take(parametars.PageSize).ToList();
         }
 
@@ -162,7 +173,26 @@ namespace Infrastructure.Repositories
             return context.Products.Count();
         }
 
+        // add get top three rating
+        public async Task<ICollection<ProductToReturnDto>> GetTopThreeRate()
+        {
+            ICollection<ProductToReturnDto> productToReturnDtos = new List<ProductToReturnDto>();
 
+            var products = context.Products
+                .Include(p => p.Images)
+                .Include(p => p.Warranties)
+                .Include(p => p.Category)
+                .Include(p => p.Brand)
+                .Include(P => P.Reviews)
+                .OrderByDescending(P => P.Reviews.Sum(R => R.Rating)).Take(3).ToList();
+
+            if(products == null || products?.Count == 0)
+                return productToReturnDtos;
+
+            productToReturnDtos = MapProductsToDto.Map(products);
+
+            return productToReturnDtos;
+        }
 
         #region ADMIN
 

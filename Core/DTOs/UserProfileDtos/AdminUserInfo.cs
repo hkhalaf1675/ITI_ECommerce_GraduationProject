@@ -20,5 +20,11 @@ namespace Core.DTOs.UserProfileDtos
         public string? Role { get; set; }
         [Required]
         public string? Password { get; set; }
+
+        // add the address and phone
+        [Required]
+        public string? Address { get; set; }
+        [Required]
+        public string? PhoneNumber { get; set; }
     }
 }
