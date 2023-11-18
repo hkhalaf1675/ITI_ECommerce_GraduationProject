@@ -148,7 +148,7 @@ namespace Infrastructure.Repositories
             if(user is null) 
                 return false;
 
-            var address = user.Addresses.FirstOrDefault(A => A.Id == addressId);
+            var address = context.Address.FirstOrDefault(A => A.Id == addressId);
             if (address is not null)
             {
                 user.Addresses.Remove(address);
