@@ -12,13 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(ECommerceDBContext))]
-<<<<<<<< HEAD:Infrastructure/Migrations/20231117214006_Mi1.Designer.cs
-    [Migration("20231117214006_Mi1")]
+    [Migration("20231118030734_Mi1")]
     partial class Mi1
-========
-    [Migration("20231117231705_InitialCreate")]
-    partial class InitialCreate
->>>>>>>> baabec705bf6efd1ce722770fa8e4ce032755f84:Infrastructure/Migrations/20231117231705_InitialCreate.Designer.cs
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
