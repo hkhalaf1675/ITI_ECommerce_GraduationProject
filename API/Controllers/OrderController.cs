@@ -10,9 +10,12 @@ namespace API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = "Admin")]
+    //[Authorize(Roles = "Admin")]
     public class OrderController : ControllerBase
     {
+        // Modification :
+        // -> edit BadRequest() to Unauthorized()
+
         private readonly IOrderRepository orderRepository;
 
         public OrderController(IOrderRepository _orderRepository)
@@ -29,8 +32,10 @@ namespace API.Controllers
                 bool check = await orderRepository.AddNewOrder(userId, addressId, payMethod);
                 if (check)
                     return Ok();
+
+                return BadRequest();
             }
-            return BadRequest();
+            return Unauthorized();
         }
 
         
@@ -61,6 +66,18 @@ namespace API.Controllers
         public async Task<IActionResult> GetTotalSell()
         {
             return Ok(await orderRepository.TotalSell());
+        }
+
+        // add the get order by Id
+        [HttpGet("{id:int}")]
+        public async Task<IActionResult> GetOrderById(int id)
+        {
+            var order = await orderRepository.GetById(id);
+
+            if (order is null)
+                return NotFound();
+
+            return Ok(order);
         }
     }
 }

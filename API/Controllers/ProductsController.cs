@@ -20,6 +20,9 @@ namespace API.Controllers
     [ApiController]
     public class ProductsController : ControllerBase
     {
+        // Modification :
+        // -> add end api to get top three rating
+
         #region ctor
         IProductRepository productRepository;
         IConfiguration _configuration;
@@ -269,6 +272,16 @@ namespace API.Controllers
 
         #endregion
 
+        #region Get Top Three products with top rating
+        [HttpGet("GetTopThreerating")]
+        public async Task<IActionResult> GetTopThreeRating()
+        {
+            var products = await productRepository.GetTopThreeRate();
+
+            return Ok(products);
+        }
+        #endregion
+
 
         #region -------------------------- ADMIN ------------------------------
 
@@ -503,10 +516,10 @@ namespace API.Controllers
         //        // Check if the product with the given id exists
         //        var existingProduct = productRepository.GetById(id);
 
-                //        if (existingProduct == null)
-                //        {
-                //            return NotFound(); // Product not found
-                //        }
+        //        if (existingProduct == null)
+        //        {
+        //            return NotFound(); // Product not found
+        //        }
 
         //        // Update the existing product with the new data
         //        existingProduct.Name = productInput.Name;
@@ -527,22 +540,21 @@ namespace API.Controllers
         //        existingProduct.CategoryID = productInput.CategoryID;
         //        existingProduct.BrandID = productInput.BrandID;
 
-                //        // Update related entities (Warranties and Images)
-                //        productRepository.UpdateWarranties(existingProduct, productInput.Warranties);
-                //        productRepository.UpdateImages(existingProduct, productInput.Images);
+        //        // Update related entities (Warranties and Images)
+        //        productRepository.UpdateWarranties(existingProduct, productInput.Warranties);
+        //        productRepository.UpdateImages(existingProduct, productInput.Images);
 
-                //        bool check = productRepository.Update(existingProduct);
+        //        bool check = productRepository.Update(existingProduct);
 
-                //        if (check)
-                //        {
-                //            return Ok();
-                //        }
-                //        return BadRequest();
-                //    }
-                //    return BadRequest(ModelState);
-                //}
-
+        //        if (check)
+        //        {
+        //            return Ok();
+        //        }
+        //        return BadRequest();
         //    }
+        //    return BadRequest(ModelState);
+        //}
+
 
         // get the count of all products
 

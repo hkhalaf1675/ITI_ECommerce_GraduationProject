@@ -52,7 +52,7 @@ namespace API.Controllers
 
         // --------------------------------------------------------
         [HttpPost]
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         public IActionResult PostNew(Brand brand)
         {
             if (ModelState.IsValid)

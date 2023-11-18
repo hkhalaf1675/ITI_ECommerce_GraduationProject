@@ -4,7 +4,6 @@ using Core.IRepositories;
 using Core.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Protocols;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -41,9 +40,9 @@ namespace Infrastructure.Repositories
                 return false;
             }
 
-            ShopingCart userCart
-                = context.ShoppingCarts.FirstOrDefault(C => C.UserID == userId && C.ProductID == toCartDto.ProductId);
-            if (userCart != null)
+            ShopingCart userCart = context.ShoppingCarts.FirstOrDefault(C => C.UserID == userId && C.ProductID == toCartDto.ProductId);
+
+            if ( userCart != null)
             {
                 if (userCart.Quantity + toCartDto.Quantity > Convert.ToInt32(productStock))
                 {
