@@ -46,6 +46,9 @@ namespace Infrastructure.Repositories
 
             user.FullName = userUpdateDto.FullName;
             user.Email = userUpdateDto.Email;
+            user.UserName = userUpdateDto.UserName;
+            user.PhoneNumber = userUpdateDto.PhoneNumber;
+            user.Address = userUpdateDto.Address;
 
             var result = await userManager.UpdateAsync(user);
 
