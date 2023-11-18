@@ -131,7 +131,9 @@ namespace API.Controllers
             var addreses = await userRepository.userAddresses(currentUser);
             if (addreses?.Count() == 0)
             {
-                return NotFound();
+                List<UserAddressDto> Address = new List<UserAddressDto>();
+
+                return Ok(Address);
             }
             return Ok(addreses.ToList());
         }
