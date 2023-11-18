@@ -14,10 +14,12 @@ namespace Infrastructure.Repositories
     public class UserRepository : IUserRepository
     {
         private readonly UserManager<User> userManager;
+        private readonly ECommerceDBContext context;
 
-        public UserRepository(UserManager<User> _userManager)
+        public UserRepository(UserManager<User> _userManager,ECommerceDBContext _context)
         {
             userManager = _userManager;
+            context = _context;
         }
         public async Task<ProfileDto> GetUserInfo(User user)
         {
@@ -99,7 +101,7 @@ namespace Infrastructure.Repositories
             if (user is null)
                 return addressDtos;
 
-            var addresses = user.Addresses.ToList();
+            var addresses = context.Address.Where(A => A.UserID == user.Id).ToList();
 
             foreach(var address in addresses)
             {

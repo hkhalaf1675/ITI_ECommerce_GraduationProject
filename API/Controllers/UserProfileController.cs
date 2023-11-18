@@ -129,7 +129,7 @@ namespace API.Controllers
             }
 
             var addreses = await userRepository.userAddresses(currentUser);
-            if (addreses?.Count() == 0)
+            if (addreses == null)
             {
                 return NotFound();
             }
