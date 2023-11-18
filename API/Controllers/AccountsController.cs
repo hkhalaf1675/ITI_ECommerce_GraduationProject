@@ -105,17 +105,17 @@ namespace API.Controllers
                     return BadRequest("can not add role");
             }
 
-            //var claims = new List<Claim>
-            //{
-            //   new Claim(ClaimTypes.NameIdentifier,NewUser.Id.ToString()),
-            //   new Claim(ClaimTypes.Role,"Client")
-            //};
+            var claims = new List<Claim>
+            {
+               new Claim(ClaimTypes.NameIdentifier,NewUser.Id.ToString()),
+               new Claim(ClaimTypes.Role,"Client")
+            };
 
-            //var claimsResult = await userManager.AddClaimsAsync(NewUser, claims);
-            //if (!claimsResult.Succeeded)
-            //{
-            //    return BadRequest(claimsResult.Errors);
-            //}
+            var claimsResult = await userManager.AddClaimsAsync(NewUser, claims);
+            if (!claimsResult.Succeeded)
+            {
+                return BadRequest(claimsResult.Errors);
+            }
 
             return Ok();
         }
