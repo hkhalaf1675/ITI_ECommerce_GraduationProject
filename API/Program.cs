@@ -23,7 +23,7 @@ builder.Services.AddSwaggerGen();
 var DefaultConnection = builder.Configuration.GetConnectionString("DefaultConnection");
 
 builder.Services.AddDbContext<ECommerceDBContext>(Options =>
-    Options.UseSqlServer(
+        Options.UseSqlServer(
             DefaultConnection,
             b => b.MigrationsAssembly(typeof(ECommerceDBContext).Assembly.FullName))
 );
