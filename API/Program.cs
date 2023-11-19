@@ -1,3 +1,4 @@
+using API.HubConfig;
 using Core.IRepositories;
 using Core.IServices;
 using Core.Models;
@@ -11,6 +12,8 @@ using System.Security.Claims;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddSignalR();
 
 // Add services to the container
 builder.Services.AddControllers();
@@ -42,6 +45,7 @@ builder.Services.AddScoped(typeof(IAdminUserManager),typeof(AdminUserManager ));
 builder.Services.AddScoped(typeof(IContactUsRepository),typeof(ContactUsRepository ));
 builder.Services.AddScoped(typeof(IOrderRepository),typeof(OrderRepository));
 builder.Services.AddScoped(typeof(IAccountManagerServices), typeof(AccountManagerServices));
+builder.Services.AddScoped(typeof(IAdminReportRepository), typeof(AdminReportRepository));
 #endregion
 
 #region Identity
@@ -91,12 +95,6 @@ builder.Services.AddAuthorization(options =>
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
 
 app.UseHttpsRedirection();
 
@@ -105,10 +103,22 @@ app.UseCors(c => c
                 .AllowAnyMethod()
                 .AllowAnyOrigin());
 
-app.UseAuthentication();
-app.UseAuthorization();
 // for images
 app.UseStaticFiles();
+
+
+// Configure the HTTP request pipeline.
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
+
+
+app.UseAuthentication();
+app.UseAuthorization();
+app.MapHub<MessageHub>("/offers");
 app.MapControllers();
+
 
 app.Run();

@@ -211,6 +211,7 @@ namespace Infrastructure.Repositories
                 .FirstOrDefault();
         }
 
+
         // method to get order detials and map the products into dto
         private List<UserProductsDto> GetOrderDetails(Order order)
         {
@@ -221,7 +222,7 @@ namespace Infrastructure.Repositories
                 // get the order details => order products details
                 var productDetail = context.Products.Include(P => P.Images)
                     .Include(P => P.Brand)
-                    .FirstOrDefault(P => P.Id == product.ProductID);
+                    .FirstOrDefault(P => P.Id == product.ProductID); //tasneem add it
 
                 // lsit ts save the url of the images of each product
                 List<string> images = new List<string>();
@@ -233,7 +234,7 @@ namespace Infrastructure.Repositories
                 // map the product to the dto
                 products.Add(new UserProductsDto
                 {
-                    Id = product.Id,
+                    Id = (int)product.ProductID, //tasneem add it
                     Name = productDetail.Name,
                     Model = productDetail.Model,
                     Price = productDetail.Price,

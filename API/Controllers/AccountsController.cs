@@ -94,18 +94,23 @@ namespace API.Controllers
 
             }
 
-            ////check exist role client 
-            //if (!await roleManager.RoleExistsAsync("Client"))
-            //{
-            //    await roleManager.CreateAsync(new IdentityRole<int>("Client"));
-            //}
+            //// check the role exists
+            //var check = await roleManager.RoleExistsAsync("Client");
 
-            await userManager.AddToRoleAsync(NewUser, "Client");
+            //if (!check)
+            //{
+            //    var role = new IdentityRole<int>("Client");
+
+            //    var checkRoleCreation = await roleManager.CreateAsync(role);
+
+            //    if (!checkRoleCreation.Succeeded)
+            //        return BadRequest("can not add role");
+            //}
 
             var claims = new List<Claim>
             {
                new Claim(ClaimTypes.NameIdentifier,NewUser.Id.ToString()),
-
+               new Claim(ClaimTypes.Role,"Client")
             };
 
             var claimsResult = await userManager.AddClaimsAsync(NewUser, claims);
