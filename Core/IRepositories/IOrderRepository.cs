@@ -10,7 +10,7 @@ namespace Core.IRepositories
     public interface IOrderRepository
     {
         Task<UserOrderDto?> GetById(int id);
-        Task<bool> AddNewOrder(int userId, int addressId, string payMethod);
+        Task<bool> AddNewOrder(int userId, int addressId, string payMethod,int phoneId);
         Task<int> GetOrdersCount();
         Task<IEnumerable<UserOrderDto>> GetAllOrders(int pageNumber);
         Task<bool> AdminDeleteOrder(int orderId);

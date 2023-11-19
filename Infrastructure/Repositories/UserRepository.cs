@@ -187,5 +187,77 @@ namespace Infrastructure.Repositories
             return orderDtos;
         }
 
+        #region User Phones
+
+        public async Task<string?> AddPhone(int userId, string? phoneNumber)
+        {
+            var phone = 
+                context.Phones.FirstOrDefault(Ph => Ph.UserID == userId && Ph.PhoneNumber == phoneNumber);
+
+            if(phone != null)
+            {
+                return "That phone is already exists";
+            }
+
+            context.Phones.Add(new Phone
+            {
+                UserID = userId,
+                PhoneNumber = phoneNumber
+            });
+
+            try
+            {
+                context.SaveChanges();
+
+                return "The Phone was added successfully";
+            }
+            catch(Exception ex)
+            {
+                return $"There is an error : {ex.Message}";
+            }
+
+        }
+
+        public async Task<string?> DeletePhone(int userId, string? phoneNumber)
+        {
+            var phone =
+                context.Phones.FirstOrDefault(Ph => Ph.UserID == userId && Ph.PhoneNumber == phoneNumber);
+
+            if (phone == null)
+            {
+                return "That phone is not found";
+            }
+
+            context.Phones.Remove(phone);
+
+            try
+            {
+                context.SaveChanges();
+
+                return "The Phone was deleted successfully";
+            }
+            catch (Exception ex)
+            {
+                return $"There is an error : {ex.Message}";
+            }
+        }
+
+        public async Task<ICollection<UserPhoneDto>> GetUserPhones(int userId)
+        {
+            List<UserPhoneDto> phoneDtos = new List<UserPhoneDto>();
+
+            var userPhones = context.Phones.Where(Ph => Ph.UserID == userId);
+            foreach(var phone in userPhones)
+            {
+                phoneDtos.Add(new UserPhoneDto
+                {
+                    Id = phone.Id,
+                    PhoneNumber = phone.PhoneNumber,
+                });
+            }
+
+            return phoneDtos;
+        }
+        #endregion
     }
 }

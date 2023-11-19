@@ -231,5 +231,43 @@ namespace API.Controllers
         }
         #endregion
 
+        #region User Phones : Add , Delete , Get User Phones
+
+        [HttpPost("add-phone")]
+        public async Task<IActionResult> AddPhone([FromBody]string phoneNumber)
+        {
+            if (int.TryParse(User.Claims.FirstOrDefault(C => C.Type == ClaimTypes.NameIdentifier)?.Value, out int userId))
+            {
+                var result = await userRepository.AddPhone(userId,phoneNumber);
+
+                return Ok(result);
+            }
+            return Unauthorized();
+        }
+
+        [HttpDelete("delete-phone")]
+        public async Task<IActionResult> DeletePhone([FromBody] string phoneNumber)
+        {
+            if (int.TryParse(User.Claims.FirstOrDefault(C => C.Type == ClaimTypes.NameIdentifier)?.Value, out int userId))
+            {
+                var result = await userRepository.DeletePhone(userId, phoneNumber);
+
+                return Ok(result);
+            }
+            return Unauthorized();
+        }
+
+        [HttpGet("get-phones")]
+        public async Task<IActionResult> GetUserPhones()
+        {
+            if (int.TryParse(User.Claims.FirstOrDefault(C => C.Type == ClaimTypes.NameIdentifier)?.Value, out int userId))
+            {
+                var result = await userRepository.GetUserPhones(userId);
+
+                return Ok(result);
+            }
+            return Unauthorized();
+        }
+        #endregion
     }
 }

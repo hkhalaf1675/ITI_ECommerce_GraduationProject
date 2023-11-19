@@ -20,6 +20,8 @@ namespace Core.IRepositories
         Task<ICollection<UserAddressDto>> userAddresses(User user);
         Task<ICollection<UserOrderDto>> userOrders(User user);
         Task<bool> ChangePassword(User user,UserResetPasswordDto resetPassword);
-
+        Task<string?> AddPhone(int userId, string? phoneNumber);
+        Task<string?> DeletePhone(int userId , string? phoneNumber);
+        Task<ICollection<UserPhoneDto>> GetUserPhones(int userId);
     }
 }

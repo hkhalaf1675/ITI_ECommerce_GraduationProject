@@ -13,6 +13,7 @@ using Infrastructure.Repositories;
 using Core.IRepositories;
 using Core.IServices;
 using Core.DTOs;
+using Infrastructure;
 
 namespace API.Controllers
 {
@@ -29,14 +30,16 @@ namespace API.Controllers
         private readonly IAccountManagerServices accountManager;
         private readonly IConfiguration configuration;
         private readonly RoleManager<IdentityRole<int>> roleManager;
+        private readonly ECommerceDBContext context;
 
-        public AccountsController(UserManager<User> _userManager, IAccountManagerServices _accountManager, IConfiguration _configuration, RoleManager<IdentityRole<int>> _roleManager)
+        public AccountsController(UserManager<User> _userManager, IAccountManagerServices _accountManager, IConfiguration _configuration, RoleManager<IdentityRole<int>> _roleManager,ECommerceDBContext _context)
         {
             this.userManager = _userManager;
            
             accountManager = _accountManager;
             this.configuration = _configuration;
             roleManager = _roleManager;
+            context = _context;
         }
         #endregion
 
@@ -119,7 +122,46 @@ namespace API.Controllers
                 return BadRequest(claimsResult.Errors);
             }
 
-            return Ok();
+            #region Add the user Address to the Addresses Table
+
+            var addressDetails = input?.Address?.Split(',');
+
+            var lastUser = await userManager.FindByEmailAsync(input.Email);
+
+            if (addressDetails.Length < 3)
+            {
+                // if the address not consist from 3 parts will delete it
+                lastUser.Address = null;
+                await userManager.UpdateAsync(lastUser);
+
+                return BadRequest("The User was Addede but the address and saved not saved");
+            }
+
+            context.Address.Add(new Address
+            {
+                UserID = lastUser?.Id,
+                Street = addressDetails[0],
+                City = addressDetails[1],
+                Country = addressDetails[2]
+            });
+
+            context.Phones.Add(new Phone
+            {
+                UserID = lastUser.Id,
+                PhoneNumber = input.PhoneNumber
+            });
+
+            try
+            {
+                context.SaveChanges();
+                return Ok();
+            }
+            catch(Exception ex)
+            {
+                return BadRequest($"There is an error on saving Address and Phones : {ex.Message}");
+            }
+
+            #endregion
         }
         #endregion
 
