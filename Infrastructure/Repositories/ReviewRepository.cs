@@ -66,9 +66,23 @@ namespace Infrastructure.Repositories
         
         public bool Add(Review review)
         {
-            try
+            // update it to check if the review is exists or not before adding it m 
+            var userReview = 
+                _context.Reviews.FirstOrDefault(R => R.UserID == Convert.ToInt32(review.UserID) && R.ProductID == Convert.ToInt32(review.ProductID));
+
+            if (userReview != null)
+            {
+                userReview.Rating = review.Rating;
+                userReview.Text = review.Text;
+                userReview.Date = review.Date;
+            }
+            else
             {
                 _context.Reviews.Add(review);
+            }
+
+            try
+            {
                 _context.SaveChanges();
                 return true;
             }

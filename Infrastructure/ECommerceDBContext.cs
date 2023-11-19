@@ -22,9 +22,9 @@ namespace Infrastructure
             modelBuilder.Entity<ProductIdentity>()
                 .HasKey(PID => new { PID.SerialNumber, PID.ProductID });
 
-            // Composite PK for Phone
-            modelBuilder.Entity<Phone>()
-                .HasKey(Ph => new { Ph.PhoneNumber, Ph.UserID });
+            //// Composite PK for Phone
+            //modelBuilder.Entity<Phone>()
+            //    .HasKey(Ph => new { Ph.PhoneNumber, Ph.UserID });
             #endregion
 
 

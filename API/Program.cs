@@ -101,6 +101,9 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+// for images
+app.UseStaticFiles();
+
 app.UseCors(c => c
                 .AllowAnyHeader()
                 .AllowAnyMethod()
@@ -108,8 +111,7 @@ app.UseCors(c => c
 
 app.UseAuthentication();
 app.UseAuthorization();
-// for images
-app.UseStaticFiles();
+
 app.MapControllers();
 
 app.Run();

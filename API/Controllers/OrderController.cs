@@ -25,11 +25,11 @@ namespace API.Controllers
 
         [Authorize]
         [HttpPost("addOrder")]
-        public async Task<IActionResult> AddNewOrder(int addressId,string payMethod)
+        public async Task<IActionResult> AddNewOrder(int addressId,string payMethod,int phoneId)
         {
             if (int.TryParse(User.Claims.FirstOrDefault(C => C.Type == ClaimTypes.NameIdentifier)?.Value, out int userId))
             {
-                bool check = await orderRepository.AddNewOrder(userId, addressId, payMethod);
+                bool check = await orderRepository.AddNewOrder(userId, addressId, payMethod, phoneId);
                 if (check)
                     return Ok();
 
