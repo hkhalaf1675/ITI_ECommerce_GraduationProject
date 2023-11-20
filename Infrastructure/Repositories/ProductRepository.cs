@@ -73,12 +73,12 @@ namespace Infrastructure.Repositories
                 products = products.Where(p => p.BrandID == parametars.brandId).ToList();
             }
 
-            if (parametars.condition == "1" )
+            if (parametars.condition?.ToLower() == "used" )
             {
                 products = products.Where(p => p.Condition == ProductCondition.Used).ToList();
             }
 
-            if (parametars.condition == "0")
+            if (parametars.condition?.ToLower() == "new")
             {
                 products = products.Where(p => p.Condition == ProductCondition.New).ToList();
             }
