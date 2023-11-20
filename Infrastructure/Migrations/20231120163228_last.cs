@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class Mi1 : Migration
+    public partial class last : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -247,8 +247,7 @@ namespace Infrastructure.Migrations
                 columns: table => new
                 {
                     PhoneNumber = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    UserID = table.Column<int>(type: "int", nullable: false),
-                    Id = table.Column<int>(type: "int", nullable: false)
+                    UserID = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -311,9 +310,7 @@ namespace Infrastructure.Migrations
                     Method = table.Column<int>(type: "int", nullable: true),
                     TotalPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     AddressId = table.Column<int>(type: "int", nullable: true),
-                    PhoneId = table.Column<int>(type: "int", nullable: true),
-                    PhoneNumber = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    PhoneUserID = table.Column<int>(type: "int", nullable: true),
+                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     UserId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
@@ -330,11 +327,6 @@ namespace Infrastructure.Migrations
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.SetNull);
-                    table.ForeignKey(
-                        name: "FK_Orders_Phones_PhoneNumber_PhoneUserID",
-                        columns: x => new { x.PhoneNumber, x.PhoneUserID },
-                        principalTable: "Phones",
-                        principalColumns: new[] { "PhoneNumber", "UserID" });
                 });
 
             migrationBuilder.CreateTable(
@@ -640,11 +632,6 @@ namespace Infrastructure.Migrations
                 column: "AddressId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Orders_PhoneNumber_PhoneUserID",
-                table: "Orders",
-                columns: new[] { "PhoneNumber", "PhoneUserID" });
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Orders_UserId",
                 table: "Orders",
                 column: "UserId");
@@ -759,6 +746,9 @@ namespace Infrastructure.Migrations
                 name: "PaymentMethods");
 
             migrationBuilder.DropTable(
+                name: "Phones");
+
+            migrationBuilder.DropTable(
                 name: "ProductIdentities");
 
             migrationBuilder.DropTable(
@@ -790,9 +780,6 @@ namespace Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "Address");
-
-            migrationBuilder.DropTable(
-                name: "Phones");
 
             migrationBuilder.DropTable(
                 name: "Brands");
