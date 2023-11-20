@@ -48,7 +48,7 @@ namespace Infrastructure.Repositories
             return orderDto;
         }
 
-        public async Task<bool> AddNewOrder(int userId, int addressId,string payMethod, int phoneId)
+        public async Task<bool> AddNewOrder(int userId, int addressId,string payMethod, string phoneNumebr)
         {
             Order newOrder = new Order
             {
@@ -57,7 +57,7 @@ namespace Infrastructure.Repositories
                 UserId = userId,
                 Method = payMethod == "PayPal"?PayMethods.PayPal:PayMethods.Cash,
                 Date = DateTime.Now,
-                PhoneId = phoneId,
+                PhoneNumber = phoneNumebr,
                 TotalPrice = 0
             };
             

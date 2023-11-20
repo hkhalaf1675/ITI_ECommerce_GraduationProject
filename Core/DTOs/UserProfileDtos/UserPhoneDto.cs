@@ -8,7 +8,6 @@ namespace Core.DTOs.UserProfileDtos
 {
     public class UserPhoneDto
     {
-        public int Id { get; set; }
         public string? PhoneNumber { get; set; }
     }
 }

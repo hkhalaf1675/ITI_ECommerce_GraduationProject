@@ -59,6 +59,7 @@ namespace Infrastructure.Repositories
 
             return false;
         }
+
         public async Task<bool> DeleteUser(User user,string password)
         {
 
@@ -78,6 +79,7 @@ namespace Infrastructure.Repositories
 
             return false;
         }
+
         public async Task<bool> ChangePassword(User user, UserResetPasswordDto resetPassword)
         {
 
@@ -251,8 +253,7 @@ namespace Infrastructure.Repositories
             {
                 phoneDtos.Add(new UserPhoneDto
                 {
-                    Id = phone.Id,
-                    PhoneNumber = phone.PhoneNumber,
+                    PhoneNumber = phone.PhoneNumber
                 });
             }
 
