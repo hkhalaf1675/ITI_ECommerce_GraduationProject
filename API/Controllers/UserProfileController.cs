@@ -234,25 +234,30 @@ namespace API.Controllers
         #region User Phones : Add , Delete , Get User Phones
 
         [HttpPost("add-phone")]
-        public async Task<IActionResult> AddPhone([FromBody]string phoneNumber)
-        {
+        public async Task<IActionResult> AddPhone()
+        {   
             if (int.TryParse(User.Claims.FirstOrDefault(C => C.Type == ClaimTypes.NameIdentifier)?.Value, out int userId))
             {
-                var result = await userRepository.AddPhone(userId,phoneNumber);
 
-                return Ok(result);
+
+
+                var result = await userRepository.AddPhone(userId, Request.Form["phone"]);
+
+                return Ok();
             }
             return Unauthorized();
         }
 
         [HttpDelete("delete-phone")]
-        public async Task<IActionResult> DeletePhone([FromBody] string phoneNumber)
+        public async Task<IActionResult> DeletePhone(string phone)
         {
+
+
             if (int.TryParse(User.Claims.FirstOrDefault(C => C.Type == ClaimTypes.NameIdentifier)?.Value, out int userId))
             {
-                var result = await userRepository.DeletePhone(userId, phoneNumber);
+                var result = await userRepository.DeletePhone(userId, phone);
 
-                return Ok(result);
+                return Ok();
             }
             return Unauthorized();
         }
