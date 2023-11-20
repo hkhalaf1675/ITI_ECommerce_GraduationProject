@@ -3,6 +3,8 @@ using Core.DTOs.UserProfileDtos;
 using Core.IRepositories;
 using Core.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,11 +17,15 @@ namespace Infrastructure.Repositories
     {
         private readonly UserManager<User> userManager;
         private readonly ECommerceDBContext context;
+        IConfiguration _configuration; // tasneem add it
+        string baseUrl; //tasneem add it
 
-        public UserRepository(UserManager<User> _userManager,ECommerceDBContext _context)
+        public UserRepository(UserManager<User> _userManager,ECommerceDBContext _context , IConfiguration configuration)
         {
             userManager = _userManager;
             context = _context;
+            _configuration = configuration; //tasneem add it
+            baseUrl = _configuration["ApiBaseUrl"]; //tasneem add it 
         }
         public async Task<ProfileDto> GetUserInfo(User user)
         {
@@ -168,26 +174,109 @@ namespace Infrastructure.Repositories
                 
         }
 
+        //public async Task<ICollection<UserOrderDto>> userOrders(User user)
+        //{
+        //    List<UserOrderDto> orderDtos = new List<UserOrderDto>();
+
+        //    if(user == null)
+        //        return orderDtos;
+
+        //    var orders = user.Orders.ToList(); // nav prop must include
+        //    foreach(var order in orders)
+        //    {
+        //        orderDtos.Add(new UserOrderDto
+        //        {
+        //            OrderId = order.Id,
+        //            Status = order.Status,
+        //            Date = order.Date,
+        //        });
+        //    }
+
+        //    return orderDtos;
+        //}
+
+
+
+        #region tasneem add it 
         public async Task<ICollection<UserOrderDto>> userOrders(User user)
         {
             List<UserOrderDto> orderDtos = new List<UserOrderDto>();
 
-            if(user == null)
+            if (user == null)
                 return orderDtos;
 
-            var orders = user.Orders.ToList();
-            foreach(var order in orders)
+            List<UserOrderDto> allOrders = new List<UserOrderDto>();
+
+            // get the orders
+            var orders = context.Orders.Include(O => O.User)
+                .Include(O => O.Address)
+                .Include(O => O.OrderDetails)
+                .Where(O => O.UserId == user.Id)
+                .ToList();
+
+            // loop to map for each order
+            foreach (var order in orders)
             {
-                orderDtos.Add(new UserOrderDto
+                var products = GetOrderDetails(order);
+
+                //map the order the dto
+                allOrders.Add(MapOrderToDto(order, products));
+            }
+
+            return allOrders;
+        }
+
+        
+        // method to get order detials and map the products into dto
+        public List<UserProductsDto> GetOrderDetails(Order order)
+        {
+            List<UserProductsDto> products = new List<UserProductsDto>();
+
+            foreach (var product in order?.OrderDetails)
+            {
+                // get the order details => order products details
+                var productDetail = context.Products.Include(P => P.Images)
+                    .Include(P => P.Brand)
+                    .FirstOrDefault(P => P.Id == product.ProductID); //tasneem add it
+
+                // lsit ts save the url of the images of each product
+                List<string> images = new List<string>();
+                foreach (var image in productDetail.Images)
                 {
-                    OrderId = order.Id,
-                    Status = order.Status,
-                    Date = order.Date,
+                    images.Add($"{baseUrl}/{image.ImageUrl}"); // tasneem add it 
+                }
+
+                // map the product to the dto
+                products.Add(new UserProductsDto
+                {
+                    Id = (int)product.ProductID, //tasneem add it
+                    Name = productDetail.Name,
+                    Model = productDetail.Model,
+                    Price = productDetail.Price,
+                    BrandName = productDetail.Brand.Name,
+                    Images = images
                 });
             }
 
-            return orderDtos;
+            return products;
         }
+
+        // method to map order to orderdto
+        private UserOrderDto MapOrderToDto(Order order, List<UserProductsDto> products)
+        {
+            return new UserOrderDto
+            {
+                OrderId = order.Id,
+                Status = order.Status,
+                Date = order.Date,
+                UserName = order.User.UserName,
+                TotalPrice = order.TotalPrice,
+                Address = order.Address.ToString(),
+                Products = products
+            };
+        }
+
+        #endregion
 
         #region User Phones
 

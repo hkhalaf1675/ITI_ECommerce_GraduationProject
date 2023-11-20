@@ -182,8 +182,8 @@ namespace Infrastructure.Migrations
                     b.Property<int?>("Method")
                         .HasColumnType("int");
 
-                    b.Property<int?>("PhoneId")
-                        .HasColumnType("int");
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("Status")
                         .HasColumnType("int");
@@ -197,8 +197,6 @@ namespace Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("AddressId");
-
-                    b.HasIndex("PhoneId");
 
                     b.HasIndex("UserId");
 
@@ -260,19 +258,13 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Core.Models.Phone", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
                     b.Property<string>("PhoneNumber")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int?>("UserID")
                         .HasColumnType("int");
 
-                    b.HasKey("Id");
+                    b.HasKey("PhoneNumber", "UserID");
 
                     b.HasIndex("UserID");
 
@@ -776,18 +768,12 @@ namespace Infrastructure.Migrations
                         .WithMany()
                         .HasForeignKey("AddressId");
 
-                    b.HasOne("Core.Models.Phone", "Phone")
-                        .WithMany()
-                        .HasForeignKey("PhoneId");
-
                     b.HasOne("Core.Models.User", "User")
                         .WithMany("Orders")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.SetNull);
 
                     b.Navigation("Address");
-
-                    b.Navigation("Phone");
 
                     b.Navigation("User");
                 });
@@ -822,7 +808,8 @@ namespace Infrastructure.Migrations
                     b.HasOne("Core.Models.User", "User")
                         .WithMany("Phones")
                         .HasForeignKey("UserID")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("User");
                 });
