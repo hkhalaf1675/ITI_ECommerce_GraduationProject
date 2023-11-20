@@ -202,6 +202,8 @@ namespace Infrastructure.Migrations
 
                     b.HasIndex("UserId");
 
+                    b.HasIndex("PhoneNumber", "PhoneUserID");
+
                     b.ToTable("Orders");
                 });
 
@@ -784,6 +786,10 @@ namespace Infrastructure.Migrations
                         .WithMany("Orders")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.SetNull);
+
+                    b.HasOne("Core.Models.Phone", "Phone")
+                        .WithMany()
+                        .HasForeignKey("PhoneNumber", "PhoneUserID");
 
                     b.Navigation("Address");
 

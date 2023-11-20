@@ -147,7 +147,7 @@ namespace API.Controllers
 
             context.Phones.Add(new Phone
             {
-                UserID = lastUser.Id,
+                UserID = lastUser?.Id,
                 PhoneNumber = input.PhoneNumber
             });
 
