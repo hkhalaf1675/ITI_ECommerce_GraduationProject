@@ -124,7 +124,7 @@ namespace API.Controllers
                    bool check = _reviewRepository.Add(review);
                     if (check)
                     {
-                        return Ok("Review added successfully.");
+                        return Ok();
                     }
                     return BadRequest("Problem with Databas");
                 }
