@@ -182,6 +182,15 @@ namespace Infrastructure.Migrations
                     b.Property<int?>("Method")
                         .HasColumnType("int");
 
+                    b.Property<int?>("PhoneId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int?>("PhoneUserID")
+                        .HasColumnType("int");
+
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
@@ -196,6 +205,8 @@ namespace Infrastructure.Migrations
                     b.HasIndex("AddressId");
 
                     b.HasIndex("UserId");
+
+                    b.HasIndex("PhoneNumber", "PhoneUserID");
 
                     b.ToTable("Orders");
                 });
@@ -259,6 +270,9 @@ namespace Infrastructure.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<int?>("UserID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Id")
                         .HasColumnType("int");
 
                     b.HasKey("PhoneNumber", "UserID");
@@ -770,7 +784,13 @@ namespace Infrastructure.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.SetNull);
 
+                    b.HasOne("Core.Models.Phone", "Phone")
+                        .WithMany()
+                        .HasForeignKey("PhoneNumber", "PhoneUserID");
+
                     b.Navigation("Address");
+
+                    b.Navigation("Phone");
 
                     b.Navigation("User");
                 });

@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(ECommerceDBContext))]
-    [Migration("20231118030734_Mi1")]
+    [Migration("20231120003704_Mi1")]
     partial class Mi1
     {
         /// <inheritdoc />
@@ -185,6 +185,15 @@ namespace Infrastructure.Migrations
                     b.Property<int?>("Method")
                         .HasColumnType("int");
 
+                    b.Property<int?>("PhoneId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int?>("PhoneUserID")
+                        .HasColumnType("int");
+
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
@@ -199,6 +208,8 @@ namespace Infrastructure.Migrations
                     b.HasIndex("AddressId");
 
                     b.HasIndex("UserId");
+
+                    b.HasIndex("PhoneNumber", "PhoneUserID");
 
                     b.ToTable("Orders");
                 });
@@ -262,6 +273,9 @@ namespace Infrastructure.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<int?>("UserID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Id")
                         .HasColumnType("int");
 
                     b.HasKey("PhoneNumber", "UserID");
@@ -773,7 +787,13 @@ namespace Infrastructure.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.SetNull);
 
+                    b.HasOne("Core.Models.Phone", "Phone")
+                        .WithMany()
+                        .HasForeignKey("PhoneNumber", "PhoneUserID");
+
                     b.Navigation("Address");
+
+                    b.Navigation("Phone");
 
                     b.Navigation("User");
                 });
