@@ -13,7 +13,7 @@ namespace Core.DTOs.ShopingCartDtos
         public decimal? ProductPrice { get; set; } = 0;
         public int? Discount { get; set; } = 0;
         public int? ProductQuantity { get; set; } = 0;
-        public decimal? TotalPrice => ((Discount / 100) * ProductPrice) * ProductQuantity;
+        public decimal? TotalPrice => (ProductPrice - ((Discount / 100) * ProductPrice)) * ProductQuantity;
 
         // newely Added By Abdulrahman 
         public ICollection<string> Images { get; set; }
