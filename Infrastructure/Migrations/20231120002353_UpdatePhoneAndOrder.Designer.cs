@@ -4,6 +4,7 @@ using Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(ECommerceDBContext))]
-    partial class ECommerceDBContextModelSnapshot : ModelSnapshot
+    [Migration("20231120002353_UpdatePhoneAndOrder")]
+    partial class UpdatePhoneAndOrder
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -201,8 +204,6 @@ namespace Infrastructure.Migrations
                     b.HasIndex("PhoneId");
 
                     b.HasIndex("UserId");
-
-                    b.HasIndex("PhoneNumber", "PhoneUserID");
 
                     b.ToTable("Orders");
                 });
@@ -786,10 +787,6 @@ namespace Infrastructure.Migrations
                         .WithMany("Orders")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.SetNull);
-
-                    b.HasOne("Core.Models.Phone", "Phone")
-                        .WithMany()
-                        .HasForeignKey("PhoneNumber", "PhoneUserID");
 
                     b.Navigation("Address");
 

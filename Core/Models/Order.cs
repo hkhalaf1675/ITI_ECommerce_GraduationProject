@@ -18,9 +18,7 @@ namespace Core.Models
         [ForeignKey("Address")]
         public int? AddressId { get; set; }
         public Address? Address { get; set; }
-        [ForeignKey("PhoneId")]
-        public int? PhoneId { get; set; }
-        public Phone? Phone { get; set; }
+        public string? PhoneNumber { get; set; } // add user phone on order
         [ForeignKey("User")]
         public int? UserId { get; set; }
         public virtual User? User { get; set; }
