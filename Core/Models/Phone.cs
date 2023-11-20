@@ -9,7 +9,6 @@ namespace Core.Models
 {
     public class Phone
     {
-        public int Id { get; set; } // add the id
         public string? PhoneNumber { get; set; }
         [ForeignKey("User")]
         public int? UserID { get; set; }
