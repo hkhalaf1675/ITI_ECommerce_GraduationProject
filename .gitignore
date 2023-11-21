@@ -364,4 +364,4 @@ FodyWeavers.xsd
 
 
 # Ignore Images
-API/wwwroot/Images/*
+# API/wwwroot/Images/*
