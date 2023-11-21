@@ -206,8 +206,9 @@ namespace Infrastructure.Repositories
 
         private Order? GetLastOrder(int userId)
         {
-            return context.Orders.OrderByDescending(O => O.UserId == userId)?
+            return context.Orders.Where(o=> o.UserId == userId).OrderByDescending(O => O.Id)?
                 .FirstOrDefault();
+
         }
 
 

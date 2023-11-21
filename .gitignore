@@ -363,8 +363,5 @@ MigrationBackup/
 FodyWeavers.xsd
 
 
-<<<<<<< HEAD
 # Ignore Images
-=======
->>>>>>> 5579db43ac1354b38aac89aa607b5856ff9c10eb
 API/wwwroot/Images/*
